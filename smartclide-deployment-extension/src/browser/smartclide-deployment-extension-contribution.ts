@@ -6,6 +6,11 @@ import {
 } from "@theia/core/lib/common";
 import { injectable, inject } from "@theia/core/shared/inversify";
 
+import {
+  OutputChannelManager,
+  OutputChannelSeverity,
+} from "@theia/output/lib/browser/output-channel";
+
 //import {  HelloBackendService } from '../common/protocol';
 
 const SmartClideDeploymentBuild: Command = {
@@ -41,7 +46,9 @@ export class SmartclideDeploymentExtensionCommandContribution
   implements CommandContribution
 {
   constructor(
-    @inject(MessageService) private readonly messageService: MessageService
+    @inject(MessageService) private readonly messageService: MessageService,
+    @inject(OutputChannelManager)
+    private readonly outputChannelManager: OutputChannelManager
   ) {}
 
   //  @inject(HelloBackendService) private readonly helloBackendService: HelloBackendService, //  @inject(HelloBackendWithClientService) private readonly helloBackendWithClientService: HelloBackendWithClientService,
@@ -51,7 +58,20 @@ export class SmartclideDeploymentExtensionCommandContribution
       execute: () => {
         setTimeout(() => {
           this.messageService.info("Hello World!");
+          const channel = this.outputChannelManager.getChannel(
+            "API Sample: my test channel"
+          );
+          channel.show();
+          channel.appendLine("hello info1"); // showed without color
+          channel.appendLine("hello info2", OutputChannelSeverity.Info);
+          channel.appendLine("hello error", OutputChannelSeverity.Error);
+          channel.appendLine("hello warning", OutputChannelSeverity.Warning);
+          channel.append("inlineInfo1 ");
+          channel.append("inlineWarning ", OutputChannelSeverity.Warning);
+          channel.append("inlineError ", OutputChannelSeverity.Error);
+          channel.append("inlineInfo2", OutputChannelSeverity.Info);
         }, 500);
+
         const url = buildUrl("pberrocal", "hello-world-node");
         fetch(url).then((res: any) => {
           res.json().then((res: any) => {
