@@ -1,5 +1,5 @@
-# smartclide-deployment-extension
-The example of how to build the Theia-based applications with the smartclide-deployment-extension.
+# smartclide
+The example of how to build the Theia-based applications with the smartclide.
 
 ## Getting started
 
@@ -43,6 +43,16 @@ Open http://localhost:3000 in the browser.
 *or:* launch `Start Electron Backend` configuration from VS code.
 
 
+## Running the tests
+
+    yarn test
+
+*or* run the tests of a specific package with
+
+    cd smartclide
+    yarn test
+    
+
 ## Developing with the browser example
 
 Start watching all packages, including `browser-app`, of your application with
@@ -51,7 +61,7 @@ Start watching all packages, including `browser-app`, of your application with
 
 *or* watch only specific packages with
 
-    cd smartclide-deployment-extension
+    cd smartclide
     yarn watch
 
 and the browser example.
@@ -68,7 +78,7 @@ Start watching all packages, including `electron-app`, of your application with
 
 *or* watch only specific packages with
 
-    cd smartclide-deployment-extension
+    cd smartclide
     yarn watch
 
 and the Electron example.
@@ -78,7 +88,7 @@ and the Electron example.
 
 Run the example as [described above](#Running-the-Electron-example)
 
-## Publishing smartclide-deployment-extension
+## Publishing smartclide
 
 Create a npm user and login to the npm registry, [more on npm publishing](https://docs.npmjs.com/getting-started/publishing-npm-packages).
 

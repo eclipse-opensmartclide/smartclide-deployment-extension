@@ -5,19 +5,19 @@ import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { MessageService } from '@theia/core';
 
 @injectable()
-export class SmartclideDeploymentWidgetWidget extends ReactWidget {
+export class SmartclideWidget extends ReactWidget {
 
-    static readonly ID = 'smartclide-deployment-widget:widget';
-    static readonly LABEL = 'SmartclideDeploymentWidget Widget';
+    static readonly ID = 'smartclide:widget';
+    static readonly LABEL = 'Smartclide Widget';
 
     @inject(MessageService)
     protected readonly messageService!: MessageService;
 
     @postConstruct()
     protected async init(): Promise < void> {
-        this.id = SmartclideDeploymentWidgetWidget.ID;
-        this.title.label = SmartclideDeploymentWidgetWidget.LABEL;
-        this.title.caption = SmartclideDeploymentWidgetWidget.LABEL;
+        this.id = SmartclideWidget.ID;
+        this.title.label = SmartclideWidget.LABEL;
+        this.title.caption = SmartclideWidget.LABEL;
         this.title.closable = true;
         this.title.iconClass = 'fa fa-window-maximize'; // example widget icon.
         this.update();
@@ -33,7 +33,7 @@ export class SmartclideDeploymentWidgetWidget extends ReactWidget {
     }
 
     protected displayMessage(): void {
-        this.messageService.info('Congratulations: SmartclideDeploymentWidget Widget Successfully Created!');
+        this.messageService.info('Congratulations: Smartclide Widget Successfully Created!');
     }
 
 }

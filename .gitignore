@@ -4,6 +4,3 @@ lib
 *.log
 *-app/*
 !*-app/package.json
-
-ssh_git
-ssh_git.pub

@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import { MessageService } from '@theia/core';
 import { ContainerModule, Container } from '@theia/core/shared/inversify';
-import { SmartclideDeploymentWidgetWidget } from './smartclide-deployment-widget-widget';
+import { SmartclideWidget } from './smartclide-widget';
 import { render } from '@testing-library/react'
 
-describe('SmartclideDeploymentWidgetWidget', () => {
+describe('SmartclideWidget', () => {
 
-    let widget: SmartclideDeploymentWidgetWidget;
+    let widget: SmartclideWidget;
 
     beforeEach(async () => {
         const module = new ContainerModule( bind => {
@@ -15,11 +15,11 @@ describe('SmartclideDeploymentWidgetWidget', () => {
                     console.log(message);
                 }
             } as MessageService);
-            bind(SmartclideDeploymentWidgetWidget).toSelf();
+            bind(SmartclideWidget).toSelf();
         });
         const container = new Container();
         container.load(module);
-        widget = container.resolve<SmartclideDeploymentWidgetWidget>(SmartclideDeploymentWidgetWidget);
+        widget = container.resolve<SmartclideWidget>(SmartclideWidget);
     });
 
     it('should render react node correctly', async () => {

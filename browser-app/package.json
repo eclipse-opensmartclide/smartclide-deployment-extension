@@ -3,22 +3,21 @@
   "name": "browser-app",
   "version": "0.0.0",
   "dependencies": {
-    "@theia/core": "1.19.0",
-    "@theia/editor": "1.19.0",
-    "@theia/filesystem": "1.19.0",
-    "@theia/markers": "1.19.0",
-    "@theia/messages": "1.19.0",
-    "@theia/monaco": "1.19.0",
-    "@theia/navigator": "1.19.0",
-    "@theia/preferences": "1.19.0",
-    "@theia/process": "1.19.0",
-    "@theia/terminal": "1.19.0",
-    "@theia/workspace": "1.19.0",
-    "smartclide-deployment-extension": "0.0.0",
-    "smartclide-deployment-widget": "0.0.0"
+    "@theia/core": "latest",
+    "@theia/editor": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/markers": "latest",
+    "@theia/messages": "latest",
+    "@theia/monaco": "latest",
+    "@theia/navigator": "latest",
+    "@theia/preferences": "latest",
+    "@theia/process": "latest",
+    "@theia/terminal": "latest",
+    "@theia/workspace": "latest",
+    "smartclide": "0.0.0"
   },
   "devDependencies": {
-    "@theia/cli": "1.19.0"
+    "@theia/cli": "latest"
   },
   "scripts": {
     "prepare": "theia build --mode development",
