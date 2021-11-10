@@ -5,11 +5,16 @@ import {
   MessageService,
 } from "@theia/core/lib/common";
 import { injectable, inject } from "@theia/core/shared/inversify";
-
 import {
   OutputChannelManager,
   OutputChannelSeverity,
 } from "@theia/output/lib/browser/output-channel";
+import {
+  MonacoQuickInputService,
+  // MonacoQuickInputImplementation,
+} from "@theia/monaco/lib/browser/monaco-quick-input-service";
+
+import { InputOptions } from "@theia/core/lib/browser/";
 
 //import {  HelloBackendService } from '../common/protocol';
 
@@ -28,10 +33,10 @@ const SmartClideDeploymentStatus: Command = {
   label: "SmartCLIDE Deployment Status",
 };
 
-const BASE_URL = "http://146.158.241.186:3000";
+const BASE_URL = "http://10.200.254.121:3000";
 
-const buildUrl = (user: string, serviceName: string) =>
-  `${BASE_URL}/build/${user}/${serviceName}`;
+// const buildUrl = (user: string, serviceName: string) =>
+//   `${BASE_URL}/builds/${user}/${serviceName}`;
 const deployUrl = (
   user: string,
   serviceName: string,
@@ -48,35 +53,103 @@ export class SmartclideDeploymentExtensionCommandContribution
   constructor(
     @inject(MessageService) private readonly messageService: MessageService,
     @inject(OutputChannelManager)
-    private readonly outputChannelManager: OutputChannelManager
+    private readonly outputChannelManager: OutputChannelManager,
+    @inject(MonacoQuickInputService)
+    private readonly monacoQuickInputService: MonacoQuickInputService
   ) {}
-
-  //  @inject(HelloBackendService) private readonly helloBackendService: HelloBackendService, //  @inject(HelloBackendWithClientService) private readonly helloBackendWithClientService: HelloBackendWithClientService,
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SmartClideDeploymentBuild, {
       execute: () => {
-        setTimeout(() => {
-          this.messageService.info("Hello World!");
-          const channel = this.outputChannelManager.getChannel(
-            "API Sample: my test channel"
-          );
-          channel.show();
-          channel.appendLine("hello info1"); // showed without color
-          channel.appendLine("hello info2", OutputChannelSeverity.Info);
-          channel.appendLine("hello error", OutputChannelSeverity.Error);
-          channel.appendLine("hello warning", OutputChannelSeverity.Warning);
-          channel.append("inlineInfo1 ");
-          channel.append("inlineWarning ", OutputChannelSeverity.Warning);
-          channel.append("inlineError ", OutputChannelSeverity.Error);
-          channel.append("inlineInfo2", OutputChannelSeverity.Info);
-        }, 500);
+        const optionsUser: InputOptions = {
+          placeHolder: "Enter GitLab username",
+        };
+        const optionsRepositoryName: InputOptions = {
+          placeHolder: "Enter GitLab repository name",
+        };
 
-        const url = buildUrl("pberrocal", "hello-world-node");
-        fetch(url).then((res: any) => {
-          res.json().then((res: any) => {
-            console.log("BUILD COMMAND", res);
-          });
+        this.monacoQuickInputService.input(optionsUser).then((value) => {
+          const username = value;
+
+          username &&
+            this.monacoQuickInputService
+              .input(optionsRepositoryName)
+              .then((value) => {
+                const project_name = value;
+                const actions = ["Build now", "Cancel"];
+                if (username && project_name) {
+                  const channel = this.outputChannelManager.getChannel(
+                    "SmartCLIDE Deployment Channel"
+                  );
+                  this.messageService
+                    .info(
+                      `Username is ${username} and repository name is ${project_name}`,
+                      ...actions
+                    )
+                    .then((action) => {
+                      if (action === "Build now") {
+                        channel.show();
+                        channel.appendLine(`Start build ${project_name}...`);
+                        fetch(`${BASE_URL}/build/`, {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            project_name,
+                            username,
+                            image: "string",
+                            docker_password: "string",
+                            timestamp: "2021-11-10T10:44:38.158Z",
+                            tag: "string",
+                            version: "string",
+                          }),
+                        })
+                          .then((res: any) => {
+                            res.json().then((res: any) => {
+                              switch (res?.state) {
+                                case "pending":
+                                  this.messageService.warn(res.message);
+                                  channel.appendLine(
+                                    res.message,
+                                    OutputChannelSeverity.Warning
+                                  );
+                                  break;
+                                case "error":
+                                  channel.appendLine(
+                                    res.message,
+                                    OutputChannelSeverity.Error
+                                  );
+                                  this.messageService.error(res.message);
+                                  break;
+                                case "done":
+                                  channel.appendLine(
+                                    res.message,
+                                    OutputChannelSeverity.Info
+                                  );
+                                  this.messageService.info(res.message);
+                                  break;
+                              }
+                              channel.show();
+                            });
+                          })
+                          .catch((err: any) => {
+                            console.error("ERROR WHEN BUILD COMMAND - ", err);
+                            this.messageService.info("Error");
+                            channel.appendLine(
+                              err.message,
+                              OutputChannelSeverity.Error
+                            );
+                            channel.show();
+                          });
+                      }
+                    });
+                } else {
+                  this.messageService.error(
+                    `Error username and repository name are required`
+                  );
+                }
+              });
         });
       },
     });
