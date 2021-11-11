@@ -11,10 +11,15 @@ import {
 } from "@theia/output/lib/browser/output-channel";
 import {
   MonacoQuickInputService,
+  // MonacoQuickPickItem,
   // MonacoQuickInputImplementation,
 } from "@theia/monaco/lib/browser/monaco-quick-input-service";
 
-import { InputOptions } from "@theia/core/lib/browser/";
+import { InputOptions, LocalStorageService } from "@theia/core/lib/browser/";
+
+import { getDataLocalStorage } from "../common/helpers";
+import { fetchBuild } from "../common/fetchMethods";
+import { BASE_URL } from "../common/constants";
 
 //import {  HelloBackendService } from '../common/protocol';
 
@@ -33,67 +38,6 @@ const SmartClideDeploymentStatus: Command = {
   label: "SmartCLIDE Deployment Status",
 };
 
-const BASE_URL = "http://10.200.254.135:3000";
-
-const fetchBuild = (
-  username: string,
-  project_name: string,
-  messageService: any,
-  channel: any
-) => {
-  fetch(`${BASE_URL}/build/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      project_name,
-      username,
-      image: "string",
-      docker_password: "string",
-      timestamp: "2021-11-10T10:44:38.158Z",
-      tag: "string",
-      version: "string",
-    }),
-  })
-    .then((res: any) => {
-      res.json().then((res: any) => {
-        console.log(JSON.stringify(res));
-        messageService.warn(res.message);
-        channel.appendLine(res.message, OutputChannelSeverity.Warning);
-        switch (res?.state) {
-          case "pending":
-            // fetchBuild(username, project_name, messageService, channel);
-            messageService.warn(res.message);
-            channel.appendLine(res.message, OutputChannelSeverity.Warning);
-            break;
-          case "error":
-            channel.appendLine(res.message, OutputChannelSeverity.Error);
-            messageService.error(res.message);
-            break;
-          case "done":
-            channel.appendLine(res.message, OutputChannelSeverity.Info);
-            messageService.info(res.message);
-            break;
-        }
-        channel.show();
-        return res.message;
-      });
-    })
-    .catch((err: any) => {
-      console.error("ERROR WHEN BUILD COMMAND - ", err);
-      messageService.info("Error");
-      channel.appendLine(err.message, OutputChannelSeverity.Error);
-      channel.show();
-      return err;
-    });
-};
-const deployUrl = (
-  user: string,
-  serviceName: string,
-  port: number,
-  replica: number
-) => `${BASE_URL}/deploy/${user}/${serviceName}/${port}/${replica}`;
 const statusUrl = (user: string, serviceName: string) =>
   `${BASE_URL}/status/${user}/${serviceName}`;
 
@@ -106,86 +50,100 @@ export class SmartclideDeploymentExtensionCommandContribution
     @inject(OutputChannelManager)
     private readonly outputChannelManager: OutputChannelManager,
     @inject(MonacoQuickInputService)
-    private readonly monacoQuickInputService: MonacoQuickInputService
+    private readonly monacoQuickInputService: MonacoQuickInputService,
+    @inject(LocalStorageService)
+    private readonly localStorageService: LocalStorageService
   ) {}
 
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SmartClideDeploymentBuild, {
-      execute: () => {
+      execute: async () => {
+        //// ---------- CONST ------------ /////
+        const channel = this.outputChannelManager.getChannel(
+          "SmartCLIDE Deployment Channel"
+        );
         const optionsUser: InputOptions = {
+          prompt: "Enter GitLab username:",
           placeHolder: "Enter GitLab username",
         };
-        const optionsRepositoryName: InputOptions = {
-          placeHolder: "Enter GitLab repository name",
+        const optionsToken: InputOptions = {
+          placeHolder: "Enter GitLab Api token",
+          prompt: "Enter GitLab Api token:",
         };
+        const optionsProject: InputOptions = {
+          placeHolder: "project-name",
+          prompt: "Enter Project name:",
+        };
+        const actionsConfirmBuild = ["Build now", "Cancel"];
 
-        this.monacoQuickInputService.input(optionsUser).then((value) => {
-          const username = value;
+        //// ---------- FLOW ------------ /////
+        const username: string = await this.monacoQuickInputService
+          .input(optionsUser)
+          .then((value): string => value || "");
 
-          username &&
-            this.monacoQuickInputService
-              .input(optionsRepositoryName)
-              .then((value) => {
-                const project_name = value;
-                const actions = ["Build now", "Cancel"];
-                if (username && project_name) {
-                  const channel = this.outputChannelManager.getChannel(
-                    "SmartCLIDE Deployment Channel"
+        const localData: Record<string, any> | undefined = username
+          ? await getDataLocalStorage(this.localStorageService, username)
+          : undefined;
+
+        const apiToken = !localData?.apiToken
+          ? await this.monacoQuickInputService
+              .input(optionsToken)
+              .then((value): string => value || "")
+          : localData?.apiToken;
+
+        const project = await this.monacoQuickInputService
+          .input(optionsProject)
+          .then((value): string => value || "");
+
+        //// ---------- PREPARE TO BUILD ------------ /////
+        username && project
+          ? this.messageService
+              .info(
+                `username is ${username} and repository name is ${project}`,
+                ...actionsConfirmBuild
+              )
+              .then(async (action) => {
+                if (action === "Build now") {
+                  channel.show();
+                  channel.appendLine(`Start build ${project}...`);
+                  const build = await fetchBuild(
+                    username,
+                    project,
+                    this.messageService,
+                    OutputChannelSeverity,
+                    channel
                   );
-                  this.messageService
-                    .info(
-                      `username is ${username} and repository name is ${project_name}`,
-                      ...actions
-                    )
-                    .then((action) => {
-                      if (action === "Build now") {
-                        channel.show();
-                        channel.appendLine(`Start build ${project_name}...`);
-                        fetchBuild(
-                          username,
-                          project_name,
-                          this.messageService,
-                          channel
-                        );
-                        // setTimeout(() => {
-                        //   fetchBuild(
-                        //     username,
-                        //     project_name,
-                        //     this.messageService,
-                        //     channel
-                        //   );
-                        // }, 2000);
-                        // setTimeout(() => {
-                        //   fetchBuild(
-                        //     username,
-                        //     project_name,
-                        //     this.messageService,
-                        //     channel
-                        //   );
-                        // }, 4000);
-                      }
-                    });
-                } else {
-                  this.messageService.error(
-                    `Error username and repository name are required`
-                  );
+                  if (build === "done") {
+                    const mockData = {
+                      username,
+                      apiToken,
+                      project,
+                      uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                    };
+
+                    this.localStorageService.setData(
+                      username,
+                      JSON.stringify(mockData)
+                    );
+                  }
                 }
-              });
-        });
+              })
+          : this.messageService.error(
+              `Error username and repository name are required`
+            );
       },
     });
 
     registry.registerCommand(SmartClideDeploymentDeploy, {
       execute: () => {
-        setTimeout(() => {
-          this.messageService.error("Hello2 World!");
-        }, 500);
-        const url = deployUrl("pberrocal", "hello-world-node", 7000, 1);
-        fetch(url).then((res: any) => {
-          res.json().then((res: any) => {
-            console.log("DEPLOYCOMMAND COMMAND", res);
-          });
-        });
+        this.messageService.error("Hello2 World!");
+
+        // const url = deployUrl("pberrocal", "hello-world-node", 7000, 1);
+        // fetch(url).then((res: any) => {
+        //   res.json().then((res: any) => {
+        //     console.log("DEPLOYCOMMAND COMMAND", res);
+        //   });
+        // });
       },
     });
     registry.registerCommand(SmartClideDeploymentStatus, {
