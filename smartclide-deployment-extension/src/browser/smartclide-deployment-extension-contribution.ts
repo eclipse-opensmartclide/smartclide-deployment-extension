@@ -33,10 +33,61 @@ const SmartClideDeploymentStatus: Command = {
   label: "SmartCLIDE Deployment Status",
 };
 
-const BASE_URL = "http://10.200.254.121:3000";
+const BASE_URL = "http://10.200.254.135:3000";
 
-// const buildUrl = (user: string, serviceName: string) =>
-//   `${BASE_URL}/builds/${user}/${serviceName}`;
+const fetchBuild = (
+  username: string,
+  project_name: string,
+  messageService: any,
+  channel: any
+) => {
+  fetch(`${BASE_URL}/build/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      project_name,
+      username,
+      image: "string",
+      docker_password: "string",
+      timestamp: "2021-11-10T10:44:38.158Z",
+      tag: "string",
+      version: "string",
+    }),
+  })
+    .then((res: any) => {
+      res.json().then((res: any) => {
+        console.log(JSON.stringify(res));
+        messageService.warn(res.message);
+        channel.appendLine(res.message, OutputChannelSeverity.Warning);
+        switch (res?.state) {
+          case "pending":
+            // fetchBuild(username, project_name, messageService, channel);
+            messageService.warn(res.message);
+            channel.appendLine(res.message, OutputChannelSeverity.Warning);
+            break;
+          case "error":
+            channel.appendLine(res.message, OutputChannelSeverity.Error);
+            messageService.error(res.message);
+            break;
+          case "done":
+            channel.appendLine(res.message, OutputChannelSeverity.Info);
+            messageService.info(res.message);
+            break;
+        }
+        channel.show();
+        return res.message;
+      });
+    })
+    .catch((err: any) => {
+      console.error("ERROR WHEN BUILD COMMAND - ", err);
+      messageService.info("Error");
+      channel.appendLine(err.message, OutputChannelSeverity.Error);
+      channel.show();
+      return err;
+    });
+};
 const deployUrl = (
   user: string,
   serviceName: string,
@@ -83,65 +134,35 @@ export class SmartclideDeploymentExtensionCommandContribution
                   );
                   this.messageService
                     .info(
-                      `Username is ${username} and repository name is ${project_name}`,
+                      `username is ${username} and repository name is ${project_name}`,
                       ...actions
                     )
                     .then((action) => {
                       if (action === "Build now") {
                         channel.show();
                         channel.appendLine(`Start build ${project_name}...`);
-                        fetch(`${BASE_URL}/build/`, {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
-                          body: JSON.stringify({
-                            project_name,
-                            username,
-                            image: "string",
-                            docker_password: "string",
-                            timestamp: "2021-11-10T10:44:38.158Z",
-                            tag: "string",
-                            version: "string",
-                          }),
-                        })
-                          .then((res: any) => {
-                            res.json().then((res: any) => {
-                              switch (res?.state) {
-                                case "pending":
-                                  this.messageService.warn(res.message);
-                                  channel.appendLine(
-                                    res.message,
-                                    OutputChannelSeverity.Warning
-                                  );
-                                  break;
-                                case "error":
-                                  channel.appendLine(
-                                    res.message,
-                                    OutputChannelSeverity.Error
-                                  );
-                                  this.messageService.error(res.message);
-                                  break;
-                                case "done":
-                                  channel.appendLine(
-                                    res.message,
-                                    OutputChannelSeverity.Info
-                                  );
-                                  this.messageService.info(res.message);
-                                  break;
-                              }
-                              channel.show();
-                            });
-                          })
-                          .catch((err: any) => {
-                            console.error("ERROR WHEN BUILD COMMAND - ", err);
-                            this.messageService.info("Error");
-                            channel.appendLine(
-                              err.message,
-                              OutputChannelSeverity.Error
-                            );
-                            channel.show();
-                          });
+                        fetchBuild(
+                          username,
+                          project_name,
+                          this.messageService,
+                          channel
+                        );
+                        // setTimeout(() => {
+                        //   fetchBuild(
+                        //     username,
+                        //     project_name,
+                        //     this.messageService,
+                        //     channel
+                        //   );
+                        // }, 2000);
+                        // setTimeout(() => {
+                        //   fetchBuild(
+                        //     username,
+                        //     project_name,
+                        //     this.messageService,
+                        //     channel
+                        //   );
+                        // }, 4000);
                       }
                     });
                 } else {
