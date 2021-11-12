@@ -5,19 +5,11 @@ export const fetchBuild = async (
   apiToken: string,
   username?: string
 ): Promise<Record<string, any>> => {
-  // TODO: Remove when backend endpoint are ok
-  // return {
-  //   status: new Promise((resolve, reject) => {
-  //     setTimeout(function () {
-  //       resolve("mockDone");
-  //     }, 3000);
-  //   }),
-  // };
-
-  return await fetch(`${BASE_URL}/build/?project=${project}`, {
+  return await fetch(`${BASE_URL}/build?project=${project}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-token": "THaukuexsHeVnCqFBZTw",
     },
     body: JSON.stringify({
       project,
@@ -33,19 +25,11 @@ export const fetchBuildStatus = async (
   project: string,
   apiToken: string
 ): Promise<Record<string, any>> => {
-  // TODO: Remove when backend endpoint are ok
-  // return {
-  //   status: new Promise((resolve, reject) => {
-  //     setTimeout(function () {
-  //       resolve("mockDone");
-  //     }, 3000);
-  //   }),
-  // };
-
-  return await fetch(`${BASE_URL}/build/?project=${project}`, {
+  return await fetch(`${BASE_URL}/build?project=${project}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "x-token": "THaukuexsHeVnCqFBZTw",
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))

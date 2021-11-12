@@ -59,9 +59,9 @@ export class SmartclideDeploymentExtensionCommandContribution
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SmartClideBuildStatus, {
       execute: async () => {
-        const channel =
-          this.outputChannelManager.getChannel("SmartCLIDE Channel");
+        const channel = this.outputChannelManager.getChannel("SmartCLIDE");
         channel.clear();
+
         const currentProject: string | undefined =
           this.workspaceService.workspace?.name?.split(".")[0];
 
@@ -80,11 +80,13 @@ export class SmartclideDeploymentExtensionCommandContribution
 
         const actionsConfirmBuild = ["Check now", "Cancel"];
 
-        const project: string = await this.monacoQuickInputService
-          .input(optionsProject)
-          .then((value): string => value || "");
+        const project: string = !currentProject
+          ? await this.monacoQuickInputService
+              .input(optionsProject)
+              .then((value): string => value || "")
+          : currentProject;
 
-        console.log(project);
+        console.log("project", project);
 
         const apiToken = localData?.apiToken;
 
@@ -95,15 +97,16 @@ export class SmartclideDeploymentExtensionCommandContribution
               .then(async (action) => {
                 if (action === "Check now") {
                   channel.show();
-                  channel.appendLine(`Checking build status ${project}...`);
+                  channel.appendLine(`Checking build state ${project}...`);
 
                   const res: Record<string, any> = await fetchBuildStatus(
                     project,
                     apiToken
                   );
+                  console.log("res", res);
 
                   channel.appendLine(
-                    `Status: ${res?.message}...`,
+                    `Status: ${res?.state}...`,
                     OutputChannelSeverity.Warning
                   );
                 }
@@ -114,8 +117,7 @@ export class SmartclideDeploymentExtensionCommandContribution
     });
     registry.registerCommand(SmartClideDeploymentBuild, {
       execute: async () => {
-        const channel =
-          this.outputChannelManager.getChannel("SmartCLIDE Channel");
+        const channel = this.outputChannelManager.getChannel("SmartCLIDE");
         channel.clear();
         //// ---------- CONST ------------ /////
 
@@ -130,20 +132,24 @@ export class SmartclideDeploymentExtensionCommandContribution
           placeHolder: "Enter GitLab username",
           value: localData?.username,
         };
-        const optionsToken: InputOptions = {
-          placeHolder: "Enter GitLab Api token",
-          prompt: "Enter GitLab Api token:",
-        };
         const optionsProject: InputOptions = {
           placeHolder: "project-name",
           prompt: "Enter Project name:",
           value: currentProject || localData?.project,
+        };
+        const optionsToken: InputOptions = {
+          placeHolder: "Enter GitLab Project Secrect Token",
+          prompt: "Enter GitLab Project Secrect Token:",
         };
         const actionsConfirmBuild = ["Build now", "Cancel"];
 
         //// ---------- FLOW ------------ /////
         const username: string = await this.monacoQuickInputService
           .input(optionsUser)
+          .then((value): string => value || "");
+
+        const project = await this.monacoQuickInputService
+          .input(optionsProject)
           .then((value): string => value || "");
 
         const apiToken =
@@ -162,10 +168,6 @@ export class SmartclideDeploymentExtensionCommandContribution
           })
         );
 
-        const project = await this.monacoQuickInputService
-          .input(optionsProject)
-          .then((value): string => value || "");
-
         const currentLocalData: Record<string, any> | undefined =
           await getDataLocalStorage(this.localStorageService, "config");
 
@@ -179,6 +181,7 @@ export class SmartclideDeploymentExtensionCommandContribution
           ));
 
         //// ---------- PREPARE TO BUILD ------------ /////
+        let interval: any;
         username && project
           ? this.messageService
               .info(
@@ -194,62 +197,54 @@ export class SmartclideDeploymentExtensionCommandContribution
                     apiToken,
                     username
                   );
-                  console.log("pending fecth", res);
 
-                  let refetch: any;
+                  console.log("res", res.state);
 
-                  if (res?.status === "pending") {
+                  if (res?.state === "pending") {
                     this.messageService.warn(res?.message);
                     channel.appendLine(
                       res?.message,
-                      OutputChannelSeverity.Warning
+                      OutputChannelSeverity.Info
                     );
-                    refetch = setInterval(async () => {
-                      console.log("refecth");
-                      await fetchBuild(project, apiToken).then(
-                        (res: Record<string, any>) => {
-                          this.messageService.warn(res?.message);
-                          channel.appendLine(
-                            res?.message,
-                            OutputChannelSeverity.Warning
-                          );
-                        }
+                    setTimeout(() => {
+                      this.messageService.warn("Job building...");
+                      channel.appendLine(
+                        "Job building...",
+                        OutputChannelSeverity.Warning
                       );
-                    }, 5000);
+                    }, 2000);
+                    interval = setInterval(async () => {
+                      const resp: Record<string, any> = await fetchBuildStatus(
+                        project,
+                        apiToken
+                      );
+                      console.log("resp", resp.state);
+
+                      if (resp?.state === "success") {
+                        clearInterval(interval);
+                        this.messageService.info("Job ready to deploy");
+                        channel.appendLine(
+                          "Job ready to deploy",
+                          OutputChannelSeverity.Info
+                        );
+                      }
+                      if (resp?.state === "error") {
+                        console.log("error fecth", resp);
+                        this.messageService.error(resp?.message);
+                        channel.appendLine(
+                          resp?.message,
+                          OutputChannelSeverity.Error
+                        );
+                        clearInterval(interval);
+                      }
+                    }, 8000);
                   }
-                  if (res?.status === "error") {
-                    clearInterval(refetch);
+                  if (res?.state === "error") {
                     console.log("error fecth", res);
                     this.messageService.error(res?.message);
                     channel.appendLine(
                       res?.message,
                       OutputChannelSeverity.Error
-                    );
-                  }
-                  if (res?.status === "done") {
-                    console.log("done fecth", res);
-                    clearInterval(refetch);
-                    const buildMock = {
-                      uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                    };
-                    const currentLocalData: Record<string, any> | undefined =
-                      await getDataLocalStorage(
-                        this.localStorageService,
-                        "config"
-                      );
-
-                    currentLocalData &&
-                      (await this.localStorageService.setData(
-                        "config",
-                        JSON.stringify({
-                          ...currentLocalData,
-                          buildMock,
-                        })
-                      ));
-                    this.messageService.info(res?.message);
-                    channel.appendLine(
-                      res?.message,
-                      OutputChannelSeverity.Info
                     );
                   }
                 }
