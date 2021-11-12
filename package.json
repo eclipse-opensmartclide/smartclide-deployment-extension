@@ -2,7 +2,7 @@
   "private": true,
   "engines": {
     "yarn": ">=1.7.0 <2.x.x",
-    "node": "12.13.0"
+    "node": ">=12.13.0 <= 12.18.3"
   },
   "scripts": {
     "prepare": "lerna run prepare",
@@ -16,7 +16,6 @@
     "lerna": "2.4.0"
   },
   "workspaces": [
-    "smartclide-deployment-widget",
     "smartclide-deployment-extension",
     "browser-app"
   ]
