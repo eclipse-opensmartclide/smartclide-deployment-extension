@@ -17,6 +17,7 @@
   },
   "workspaces": [
     "smartclide-deployment-extension",
+    "smartclide-deployment-widget",
     "browser-app"
   ]
 }
