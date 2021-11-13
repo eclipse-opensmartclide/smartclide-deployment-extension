@@ -13,11 +13,15 @@ import { WorkspaceService } from "@theia/workspace/lib/browser/workspace-service
 import { MonacoQuickInputService } from "@theia/monaco/lib/browser/monaco-quick-input-service";
 import { InputOptions, LocalStorageService } from "@theia/core/lib/browser/";
 
-import { getDataLocalStorage } from "../common/helpers";
+import {
+  getRestLocalData,
+  getCurrentLocalData,
+  ProjectProps,
+} from "../common/helpers";
 import { fetchBuild, fetchBuildStatus } from "../common/fetchMethods";
 
-const SmartClideDeploymentBuild: Command = {
-  id: "smartClideDeploymentBuild.command",
+const SmartClideBuild: Command = {
+  id: "smartClideBuild.command",
   label: "SmartCLIDE Build",
 };
 
@@ -59,23 +63,45 @@ export class SmartclideDeploymentExtensionCommandContribution
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SmartClideBuildStatus, {
       execute: async () => {
+        //// ---------- CONST ------------ /////
         const channel = this.outputChannelManager.getChannel("SmartCLIDE");
         channel.clear();
 
         const currentProject: string | undefined =
-          this.workspaceService.workspace?.name?.split(".")[0];
+          this.workspaceService.workspace?.name?.split(".")[0] || "empty";
+
+        const restLocalData: Record<string, any>[] | [null] =
+          await getRestLocalData(this.localStorageService, currentProject).then(
+            (res: any) => res
+          );
+
+        console.log("restLocalData", restLocalData);
+
+        const currentLocalData: ProjectProps | null = await getCurrentLocalData(
+          this.localStorageService,
+          currentProject
+        ).then((res: any) => res);
+
+        console.log("currentLocalData", currentLocalData);
 
         channel.show();
+
+        const token = currentLocalData?.token;
+        if (!token) {
+          channel.appendLine(
+            `Error, Secrect Token no detected`,
+            OutputChannelSeverity.Error
+          );
+          this.messageService.error(`Error, Secrect Token no detected`);
+          return;
+        }
         currentProject &&
           channel.appendLine(`Checking build: ${currentProject}`);
-
-        const localData: Record<string, any> | undefined =
-          await getDataLocalStorage(this.localStorageService, "config");
 
         const optionsProject: InputOptions = {
           placeHolder: "project-name",
           prompt: "Enter Project name:",
-          value: currentProject || localData?.project,
+          value: currentProject || currentLocalData?.project,
         };
 
         const actionsConfirmBuild = ["Check now", "Cancel"];
@@ -86,22 +112,18 @@ export class SmartclideDeploymentExtensionCommandContribution
               .then((value): string => value || "")
           : currentProject;
 
-        console.log("project", project);
-
-        const apiToken = localData?.apiToken;
-
         //// ---------- CHECK STATUS ------------ /////
-        project && apiToken
+        project && token
           ? this.messageService
               .info(`PROJECT: ${project}`, ...actionsConfirmBuild)
               .then(async (action) => {
                 if (action === "Check now") {
                   channel.show();
-                  channel.appendLine(`Checking build state ${project}...`);
+                  channel.appendLine(`Checking state ${project}...`);
 
                   const res: Record<string, any> = await fetchBuildStatus(
                     project,
-                    apiToken
+                    token
                   );
                   console.log("res", res);
 
@@ -115,77 +137,63 @@ export class SmartclideDeploymentExtensionCommandContribution
           : this.messageService.error(`Error PROJECT are required`);
       },
     });
-    registry.registerCommand(SmartClideDeploymentBuild, {
+    registry.registerCommand(SmartClideBuild, {
       execute: async () => {
+        //// ---------- CONST ------------ /////
         const channel = this.outputChannelManager.getChannel("SmartCLIDE");
         channel.clear();
-        //// ---------- CONST ------------ /////
+        console.log(this.workspaceService.workspace?.name);
 
         const currentProject: string | undefined =
-          this.workspaceService.workspace?.name?.split(".")[0];
+          this.workspaceService.workspace?.name?.split(".")[0] || "empty";
 
-        const localData: Record<string, any> | undefined =
-          await getDataLocalStorage(this.localStorageService, "config");
+        const restLocalData: Record<string, any>[] | [null] =
+          await getRestLocalData(this.localStorageService, currentProject).then(
+            (res: any) => res
+          );
 
-        const optionsUser: InputOptions = {
-          prompt: "Enter GitLab username:",
-          placeHolder: "Enter GitLab username",
-          value: localData?.username,
-        };
+        console.log("restLocalData", restLocalData);
+
+        const currentLocalData: ProjectProps | null = await getCurrentLocalData(
+          this.localStorageService,
+          currentProject
+        ).then((res: any) => res);
+
+        console.log("currentLocalData", currentLocalData);
+
         const optionsProject: InputOptions = {
           placeHolder: "project-name",
           prompt: "Enter Project name:",
-          value: currentProject || localData?.project,
+          value: currentProject || currentLocalData?.project,
         };
         const optionsToken: InputOptions = {
-          placeHolder: "Enter GitLab Project Secrect Token",
-          prompt: "Enter GitLab Project Secrect Token:",
+          placeHolder: "Enter Project Secrect Token",
+          prompt: "Enter Project Secrect Token:",
         };
         const actionsConfirmBuild = ["Build now", "Cancel"];
 
         //// ---------- FLOW ------------ /////
-        const username: string = await this.monacoQuickInputService
-          .input(optionsUser)
-          .then((value): string => value || "");
-
         const project = await this.monacoQuickInputService
           .input(optionsProject)
           .then((value): string => value || "");
 
-        const apiToken =
-          !localData?.apiToken || localData?.username !== username
-            ? await this.monacoQuickInputService
-                .input(optionsToken)
-                .then((value): string => value || "")
-            : localData?.apiToken;
+        const token = !currentLocalData?.token
+          ? await this.monacoQuickInputService
+              .input(optionsToken)
+              .then((value): string => value || "")
+          : currentLocalData?.token;
 
         this.localStorageService.setData(
-          "config",
-          JSON.stringify({
-            ...localData,
-            username,
-            apiToken,
-          })
+          currentProject,
+          JSON.stringify([...restLocalData, { project, token }])
         );
-
-        const currentLocalData: Record<string, any> | undefined =
-          await getDataLocalStorage(this.localStorageService, "config");
-
-        currentLocalData &&
-          (await this.localStorageService.setData(
-            "config",
-            JSON.stringify({
-              ...currentLocalData,
-              project,
-            })
-          ));
 
         //// ---------- PREPARE TO BUILD ------------ /////
         let interval: any;
-        username && project
+        token && project
           ? this.messageService
               .info(
-                `USERNAME: ${username}, PROJECT: ${project}`,
+                `Are you sure launch build to PROJECT: ${project}?`,
                 ...actionsConfirmBuild
               )
               .then(async (action) => {
@@ -194,8 +202,7 @@ export class SmartclideDeploymentExtensionCommandContribution
                   channel.appendLine(`Start build ${project}...`);
                   const res: Record<string, any> = await fetchBuild(
                     project,
-                    apiToken,
-                    username
+                    token
                   );
 
                   console.log("res", res.state);
@@ -216,7 +223,7 @@ export class SmartclideDeploymentExtensionCommandContribution
                     interval = setInterval(async () => {
                       const resp: Record<string, any> = await fetchBuildStatus(
                         project,
-                        apiToken
+                        token
                       );
                       console.log("resp", resp.state);
 
@@ -227,15 +234,26 @@ export class SmartclideDeploymentExtensionCommandContribution
                           "Job ready to deploy",
                           OutputChannelSeverity.Info
                         );
+                        this.localStorageService.setData(
+                          currentProject,
+                          JSON.stringify([
+                            ...restLocalData,
+                            {
+                              project,
+                              token,
+                              deploy: resp?.name || "mockName",
+                            },
+                          ])
+                        );
                       }
                       if (resp?.state === "error") {
                         console.log("error fecth", resp);
+                        clearInterval(interval);
                         this.messageService.error(resp?.message);
                         channel.appendLine(
                           resp?.message,
                           OutputChannelSeverity.Error
                         );
-                        clearInterval(interval);
                       }
                     }, 8000);
                   }
@@ -251,7 +269,7 @@ export class SmartclideDeploymentExtensionCommandContribution
               })
               .catch((err) => this.messageService.error(err.message))
           : this.messageService.error(
-              `Error USERNAME and PROJECT are required`
+              `Error PROJECT and SECRECT TOKEN are required`
             );
       },
     });
@@ -285,7 +303,13 @@ export class SmartclideDeploymentExtensionCommandContribution
     registry.registerCommand(SmartClideDeploymentClearSettings, {
       execute: () => {
         window.localStorage.clear();
-        this.messageService.error("All settings are clreared");
+        this.messageService.error("All settings are cleared");
+        setTimeout(() => {
+          this.messageService.error("Reloading");
+        }, 1000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       },
     });
   }

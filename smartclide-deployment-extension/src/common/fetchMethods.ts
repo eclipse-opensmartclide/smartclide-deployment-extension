@@ -2,8 +2,7 @@ import { BASE_URL } from "./constants";
 
 export const fetchBuild = async (
   project: string,
-  apiToken: string,
-  username?: string
+  token: string
 ): Promise<Record<string, any>> => {
   return await fetch(`${BASE_URL}/build?project=${project}`, {
     method: "POST",
@@ -11,10 +10,6 @@ export const fetchBuild = async (
       "Content-Type": "application/json",
       "x-token": "THaukuexsHeVnCqFBZTw",
     },
-    body: JSON.stringify({
-      project,
-      username,
-    }),
   })
     .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => {
@@ -23,7 +18,7 @@ export const fetchBuild = async (
 };
 export const fetchBuildStatus = async (
   project: string,
-  apiToken: string
+  token: string
 ): Promise<Record<string, any>> => {
   return await fetch(`${BASE_URL}/build?project=${project}`, {
     method: "GET",
