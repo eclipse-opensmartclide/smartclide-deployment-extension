@@ -1,5 +1,9 @@
 {
   "private": true,
+  "engines": {
+    "yarn": ">=1.7.0 <2.x.x",
+    "node": ">=12.13.0 <= 12.18.3"
+  },
   "scripts": {
     "prepare": "lerna run prepare",
     "rebuild:browser": "theia rebuild:browser",
@@ -13,6 +17,8 @@
     "lerna": "2.4.0"
   },
   "workspaces": [
-    "smartclide", "browser-app", "electron-app"
+    "smartclide-deployment-extension",
+    "smartclide-deployment-widget",
+    "browser-app"
   ]
 }
