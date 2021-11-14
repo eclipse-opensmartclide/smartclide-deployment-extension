@@ -1,0 +1,75 @@
+:root {
+  --bs-primary: #2980f2;
+  --bs-body-color: rgba(238, 238, 238, 0.7);
+  --bs-body-bg: #212529;
+  --bs-body-color-base: #212529;
+  --bs-container-color-base: #3a3a3a;
+  --blue-deep: #2980f2;
+  --blue-sea: #2995d9;
+  --blue-sky: #29b9d9;
+  --blue-aqua: #2bd9d9;
+  --grey-ligth: #f2f2f2;
+}
+
+#SmartCLIDE-Widget-App {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 30px;
+  color: var(--bs-body-color-base);
+  background-color: var(--bs-container-color-base);
+}
+.Logo {
+  background-image: url('../images/SmartClide-mono-155x80.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  height: 100vh;
+  max-height: 80px;
+  max-width: 155px;
+}
+.items-center {
+  align-items: center;
+}
+.Alert-fixed--top-right {
+  position: fixed;
+  top: 60px;
+  right: 60px;
+  z-index: 99999999;
+  width: 100%;
+  max-width: 50vw;
+}
+.Pagination-page-link--dark .page-item.disabled .page-link,
+.Pagination-page-link--dark .page-link {
+  color: var(--grey-ligth);
+  border-color: var(--grey-ligth);
+  background-color: var(--bs-body-color-base);
+}
+.bg-dark .form-label {
+  color: var(--grey-ligth);
+}
+.btn-check:checked + .btn-primary,
+.btn-check:active + .btn-primary,
+.btn-primary:active,
+.btn-primary.active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+.Cards-bg--blue-deep {
+  background-color: var(--blue-deep);
+}
+.Cards-bg--blue-sea {
+  background-color: var(--blue-sea);
+}
+.Cards-bg--blue-sky {
+  background-color: var(--blue-sky);
+}
+.Cards-bg--blue-aqua {
+  background-color: var(--blue-aqua);
+}
+.Cards-bg--gray-ligth {
+  background-color: var(--grey-ligth);
+}

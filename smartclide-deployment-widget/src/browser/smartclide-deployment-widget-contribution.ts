@@ -1,6 +1,6 @@
 import { injectable, inject } from "@theia/core/shared/inversify";
 import { MenuModelRegistry } from "@theia/core";
-import { SmartclideDeploymentWidgetWidget } from "./smartclide-deployment-widget-widget";
+import { SmartclideDeploymentWidget } from "./smartclide-deployment-widget-widget";
 import {
   AbstractViewContribution,
   FrontendApplication,
@@ -14,7 +14,7 @@ export const SmartclideDeploymentWidgetCommand: Command = {
 };
 
 @injectable()
-export class SmartclideDeploymentWidgetContribution extends AbstractViewContribution<SmartclideDeploymentWidgetWidget> {
+export class SmartclideDeploymentWidgetContribution extends AbstractViewContribution<SmartclideDeploymentWidget> {
   /**
    * `AbstractViewContribution` handles the creation and registering
    *  of the widget including commands, menus, and keybindings.
@@ -29,8 +29,8 @@ export class SmartclideDeploymentWidgetContribution extends AbstractViewContribu
   protected readonly workspaceService: WorkspaceService;
   constructor() {
     super({
-      widgetId: SmartclideDeploymentWidgetWidget.ID,
-      widgetName: SmartclideDeploymentWidgetWidget.LABEL,
+      widgetId: SmartclideDeploymentWidget.ID,
+      widgetName: SmartclideDeploymentWidget.LABEL,
       defaultWidgetOptions: { area: "left" },
       toggleCommandId: SmartclideDeploymentWidgetCommand.id,
     });
@@ -77,6 +77,7 @@ export class SmartclideDeploymentWidgetContribution extends AbstractViewContribu
   registerMenus(menus: MenuModelRegistry): void {
     super.registerMenus(menus);
   }
+
   onStart(app: FrontendApplication): void {
     if (!this.workspaceService.opened) {
       this.stateService

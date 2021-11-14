@@ -11,7 +11,7 @@
     "start:browser": "yarn rebuild:browser && yarn --cwd browser-app start",
     "start:electron": "yarn rebuild:electron && yarn --cwd electron-app start",
     "watch": "lerna run --parallel watch",
-    "test": "cd smartclide && yarn test"
+    "test": "cd smartclide-deployment-widget && yarn test"
   },
   "devDependencies": {
     "lerna": "2.4.0"

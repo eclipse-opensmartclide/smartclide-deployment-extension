@@ -14,8 +14,7 @@
     "@theia/preferences": "latest",
     "@theia/process": "latest",
     "@theia/terminal": "latest",
-    "@theia/workspace": "latest",
-    "smartclide": "0.0.0"
+    "@theia/workspace": "latest"
   },
   "devDependencies": {
     "@theia/cli": "latest"
