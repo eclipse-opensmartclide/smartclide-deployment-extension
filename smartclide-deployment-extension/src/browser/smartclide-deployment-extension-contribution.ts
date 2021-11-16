@@ -5,19 +5,25 @@ import {
   CommandRegistry,
   MessageService,
 } from "@theia/core/lib/common";
+
 import {
   OutputChannelManager,
   OutputChannelSeverity,
 } from "@theia/output/lib/browser/output-channel";
-import { WorkspaceService } from "@theia/workspace/lib/browser/workspace-service";
-import { MonacoQuickInputService } from "@theia/monaco/lib/browser/monaco-quick-input-service";
 import { InputOptions, LocalStorageService } from "@theia/core/lib/browser/";
+import { WorkspaceStorageService } from "@theia/workspace/lib/browser/workspace-storage-service";
+import { WorkspaceService } from "@theia/workspace/lib/browser/workspace-service";
+import { Git } from "@theia/git/lib/common";
+import { GitRepositoryProvider } from "@theia/git/lib/browser/git-repository-provider";
+import { MonacoQuickInputService } from "@theia/monaco/lib/browser/monaco-quick-input-service";
+import { SmartCLIDEBackendService } from "../common/protocol";
 
 import {
   getRestLocalData,
   getCurrentLocalData,
   ProjectProps,
 } from "../common/helpers";
+
 import { fetchBuild, fetchBuildStatus } from "../common/fetchMethods";
 
 const SmartClideBuild: Command = {
@@ -34,9 +40,9 @@ const SmartClideDeploymentDeploy: Command = {
   id: "smartClideDeploymentDeploy.command",
   label: "SmartCLIDE Deploy",
 };
-const SmartClideDeploymentStatus: Command = {
-  id: "smartClideDeploymentStatus.command",
-  label: "SmartCLIDE Deployment Status",
+const SmartClideDeploymentMonitoring: Command = {
+  id: "smartClideDeploymentMonitoring.command",
+  label: "SmartCLIDE Deployment Monitoring",
 };
 
 const SmartClideDeploymentClearSettings: Command = {
@@ -49,13 +55,21 @@ export class SmartclideDeploymentExtensionCommandContribution
   implements CommandContribution
 {
   constructor(
+    @inject(SmartCLIDEBackendService)
+    protected readonly smartCLIDEBackendService: SmartCLIDEBackendService,
     @inject(MessageService) private readonly messageService: MessageService,
     @inject(OutputChannelManager)
     private readonly outputChannelManager: OutputChannelManager,
     @inject(MonacoQuickInputService)
     private readonly monacoQuickInputService: MonacoQuickInputService,
+    @inject(WorkspaceStorageService)
+    protected readonly workspaceStorageService: WorkspaceStorageService,
     @inject(WorkspaceService)
     protected readonly workspaceService: WorkspaceService,
+    @inject(Git)
+    protected readonly git: Git,
+    @inject(GitRepositoryProvider)
+    protected readonly gitRepositoryProvider: GitRepositoryProvider,
     @inject(LocalStorageService)
     private readonly localStorageService: LocalStorageService
   ) {}
@@ -142,17 +156,28 @@ export class SmartclideDeploymentExtensionCommandContribution
         //// ---------- CONST ------------ /////
         const channel = this.outputChannelManager.getChannel("SmartCLIDE");
         channel.clear();
-        console.log(this.workspaceService.workspace?.name);
-
         const currentProject: string | undefined =
           this.workspaceService.workspace?.name?.split(".")[0] || "empty";
+        const repository = this.gitRepositoryProvider.selectedRepository;
+        console.log(
+          "repository",
+          this.gitRepositoryProvider.selectedRepository
+        );
+        console.log(
+          "branch",
+          repository && (await this.git.branch(repository, { type: "current" }))
+        );
+
+        // const readFileYaml = await this.smartCLIDEBackendService.fileReadYaml(
+        //   `${this.workspaceService.workspace?.resource.path.toString()}/.gitlab-ci.yml`
+        // );
+
+        // console.log("readFileYaml", readFileYaml);
 
         const restLocalData: Record<string, any>[] | [null] =
           await getRestLocalData(this.localStorageService, currentProject).then(
             (res: any) => res
           );
-
-        console.log("restLocalData", restLocalData);
 
         const currentLocalData: ProjectProps | null = await getCurrentLocalData(
           this.localStorageService,
@@ -276,12 +301,7 @@ export class SmartclideDeploymentExtensionCommandContribution
 
     registry.registerCommand(SmartClideDeploymentDeploy, {
       execute: async () => {
-        await this.messageService.warn("Hello3 World!");
-      },
-    });
-    registry.registerCommand(SmartClideDeploymentStatus, {
-      execute: async () => {
-        await this.messageService.warn("Hello4 World!");
+        await this.messageService.warn("SmartCLIDE3 World!");
         // const items: QuickPickItem[] = [
         //   { type: "item", label: "Deploy: 1" },
         //   { type: "item", label: "Deploy: 2" },
@@ -297,6 +317,11 @@ export class SmartclideDeploymentExtensionCommandContribution
         // console.log("quick", quick);
 
         // this.messageService.info("quick");
+      },
+    });
+    registry.registerCommand(SmartClideDeploymentMonitoring, {
+      execute: async () => {
+        await this.messageService.warn("SmartCLIDE4 World!");
       },
     });
 

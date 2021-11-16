@@ -9,11 +9,18 @@
     "src"
   ],
   "dependencies": {
-    "@theia/output": "1.19.0"
+    "@theia/output": "1.19.0",
+    "@theia/git": "1.19.0",
+    "@types/js-yaml": "^4.0.4"
   },
   "devDependencies": {
     "rimraf": "latest",
     "typescript": "latest"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
   },
   "scripts": {
     "prepare": "yarn run clean && yarn run build",

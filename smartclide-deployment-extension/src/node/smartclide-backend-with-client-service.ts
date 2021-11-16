@@ -1,18 +1,20 @@
 import { injectable } from "@theia/core/shared/inversify";
 import {
   BackendClient,
-  HelloBackendWithClientService,
+  SmartCLIDEBackendWithClientService,
 } from "../common/protocol";
 
 @injectable()
-export class HelloBackendWithClientServiceImpl
-  implements HelloBackendWithClientService
+export class SmartCLIDEBackendWithClientServiceImpl
+  implements SmartCLIDEBackendWithClientService
 {
   private client?: BackendClient;
   greet(): Promise<string> {
     return new Promise<string>((resolve, reject) =>
       this.client
-        ? this.client.getName().then((greet) => resolve("Hello " + greet))
+        ? this.client
+            .getName()
+            .then((greet) => resolve("SmartCLIDE SAY " + greet))
         : reject("No Client")
     );
   }
