@@ -10,11 +10,9 @@ export class SmartCLIDEBackendServiceImpl implements SmartCLIDEBackendService {
   }
   fileRead(filename: string): any {
     try {
-      const data = fs.readFileSync(filename, "utf8");
-      console.log(data);
+      const data: any = fs.readFileSync(filename, "utf8");
       return data;
     } catch (err) {
-      console.error(err);
       return err;
     }
   }
@@ -29,9 +27,17 @@ export class SmartCLIDEBackendServiceImpl implements SmartCLIDEBackendService {
   fileWrite(filePath: string, content: any): any {
     try {
       fs.writeFileSync(filePath, content);
-      //file written successfully
+      return "success";
     } catch (err) {
-      console.error(err);
+      return "error";
+    }
+  }
+  fileWriteYaml(filePath: string, content: any): any {
+    try {
+      fs.writeFileSync(filePath, yaml.dump(content));
+      return "success";
+    } catch (err) {
+      return "error";
     }
   }
 }
