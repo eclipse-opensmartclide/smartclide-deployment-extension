@@ -17,8 +17,8 @@
     "lerna": "2.4.0"
   },
   "workspaces": [
-    "smartclide-deployment-extension",
     "smartclide-deployment-widget",
+    "smartclide-deployment-extension",
     "browser-app"
   ]
 }

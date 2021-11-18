@@ -1,7 +1,6 @@
 import * as React from 'react';
 import App from './app';
 
-import 'bootstrap/dist/css/bootstrap.css';
 import '../../src/browser/app/style/index.css';
 
 import {
@@ -13,19 +12,19 @@ import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { MessageService } from '@theia/core';
 
 @injectable()
-export class SmartclideDeploymentWidget extends ReactWidget {
+export class SmartCLIDEDeploymentWidget extends ReactWidget {
   static readonly ID = 'smartclide-deployment-widget:widget';
-  static readonly LABEL = 'SmartclideDeployment';
+  static readonly LABEL = 'SmartCLIDE Deployment';
 
   @inject(MessageService)
   protected readonly messageService!: MessageService;
   @postConstruct()
   protected async init(): Promise<void> {
-    this.id = SmartclideDeploymentWidget.ID;
-    this.title.label = SmartclideDeploymentWidget.LABEL;
-    this.title.caption = SmartclideDeploymentWidget.LABEL;
+    this.id = SmartCLIDEDeploymentWidget.ID;
+    this.title.label = SmartCLIDEDeploymentWidget.LABEL;
+    this.title.caption = SmartCLIDEDeploymentWidget.LABEL;
     this.title.closable = true;
-    this.title.iconClass = 'fa fa-window-maximize'; // example widget icon.
+    this.title.iconClass = 'codicon icon-custom'; // example widget icon.
     this.update();
   }
 

@@ -3,12 +3,12 @@ import { Row, Col, Table, Pagination } from 'react-bootstrap';
 
 // import { fetchBuild, fetchBuildStatus } from '../../../common/fetchMethods';
 
-interface StacksProps {}
-const Stacks: React.FC<StacksProps> = () => {
+interface DeploymentsProps {}
+const Deployments: React.FC<DeploymentsProps> = () => {
   return (
     <Row>
       <Col md={12}>
-        <h4 className="text-white">Stack List</h4>
+        <h4 className="text-white">Deployments List</h4>
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
@@ -82,4 +82,4 @@ const Stacks: React.FC<StacksProps> = () => {
   );
 };
 
-export default Stacks;
+export default Deployments;

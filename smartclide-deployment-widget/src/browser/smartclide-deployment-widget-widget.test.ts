@@ -1,10 +1,10 @@
-import "reflect-metadata";
-import { MessageService } from "@theia/core";
-import { ContainerModule, Container } from "@theia/core/shared/inversify";
-import { SmartclideDeploymentWidget } from "./smartclide-deployment-widget-widget";
-import { render } from "@testing-library/react";
-describe("SmartclideDeploymentWidget", () => {
-  let widget: SmartclideDeploymentWidget;
+import 'reflect-metadata';
+import { MessageService } from '@theia/core';
+import { ContainerModule, Container } from '@theia/core/shared/inversify';
+import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
+import { render } from '@testing-library/react';
+describe('SmartCLIDEDeploymentWidget', () => {
+  let widget: SmartCLIDEDeploymentWidget;
 
   beforeEach(async () => {
     const module = new ContainerModule((bind) => {
@@ -13,17 +13,17 @@ describe("SmartclideDeploymentWidget", () => {
           console.log(message);
         },
       } as MessageService);
-      bind(SmartclideDeploymentWidget).toSelf();
+      bind(SmartCLIDEDeploymentWidget).toSelf();
     });
     const container = new Container();
     container.load(module);
-    widget = container.resolve<SmartclideDeploymentWidget>(
-      SmartclideDeploymentWidget
+    widget = container.resolve<SmartCLIDEDeploymentWidget>(
+      SmartCLIDEDeploymentWidget
     );
   });
 
-  it("should render react node correctly", async () => {
+  it('should render react node correctly', async () => {
     const element = render(widget.render());
-    expect(element.queryByText("Display Message")).toBeTruthy();
+    expect(element.queryByText('Display Message')).toBeTruthy();
   });
 });

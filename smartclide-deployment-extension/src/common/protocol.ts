@@ -1,18 +1,22 @@
-import { JsonRpcServer } from '@theia/core/lib/common/messaging';
+import { JsonRpcServer } from "@theia/core/lib/common/messaging";
 
-export const HelloBackendService = Symbol('HelloBackendService');
-export const HELLO_BACKEND_PATH = '/services/helloBackend';
+export const SmartCLIDEBackendService = Symbol("SmartCLIDEBackendService");
+export const SMARTCLIDE_BACKEND_PATH = "/services/smartclideBackend";
 
-export interface HelloBackendService {
-    sayHelloTo(name: string): Promise<string>
+export interface SmartCLIDEBackendService {
+  fileRead(filePath: string): any;
+  fileReadYaml(filePath: string): any;
+  fileWrite(filePath: string, content: any): any;
+  fileWriteYaml(filePath: string, content: any): any;
 }
-export const HelloBackendWithClientService = Symbol('BackendWithClient');
-export const HELLO_BACKEND_WITH_CLIENT_PATH = '/services/withClient';
+export const SmartCLIDEBackendWithClientService = Symbol("BackendWithClient");
+export const SMARTCLIDE_BACKEND_WITH_CLIENT_PATH = "/services/withClient";
 
-export interface HelloBackendWithClientService extends JsonRpcServer<BackendClient> {
-    greet(): Promise<string>
+export interface SmartCLIDEBackendWithClientService
+  extends JsonRpcServer<BackendClient> {
+  greet(): Promise<string>;
 }
-export const BackendClient = Symbol('BackendClient');
+export const BackendClient = Symbol("BackendClient");
 export interface BackendClient {
-    getName(): Promise<string>;
+  getName(): Promise<string>;
 }

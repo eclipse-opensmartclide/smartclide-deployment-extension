@@ -1,20 +1,20 @@
-import { injectable, inject } from "@theia/core/shared/inversify";
-import { MenuModelRegistry } from "@theia/core";
-import { SmartclideDeploymentWidget } from "./smartclide-deployment-widget-widget";
+import { injectable, inject } from '@theia/core/shared/inversify';
+import { MenuModelRegistry } from '@theia/core';
+import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
 import {
   AbstractViewContribution,
   FrontendApplication,
-} from "@theia/core/lib/browser";
-import { Command, CommandRegistry } from "@theia/core/lib/common/command";
-import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
-import { WorkspaceService } from "@theia/workspace/lib/browser";
+} from '@theia/core/lib/browser';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { WorkspaceService } from '@theia/workspace/lib/browser';
 
-export const SmartclideDeploymentWidgetCommand: Command = {
-  id: "smartclide-deployment-widget:command",
+export const SmartCLIDEDeploymentWidgetCommand: Command = {
+  id: 'smartclide-deployment-widget:command',
 };
 
 @injectable()
-export class SmartclideDeploymentWidgetContribution extends AbstractViewContribution<SmartclideDeploymentWidget> {
+export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribution<SmartCLIDEDeploymentWidget> {
   /**
    * `AbstractViewContribution` handles the creation and registering
    *  of the widget including commands, menus, and keybindings.
@@ -29,10 +29,10 @@ export class SmartclideDeploymentWidgetContribution extends AbstractViewContribu
   protected readonly workspaceService: WorkspaceService;
   constructor() {
     super({
-      widgetId: SmartclideDeploymentWidget.ID,
-      widgetName: SmartclideDeploymentWidget.LABEL,
-      defaultWidgetOptions: { area: "left" },
-      toggleCommandId: SmartclideDeploymentWidgetCommand.id,
+      widgetId: SmartCLIDEDeploymentWidget.ID,
+      widgetName: SmartCLIDEDeploymentWidget.LABEL,
+      defaultWidgetOptions: { area: 'left' },
+      toggleCommandId: SmartCLIDEDeploymentWidgetCommand.id,
     });
   }
 
@@ -55,7 +55,7 @@ export class SmartclideDeploymentWidgetContribution extends AbstractViewContribu
      * @param commands
      */
   registerCommands(commands: CommandRegistry): void {
-    commands.registerCommand(SmartclideDeploymentWidgetCommand, {
+    commands.registerCommand(SmartCLIDEDeploymentWidgetCommand, {
       execute: () => this.openView({ activate: true, reveal: true }),
     });
   }
@@ -81,8 +81,10 @@ export class SmartclideDeploymentWidgetContribution extends AbstractViewContribu
   onStart(app: FrontendApplication): void {
     if (!this.workspaceService.opened) {
       this.stateService
-        .reachedState("initialized_layout")
-        .then(() => this.openView({ activate: true, reveal: true }));
+        .reachedState('ready')
+        .then(() =>
+          this.openView({ activate: true, reveal: true, toggle: true })
+        );
     }
   }
   initializeLayout(app: FrontendApplication): void {

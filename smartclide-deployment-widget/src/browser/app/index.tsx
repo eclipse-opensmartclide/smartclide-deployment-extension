@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
-import Stacks from './views/Stacks';
-import OverView from './views/OverView';
 import Navigation from './views/Navigation';
+import OverView from './views/OverView';
+import Stacks from './views/Stacks';
+import Containers from './views/Containers';
+import Monitoring from './views/Monitoring';
+import Deployments from './views/Deployments';
 
 const viewList: Record<string, string>[] = [
   { name: 'Overview', value: 'overview' },
   { name: 'Stacks', value: 'stacks' },
   { name: 'Containers', value: 'containers' },
-  { name: 'Images', value: 'images' },
-  { name: 'Deploy', value: 'deploy' },
+  { name: 'Deployments', value: 'deployments' },
+  { name: 'Monitoring', value: 'monitoring' },
 ];
 
 const App: React.FC = (): JSX.Element => {
@@ -19,26 +22,27 @@ const App: React.FC = (): JSX.Element => {
   return (
     <>
       <Container id="SmartCLIDE-Widget-App">
+        <Navigation
+          viewList={viewList}
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+        />
         <Row className="items-center">
-          <Col xs={6} md={4} lg={2}>
-            <div className="Logo">{''}</div>
-          </Col>
-          <Col xs={6} md={8} lg={3}>
-            <h5 className="text-white mb-0">SmartCLIDE Deployment Widget</h5>
-          </Col>
-          <Col md={12} lg={7} className="text-md-center text-lg-end mt-md-3">
-            <Navigation
-              viewList={viewList}
-              currentView={currentView}
-              setCurrentView={setCurrentView}
-            />
-          </Col>
           <Col md={12} className="mt-4">
             {currentView === 'overview' && <OverView />}
             {currentView === 'stacks' && <Stacks />}
+            {currentView === 'containers' && <Containers />}
+            {currentView === 'deployments' && <Deployments />}
+            {currentView === 'monitoring' && <Monitoring />}
           </Col>
         </Row>
       </Container>
+      <div id="SmartCLIDE-Widget-Icon" className="text-white">
+        <div className="Arrows-animated"></div>
+        <p className="text-white text-center">
+          <small>Drag to open!!</small>
+        </p>
+      </div>
     </>
   );
 };

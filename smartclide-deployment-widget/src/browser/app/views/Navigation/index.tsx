@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ButtonGroup, ToggleButton } from 'react-bootstrap';
+import { Navbar, Container, Nav } from 'react-bootstrap';
 
 interface NavigationProps {
   currentView: string;
@@ -12,22 +12,25 @@ const Navigation: React.FC<NavigationProps> = (props) => {
   const { currentView, setCurrentView, viewList } = props;
 
   return (
-    <ButtonGroup>
-      {viewList?.map((view, idx) => (
-        <ToggleButton
-          key={idx}
-          id={`view-${idx}`}
-          type="radio"
-          variant={currentView === view.value ? 'primary' : 'light'}
-          name="view"
-          value={view.value}
-          checked={currentView === view.value}
-          onChange={(e) => setCurrentView(e.currentTarget.value)}
-        >
-          {view.name}
-        </ToggleButton>
-      ))}
-    </ButtonGroup>
+    <Navbar variant="dark">
+      <Container>
+        <Navbar.Brand
+          href="#0"
+          className="Logo-header--background"
+        ></Navbar.Brand>
+        <Nav className="me-auto" activeKey={`#${currentView}`}>
+          {viewList?.map((view, idx) => (
+            <Nav.Link
+              onClick={() => setCurrentView(view.value)}
+              href={`#${view.value}`}
+              key={idx}
+            >
+              {view.name}
+            </Nav.Link>
+          ))}
+        </Nav>
+      </Container>
+    </Navbar>
   );
 };
 
