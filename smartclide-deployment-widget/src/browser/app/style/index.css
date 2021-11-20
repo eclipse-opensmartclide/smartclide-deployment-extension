@@ -1,10 +1,5 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* RESET REBOOT STYLES */
-a {
-  text-decoration: none !important;
-}
-
 :root {
   --bs-primary: #2980f2;
   --bs-body-color: rgba(238, 238, 238, 0.7);
@@ -16,6 +11,14 @@ a {
   --blue-sky: #29b9d9;
   --blue-aqua: #2bd9d9;
   --grey-ligth: #f2f2f2;
+}
+
+/* RESET REBOOT STYLES */
+body {
+  color: #cccccc;
+}
+a {
+  text-decoration: none !important;
 }
 
 #SmartCLIDE-Widget-App {
