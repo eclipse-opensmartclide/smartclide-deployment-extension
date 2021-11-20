@@ -70,8 +70,10 @@ a {
 .Cards-color--blue-sky,
 .Cards-color--blue-aqua,
 .Cards-color--gray-ligth {
-  background-color: transparent;
-  border: 0px none;
+  background-color: #4a4949;
+  border-color: rgba(245, 245, 245, 0.5);
+  border-radius: 0;
+  margin: 0 auto;
 }
 .Cards-color--blue-deep h2,
 .Cards-color--blue-sea h2,
@@ -81,26 +83,28 @@ a {
   margin-bottom: 0;
   font-size: 2.8em;
 }
-.Cards-color--blue-deep h2 .fa,
-.Cards-color--blue-sea h2 .fa,
-.Cards-color--blue-sky h2 .fa,
-.Cards-color--blue-aqua h2 .fa,
-.Cards-color--gray-ligth h2 .fa {
-  font-size: 1.3em;
+.Cards-color--blue-deep .fa,
+.Cards-color--blue-sea .fa,
+.Cards-color--blue-sky .fa,
+.Cards-color--blue-aqua .fa,
+.Cards-color--gray-ligth .fa {
+  font-size: 1.6em;
+  display: block;
+  margin: 0 auto;
 }
-.Cards-color--blue-deep h2 {
+.Cards-color--blue-deep .fa {
   color: var(--blue-deep);
 }
-.Cards-color--blue-sea h2 {
+.Cards-color--blue-sea .fa {
   color: var(--blue-sea);
 }
-.Cards-color--blue-sky h2 {
+.Cards-color--blue-sky .fa {
   color: var(--blue-sky);
 }
-.Cards-color--blue-aqua h2 {
+.Cards-color--blue-aqua .fa {
   color: var(--blue-aqua);
 }
-.Cards-color--gray-ligth h2 {
+.Cards-color--gray-ligth .fa {
   color: var(--grey-ligth);
 }
 .Cards-color--blue-deep p,

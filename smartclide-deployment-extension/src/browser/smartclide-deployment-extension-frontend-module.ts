@@ -1,6 +1,6 @@
 import { CommandContribution } from '@theia/core';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser';
-import { ContainerModule, injectable } from '@theia/core/shared/inversify';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import {
   BackendClient,
   SmartCLIDEBackendWithClientService,
@@ -14,7 +14,6 @@ export default new ContainerModule((bind) => {
   bind(CommandContribution)
     .to(SmartCLIDEDeploymentExtensionCommandContribution)
     .inSingletonScope();
-  bind(BackendClient).to(BackendClientImpl).inSingletonScope();
 
   bind(SmartCLIDEBackendService)
     .toDynamicValue((ctx) => {
@@ -36,10 +35,3 @@ export default new ContainerModule((bind) => {
     })
     .inSingletonScope();
 });
-
-@injectable()
-class BackendClientImpl implements BackendClient {
-  getName(): Promise<string> {
-    return new Promise((resolve) => resolve('Client'));
-  }
-}

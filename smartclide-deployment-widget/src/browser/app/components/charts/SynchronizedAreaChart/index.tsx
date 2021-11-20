@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  ResponsiveContainer,
 } from 'recharts';
 
 const data = [
@@ -57,44 +58,49 @@ interface SynchronizedAreaChartProps {}
 const SynchronizedAreaChart: React.FC<SynchronizedAreaChartProps> = () => {
   return (
     <div>
-      <h4>RAM</h4>
-      <AreaChart
-        width={500}
-        height={200}
-        data={data}
-        syncId="anyId"
-        margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-      </AreaChart>
-      <h4>RAM</h4>
-      <AreaChart
-        width={500}
-        height={200}
-        data={data}
-        syncId="anyId"
-        margin={{
-          top: 10,
-          right: 30,
-          left: 0,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-      </AreaChart>
+      <h4 className="text-white">RAM</h4>
+      <ResponsiveContainer width={'99%'} height={300}>
+        <AreaChart
+          width={500}
+          height={200}
+          data={data}
+          syncId="anyId"
+          margin={{
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        </AreaChart>
+      </ResponsiveContainer>
+
+      <h4 className="text-white">CPU</h4>
+      <ResponsiveContainer width={'99%'} height={300}>
+        <AreaChart
+          width={500}
+          height={200}
+          data={data}
+          syncId="anyId"
+          margin={{
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 };

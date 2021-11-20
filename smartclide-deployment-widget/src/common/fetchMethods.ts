@@ -75,3 +75,36 @@ export const getDeployStatus = async (
       return err;
     });
 };
+
+export const getBuildList = async (
+  project: string,
+  token: string
+): Promise<Record<string, any>> => {
+  return await fetch(`${BASE_URL}/builds?project=${project}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-token': token,
+    },
+  })
+    .then((res: any): any => res.json().then((res: any): any => res))
+    .catch((err: any): any => {
+      return err;
+    });
+};
+export const getDeploymentList = async (
+  project: string,
+  token: string
+): Promise<Record<string, any>> => {
+  return await fetch(`${BASE_URL}/deployments?project=${project}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-token': token,
+    },
+  })
+    .then((res: any): any => res.json().then((res: any): any => res))
+    .catch((err: any): any => {
+      return err;
+    });
+};

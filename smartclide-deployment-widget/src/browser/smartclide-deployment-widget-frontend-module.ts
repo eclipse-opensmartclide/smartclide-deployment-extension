@@ -7,6 +7,12 @@ import {
   WidgetFactory,
 } from '@theia/core/lib/browser';
 
+import { WebSocketConnectionProvider } from '@theia/core/lib/browser';
+import {
+  SmartCLIDEBackendService,
+  SMARTCLIDE_BACKEND_PATH,
+} from '../common/protocol';
+
 export default new ContainerModule((bind) => {
   bindViewContribution(bind, SmartCLIDEDeploymentWidgetContribution);
   bind(FrontendApplicationContribution).toService(
@@ -21,5 +27,14 @@ export default new ContainerModule((bind) => {
           SmartCLIDEDeploymentWidget
         ),
     }))
+    .inSingletonScope();
+
+  bind(SmartCLIDEBackendService)
+    .toDynamicValue((ctx) => {
+      const connection = ctx.container.get(WebSocketConnectionProvider);
+      return connection.createProxy<SmartCLIDEBackendService>(
+        SMARTCLIDE_BACKEND_PATH
+      );
+    })
     .inSingletonScope();
 });

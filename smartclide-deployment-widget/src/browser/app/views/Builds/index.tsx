@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Table, Pagination } from 'react-bootstrap';
 
-// import { fetchBuild, fetchBuildStatus } from '../../../common/fetchMethods';
+import { useBackendContext } from '../../contexts/BackendContext';
 
-interface ContainersProps {}
-const Containers: React.FC<ContainersProps> = () => {
+// import { fileRead } from '../../../common/fileActions';
+// import { getBuildList } from '../../../common/fetchMethods';
+// import fetchHookWithLoading from '../../../common/fetchHookWithLoading';
+
+interface BuildsProps {}
+const Builds: React.FC<BuildsProps> = () => {
+  const { backend } = useBackendContext();
+  const { workspaceService, backendService } = backend;
+  useEffect(() => {
+    (async () => {
+      const currentProject: string | undefined =
+        workspaceService.workspace?.name?.split('.')[0] || 'mono';
+
+      const currentPath =
+        workspaceService.workspace?.resource.path.toString() || '';
+
+      console.log('currentProject', currentProject);
+      console.log('currentPath', currentPath);
+
+      const prevSettings =
+        currentPath &&
+        (await backendService.fileRead(`${currentPath}/.settings.json`));
+      console.log('prevSettings', prevSettings);
+    })();
+  }, []);
+
+  // const { data, loading } = fetchHookWithLoading(getBuildList, props);
   return (
     <Row>
       <Col md={12}>
-        <h4 className="text-white">Containers List</h4>
+        <h4 className="text-white">Build List</h4>
         <Table striped bordered hover variant="dark">
           <thead>
             <tr>
@@ -82,4 +107,4 @@ const Containers: React.FC<ContainersProps> = () => {
   );
 };
 
-export default Containers;
+export default Builds;
