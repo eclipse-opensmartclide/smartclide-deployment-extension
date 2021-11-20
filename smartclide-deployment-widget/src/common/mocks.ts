@@ -22,8 +22,8 @@ export const randomBuilds = (): Build[] => {
       username: 'pberr',
       repository: 'test-kubernentes',
       branch: faker.git.branch(),
-      created: faker.date.past(2, 'Y-m-d 2 H:i:s').toString(),
-      updated: faker.date.past(2, 'Y-m-d 2 H:i:s').toString(),
+      created: faker.date.past(2).toLocaleString(),
+      updated: faker.date.past(2).toLocaleString(),
     });
   }
   return arr;
