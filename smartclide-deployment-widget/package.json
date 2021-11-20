@@ -42,7 +42,7 @@
   "theiaExtensions": [
     {
       "frontend": "lib/browser/smartclide-deployment-widget-frontend-module",
-      "backend": "lib/node/smartclide-deployment-extension-backend-module"
+      "backend": "lib/node/backend-module"
     }
   ]
 }
