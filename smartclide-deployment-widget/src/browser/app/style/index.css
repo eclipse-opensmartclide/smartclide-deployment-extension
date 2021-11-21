@@ -11,18 +11,21 @@
   --blue-sky: #29b9d9;
   --blue-aqua: #2bd9d9;
   --grey-ligth: #cccccc;
-  --theia-sideBarSectionHeader-foreground: #cccccc;
+  --theia-foreground: #616161;
+  --theia-sideBarSectionHeader-foreground: #616161;
 }
 
-/* RESET REBOOT STYLES */
- {
+body:not(.theia-light) {
+  --theia-foreground: #cccccc;
+  --theia-sideBarSectionHeader-foreground: #cccccc;
 }
-body,
-:not([class^='light']) .theia-notification-message,
-:not([class^='light']) .theia-notification-message span {
+/* RESET REBOOT STYLES */
+body:not(.theia-light),
+body:not(.theia-light) .theia-notification-message,
+body:not(.theia-light) .theia-notification-message span {
   color: #cccccc !important;
 }
-:not([class^='light']) a {
+body:not(.theia-light) a {
   color: #cccccc !important;
   text-decoration: none !important;
 }
@@ -57,7 +60,7 @@ body,
   width: 100%;
   max-width: 50vw;
 }
-.react-bootstrap-table-pagination-list .react-bootstrap-table-page-btns-ul {
+.react-bootstrap-table-pagination-list {
   justify-items: end;
 }
 .react-bootstrap-table-pagination-list .page-item.disabled .page-link,
