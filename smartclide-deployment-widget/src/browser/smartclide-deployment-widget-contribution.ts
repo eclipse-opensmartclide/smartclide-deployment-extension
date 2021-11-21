@@ -1,6 +1,5 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core';
-import { MAIN_MENU_BAR } from '@theia/core/lib/common';
 import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
 import {
   AbstractViewContribution,
@@ -10,7 +9,9 @@ import { FrontendApplicationStateService } from '@theia/core/lib/browser/fronten
 
 import {
   Command,
-  // CommandContribution,
+  MAIN_MENU_BAR,
+  MenuNode,
+  SubMenuOptions,
   CommandRegistry,
   MessageService,
 } from '@theia/core/lib/common';
@@ -676,7 +677,27 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     menus.registerMenuAction(subMenuPath, {
       commandId: SmartCLIDEDeploymentWidgetCommand.id,
-      label: 'Open Widget',
+      label: 'Overview',
+      order: '4',
+    });
+    menus.registerMenuAction(subMenuPath, {
+      commandId: SmartClideDeploymentMonitoring.id,
+      label: 'Deployment Monitoring',
+      order: '3',
+    });
+    menus.registerMenuAction(subMenuPath, {
+      commandId: SmartClideDeploymentDeploy.id,
+      label: 'Deploy',
+      order: '2',
+    });
+    menus.registerMenuAction(subMenuPath, {
+      commandId: SmartClideBuildStatus.id,
+      label: 'Build Status',
+      order: '1',
+    });
+    menus.registerMenuAction(subMenuPath, {
+      commandId: SmartClideBuild.id,
+      label: 'Build',
       order: '0',
     });
   }
@@ -693,5 +714,21 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   }
   initializeLayout(app: FrontendApplication): void {
     this.openView({ activate: true, reveal: true });
+  }
+}
+
+export class PlaceholderMenuNode implements MenuNode {
+  constructor(
+    readonly id: string,
+    public readonly label: string,
+    protected options?: SubMenuOptions
+  ) {}
+
+  get icon(): string | undefined {
+    return this.options?.iconClass;
+  }
+
+  get sortString(): string {
+    return this.options?.order || this.label;
   }
 }

@@ -6,18 +6,24 @@
   --bs-body-bg: #212529;
   --bs-body-color-base: #212529;
   --bs-container-color-base: #3a3a3a;
-  --blue-deep: #2980f2;
+  --blue-deep: --bs-primary;
   --blue-sea: #2995d9;
   --blue-sky: #29b9d9;
   --blue-aqua: #2bd9d9;
-  --grey-ligth: #f2f2f2;
+  --grey-ligth: #cccccc;
+  --theia-sideBarSectionHeader-foreground: #cccccc;
 }
 
 /* RESET REBOOT STYLES */
-body {
-  color: #cccccc;
+ {
 }
-a {
+body,
+:not([class^='light']) .theia-notification-message,
+:not([class^='light']) .theia-notification-message span {
+  color: #cccccc !important;
+}
+:not([class^='light']) a {
+  color: #cccccc !important;
   text-decoration: none !important;
 }
 
@@ -51,12 +57,21 @@ a {
   width: 100%;
   max-width: 50vw;
 }
-.Pagination-page-link--dark .page-item.disabled .page-link,
-.Pagination-page-link--dark .page-link {
+.react-bootstrap-table-pagination-list .react-bootstrap-table-page-btns-ul {
+  justify-items: end;
+}
+.react-bootstrap-table-pagination-list .page-item.disabled .page-link,
+.react-bootstrap-table-pagination-list .page-link {
   color: var(--grey-ligth);
   border-color: var(--grey-ligth);
   background-color: var(--bs-body-color-base);
 }
+.react-bootstrap-table-pagination-list .page-item.active .page-link {
+  color: var(--grey-ligth);
+  border-color: var(--bs-primary);
+  background-color: var(--bs-primary);
+}
+
 .bg-dark .form-label {
   color: var(--grey-ligth);
 }

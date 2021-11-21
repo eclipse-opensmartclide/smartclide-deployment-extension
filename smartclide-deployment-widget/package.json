@@ -14,8 +14,12 @@
     "@theia/output": "1.19.0",
     "@types/js-yaml": "^4.0.4",
     "@types/node": "16.11.9",
+    "@types/react-bootstrap-table-next": "^4.0.16",
+    "@types/react-bootstrap-table2-paginator": "^2.1.2",
     "bootstrap": "4.6.0",
     "react-bootstrap": "^2.0.2",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-paginator": "^2.1.2",
     "recharts": "^2.1.6"
   },
   "devDependencies": {

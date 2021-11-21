@@ -14,17 +14,10 @@ const Navigation: React.FC<NavigationProps> = (props) => {
   return (
     <Navbar variant="dark">
       <Container>
-        <Navbar.Brand
-          href="#0"
-          className="Logo-header--background"
-        ></Navbar.Brand>
+        <Navbar.Brand className="Logo-header--background"></Navbar.Brand>
         <Nav className="me-auto" activeKey={`#${currentView}`}>
           {viewList?.map((view, idx) => (
-            <Nav.Link
-              onClick={() => setCurrentView(view.value)}
-              href={`#${view.value}`}
-              key={idx}
-            >
+            <Nav.Link onClick={() => setCurrentView(view.value)} key={idx}>
               {view.name}
             </Nav.Link>
           ))}
