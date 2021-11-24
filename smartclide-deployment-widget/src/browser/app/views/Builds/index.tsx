@@ -51,7 +51,7 @@ const Builds: React.FC<BuildsProps> = () => {
             <BuildListTable builds={buildList} />
           </>
         ) : (
-          <div className="text-right">
+          <div className="text-center" style={{ minHeight: 200 }}>
             <Spinner animation="border" variant="light" />
           </div>
         )}

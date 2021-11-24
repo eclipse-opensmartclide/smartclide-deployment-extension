@@ -61,8 +61,22 @@ body:not(.theia-light) a {
   width: 100%;
   max-width: 50vw;
 }
-.react-bootstrap-table-pagination-list {
-  justify-items: end;
+
+.react-bs-table-sizePerPage-dropdown.dropdown
+  .dropdown-menu
+  .dropdown-item:focus,
+.react-bs-table-sizePerPage-dropdown.dropdown
+  .dropdown-menu
+  .dropdown-item:hover {
+  color: var(--bs-container-color-base) !important;
+}
+.react-bs-table-sizePerPage-dropdown.dropdown .dropdown-menu {
+  color: var(--bs-body-color-base);
+  background-color: var(--bs-container-color-base);
+  border-radius: 0px;
+}
+.react-bootstrap-table-pagination-list .pagination {
+  float: right;
 }
 .react-bootstrap-table-pagination-list .page-item.disabled .page-link,
 .react-bootstrap-table-pagination-list .page-link {

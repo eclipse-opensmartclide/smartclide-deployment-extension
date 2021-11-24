@@ -33,10 +33,6 @@ export class SmartCLIDEDeploymentWidget extends ReactWidget {
   }
 
   render(): React.ReactElement {
-    // console.log(
-    //   'this.smartCLIDEBackendService',
-    //   this.smartCLIDEBackendService.fileRead('hola.txt')
-    // );
     return (
       <BackendContextProvider>
         <App
