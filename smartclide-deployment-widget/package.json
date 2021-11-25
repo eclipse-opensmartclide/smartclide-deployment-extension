@@ -1,7 +1,7 @@
 {
   "name": "smartclide-deployment-widget",
   "keywords": [
-    "theia-extension"
+    "theia-widget"
   ],
   "version": "0.0.0",
   "files": [

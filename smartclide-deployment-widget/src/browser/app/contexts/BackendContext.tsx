@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext } from 'react';
 interface BackendContextInterface {
-  workspaceService: any;
+  backendService?: any;
+  commandRegistry?: any;
+  workspaceService?: any;
 }
 export const BackendContext = createContext<any | null>(null);
 

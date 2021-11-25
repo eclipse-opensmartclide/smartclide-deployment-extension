@@ -35,27 +35,27 @@ import {
 } from '../common/fetchMethods';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
-  id: 'smartclide-deployment-widget:command',
-  label: 'SmartCLIDE Widget',
+  id: 'command-deployment-widget.command',
+  label: 'Deployment Widget',
 };
 
-const SmartClideBuild: Command = {
-  id: 'smartClideBuild.command',
-  label: 'SmartCLIDE Build',
+const CommandBuild: Command = {
+  id: 'command-deployment-build.command',
+  label: 'New Build',
 };
 
-const SmartClideBuildStatus: Command = {
-  id: 'smartClideBuildStatus.command',
-  label: 'SmartCLIDE Build Status',
+const CommandBuildStatus: Command = {
+  id: 'command-deployment-build-status.command',
+  label: 'Build Status',
 };
 
-const SmartClideDeploymentDeploy: Command = {
-  id: 'smartClideDeploymentDeploy.command',
-  label: 'SmartCLIDE Deploy',
+const CommandDeploymentDeploy: Command = {
+  id: 'command-deployment-deploy.command',
+  label: 'New Deploy',
 };
-const SmartClideDeploymentMonitoring: Command = {
-  id: 'smartClideDeploymentMonitoring.command',
-  label: 'SmartCLIDE Deployment Monitoring',
+const CommandDeploymentStatus: Command = {
+  id: 'command-deployment-deploy-monitoring.command',
+  label: 'Deployment Monitoring',
 };
 
 interface Settings {
@@ -103,30 +103,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       toggleCommandId: SmartCLIDEDeploymentWidgetCommand.id,
     });
   }
-
-  /**
-     * Example command registration to open the widget from the menu, and quick-open.
-     * For a simpler use case, it is possible to simply call:
-     ```ts
-        super.registerCommands(commands)
-     ```
-     *
-     * For more flexibility, we can pass `OpenViewArguments` which define 
-     * options on how to handle opening the widget:
-     * 
-     ```ts
-        toggle?: boolean
-        activate?: boolean;
-        reveal?: boolean;
-     ```
-     *
-     * @param commands
-     */
   registerCommands(commands: CommandRegistry): void {
     commands.registerCommand(SmartCLIDEDeploymentWidgetCommand, {
       execute: () => this.openView({ activate: true, reveal: true }),
     });
-    commands.registerCommand(SmartClideBuild, {
+    commands.registerCommand(CommandBuild, {
       execute: async () => {
         //// ---------- CONST ------------ /////
         let settings: Settings = {
@@ -363,7 +344,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             );
       },
     });
-    commands.registerCommand(SmartClideBuildStatus, {
+    commands.registerCommand(CommandBuildStatus, {
       execute: async () => {
         //// ---------- CONST ------------ /////
         let settings: Settings = {
@@ -470,7 +451,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       },
     });
 
-    commands.registerCommand(SmartClideDeploymentDeploy, {
+    commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
         //// ---------- CONST ------------ /////
         let settings: Settings = {
@@ -648,56 +629,40 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         }
       },
     });
-    commands.registerCommand(SmartClideDeploymentMonitoring, {
+    commands.registerCommand(CommandDeploymentStatus, {
       execute: async () => {
         await this.messageService.warn('SmartCLIDE4 World!');
       },
     });
   }
-
-  /**
-     * Example menu registration to contribute a menu item used to open the widget.
-     * Default location when extending the `AbstractViewContribution` is the `View` main-menu item.
-     * 
-     * We can however define new menu path locations in the following way:
-     ```ts
-        menus.registerMenuAction(CommonMenus.HELP, {
-            commandId: 'id',
-            label: 'label'
-        });
-     ```
-     * 
-     * @param menus
-     */
-
   registerMenus(menus: MenuModelRegistry): void {
-    const subMenuPath = [...MAIN_MENU_BAR, 'smartclide'];
-    menus.registerSubmenu(subMenuPath, 'SmartCLIDE', {
+    const subMenuPath = [...MAIN_MENU_BAR, 'deployments'];
+    menus.registerSubmenu(subMenuPath, 'Deployments', {
       order: '5',
     });
     menus.registerMenuAction(subMenuPath, {
       commandId: SmartCLIDEDeploymentWidgetCommand.id,
-      label: 'Overview',
+      label: 'Dashboard',
       order: '4',
     });
     menus.registerMenuAction(subMenuPath, {
-      commandId: SmartClideDeploymentMonitoring.id,
-      label: 'Deployment Monitoring',
+      commandId: CommandDeploymentStatus.id,
+      label: 'Deployment Status',
       order: '3',
     });
     menus.registerMenuAction(subMenuPath, {
-      commandId: SmartClideDeploymentDeploy.id,
-      label: 'Deploy',
+      commandId: CommandDeploymentDeploy.id,
+      label: 'New Deploy',
       order: '2',
     });
     menus.registerMenuAction(subMenuPath, {
-      commandId: SmartClideBuildStatus.id,
+      commandId: CommandBuildStatus.id,
       label: 'Build Status',
       order: '1',
     });
     menus.registerMenuAction(subMenuPath, {
-      commandId: SmartClideBuild.id,
-      label: 'Build',
+      commandId: CommandBuild.id,
+      label: 'New Build',
       order: '0',
     });
   }

@@ -1,63 +1,36 @@
-import React from 'react';
-import { Row, Col, ListGroup } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Spinner, Button } from 'react-bootstrap';
 
-// import { fetchBuild, fetchBuildStatus } from '../../../common/fetchMethods';
 import SynchronizedAreaChart from '../../components/charts/SynchronizedAreaChart';
 
 interface MonitoringProps {}
 const Monitoring: React.FC<MonitoringProps> = () => {
-  return (
-    <Row>
-      <Col md={6} lg={7}>
-        <h4 className="text-white">Proccess</h4>
+  const [process, setProcess] = useState<boolean>(Math.random() < 0.5);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    // Mock
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
+
+  return !loading ? (
+    <Container id="SmartCLIDE-Widget-Monitorig" className="text-center">
+      <h5 className="text-white">
+        Deployment is {process ? 'runnig' : 'stoped'}
+      </h5>
+      {process ? (
         <SynchronizedAreaChart />
-      </Col>
-      <Col md={6} lg={5}>
-        <h4 className="text-white">Details</h4>
-        <ListGroup variant="flush">
-          <ListGroup.Item
-            variant="dark"
-            as="li"
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">Image</div>
-              Cras justo odio
-            </div>
-          </ListGroup.Item>
-          <ListGroup.Item
-            variant="dark"
-            as="li"
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">Hostaname</div>
-              Cras justo odio
-            </div>
-          </ListGroup.Item>
-          <ListGroup.Item
-            variant="dark"
-            as="li"
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">Port</div>
-              Cras justo odio
-            </div>
-          </ListGroup.Item>
-          <ListGroup.Item
-            variant="dark"
-            as="li"
-            className="d-flex justify-content-between align-items-start"
-          >
-            <div className="ms-2 me-auto">
-              <div className="fw-bold">Lorem</div>
-              Lorem ipsum dolor sit amet.
-            </div>
-          </ListGroup.Item>
-        </ListGroup>
-      </Col>
-    </Row>
+      ) : (
+        <Button onClick={() => setProcess(true)} variant="danger">
+          Deploy now!
+        </Button>
+      )}
+    </Container>
+  ) : (
+    <div className="text-center" style={{ minHeight: 200 }}>
+      <Spinner animation="border" variant="light" />
+    </div>
   );
 };
 

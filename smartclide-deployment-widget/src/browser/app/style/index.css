@@ -7,7 +7,7 @@
   --bs-body-bg: #212529;
   --bs-body-color-base: #212529;
   --bs-container-color-base: #3a3a3a;
-  --blue-deep: --bs-primary;
+  --blue-deep: #2980f2;
   --blue-sea: #2995d9;
   --blue-sky: #29b9d9;
   --blue-aqua: #2bd9d9;
@@ -30,16 +30,17 @@ body:not(.theia-light) a {
   color: #cccccc !important;
   text-decoration: none !important;
 }
-
+hr.white {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
 #SmartCLIDE-Widget-App {
   padding: 30px;
   margin: 0 auto;
   color: var(--bs-body-color-base);
   background-color: var(--bs-container-color-base);
 }
-
 .Logo-header--background {
-  background-image: url('../images/SmartClide-mono-155x80.png');
+  background-image: url('../images/deployment-icon.svg');
   background-repeat: no-repeat;
   background-position: left;
   background-size: contain;
@@ -47,9 +48,8 @@ body:not(.theia-light) a {
   margin: 0px;
   width: 100%;
   height: 100vh;
-  max-height: 55px;
+  max-height: 35px;
 }
-
 .items-center {
   align-items: center;
 }
@@ -61,7 +61,27 @@ body:not(.theia-light) a {
   width: 100%;
   max-width: 50vw;
 }
+.navbar {
+  margin-right: 0;
+  margin-left: 0;
+}
+.nav-link:last-child {
+  margin-right: 0;
+}
+.nav-link {
+  margin-right: 10px;
+  border: 1px solid var(--grey-ligth);
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--bs-body-color-base) !important;
+  background-color: var(--theia-foreground);
+}
 
+.nav-link.active {
+  color: var(--bs-body-color-base) !important;
+  background-color: var(--theia-foreground);
+}
 .react-bs-table-sizePerPage-dropdown.dropdown
   .dropdown-menu
   .dropdown-item:focus,
@@ -155,42 +175,25 @@ body:not(.theia-light) a {
 .p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {
   display: block;
 }
-.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-Icon {
+.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-Bar {
   display: none;
 }
 /* ELEMENTS IN SIDE WINDOW  */
 .p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-App {
   display: none;
 }
-.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child
-  #SmartCLIDE-Widget-Icon {
-  display: block;
-}
-.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child
-  #SmartCLIDE-Widget-Icon
-  > .Logo {
-  margin: 0 auto;
-}
-.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child
-  #SmartCLIDE-Widget-Icon
-  > .Arrows-animated {
-  background-image: url('../images/drag_n_drop.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  padding: 0px;
-  width: 100%;
-  max-width: 155px;
-  height: 100vh;
-  max-height: 70px;
-  margin: 0 auto;
+.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-Bar {
   display: block;
 }
 .icon-custom {
-  background-image: url('../images/SmartClide_99x60.png');
+  background-image: url('../images/deployment-icon.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 67%;
+  opacity: 0.4;
+}
+.icon-custom:hover {
+  opacity: 0.7;
 }
 .pagination-sm .page-item .page-link {
   border: 0;

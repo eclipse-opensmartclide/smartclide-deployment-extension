@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { ButtonGroup, Button } from 'react-bootstrap';
+import { useBackendContext } from '../../contexts/BackendContext';
 
 interface NavigationProps {
   currentView: string;
@@ -10,20 +11,40 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = (props) => {
   const { currentView, setCurrentView, viewList } = props;
+  const { backend } = useBackendContext();
+  const { commandRegistry } = backend;
 
+  // console.log('commandRegistry', commandRegistry);
   return (
-    <Navbar variant="dark">
-      <Container>
-        <Navbar.Brand className="Logo-header--background"></Navbar.Brand>
-        <Nav className="me-auto" activeKey={`#${currentView}`}>
-          {viewList?.map((view, idx) => (
-            <Nav.Link onClick={() => setCurrentView(view.value)} key={idx}>
-              {view.name}
-            </Nav.Link>
-          ))}
-        </Nav>
-      </Container>
-    </Navbar>
+    <>
+      <ButtonGroup aria-label="navigation">
+        {viewList?.map((view, idx) => (
+          <Button
+            className={currentView === view.value ? 'active' : ''}
+            onClick={() => setCurrentView(view.value)}
+            key={idx}
+          >
+            {view.name}
+          </Button>
+        ))}
+      </ButtonGroup>
+      <ButtonGroup className="me-2" aria-label="Actions">
+        <Button
+          onClick={() =>
+            commandRegistry.executeCommand('command-deployment-build.command')
+          }
+        >
+          New Build
+        </Button>
+        <Button
+          onClick={() =>
+            commandRegistry.executeCommand('command-deployment-deploy.command')
+          }
+        >
+          New Deploy
+        </Button>
+      </ButtonGroup>
+    </>
   );
 };
 

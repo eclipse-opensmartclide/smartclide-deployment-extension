@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AreaChart,
   Area,
@@ -9,96 +9,132 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const data = [
+const initialData: DataChart[] = [
   {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
+    memory: 4000,
+    cpu: 20,
   },
   {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
+    memory: 3000,
+    cpu: 27,
   },
   {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
+    memory: 2000,
+    cpu: 57,
   },
   {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
+    memory: 2780,
+    cpu: 62,
   },
   {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
+    memory: 1890,
+    cpu: 69,
   },
   {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
+    memory: 2390,
+    cpu: 18,
   },
   {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
+    memory: 3490,
+    cpu: 42,
   },
 ];
-interface SynchronizedAreaChartProps {}
 
+interface SynchronizedAreaChartProps {}
+interface DataChart {
+  memory: number;
+  cpu: number;
+}
+let interval: any;
 const SynchronizedAreaChart: React.FC<SynchronizedAreaChartProps> = () => {
+  const [data, setData] = useState<DataChart[]>(initialData);
+  useEffect(() => {
+    interval = setInterval(() => {
+      setData((prev) => {
+        prev.length >= 6 && prev.shift();
+        return [
+          ...prev,
+          {
+            memory: Math.round(Math.random() * (6000 - 1000 + 1) + 1000),
+            cpu: Math.round(Math.random() * 100) + 1,
+          },
+        ];
+      });
+    }, 3000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div>
-      <h4 className="text-white">RAM</h4>
-      <ResponsiveContainer width={'99%'} height={300}>
+      <p className="text-white mb-0 text-left">RAM</p>
+      <ResponsiveContainer width={'100%'} height={200}>
         <AreaChart
-          width={500}
+          width={600}
           height={200}
           data={data}
           syncId="anyId"
           margin={{
             top: 10,
-            right: 30,
-            left: 0,
+            right: 0,
+            left: -20,
             bottom: 0,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+          <XAxis />
+          <YAxis type="number" domain={[0, 8000]} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#333333',
+              color: '#ccccc',
+            }}
+            label={false}
+            labelFormatter={() => ''}
+          />
+          <Area
+            isAnimationActive={false}
+            type="monotone"
+            dataKey="memory"
+            stroke="#8884d8"
+            fill="#8884d8"
+          />
         </AreaChart>
       </ResponsiveContainer>
 
-      <h4 className="text-white">CPU</h4>
-      <ResponsiveContainer width={'99%'} height={300}>
+      <p className="text-white mb-0 text-left">CPU</p>
+      <ResponsiveContainer width={'100%'} height={200}>
         <AreaChart
-          width={500}
+          width={600}
           height={200}
           data={data}
           syncId="anyId"
           margin={{
             top: 10,
-            right: 30,
-            left: 0,
+            right: 0,
+            left: -20,
             bottom: 0,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+          <XAxis />
+          <YAxis type="number" domain={[0, 100]} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#333333',
+              color: '#ccccc',
+            }}
+            label={false}
+            labelFormatter={() => ''}
+          />
+          <Area
+            type="monotone"
+            dataKey="cpu"
+            stroke="#82ca9d"
+            fill="#82ca9d"
+            isAnimationActive={false}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
