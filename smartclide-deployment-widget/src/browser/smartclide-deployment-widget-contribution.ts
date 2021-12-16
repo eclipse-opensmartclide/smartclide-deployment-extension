@@ -186,9 +186,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         }
 
         const currentYaml = await this.smartCLIDEBackendService.fileReadYaml(
-          `${currentPath}/.gitlab-ci.yml`
+          `${currentPath}/.smartclide-ci.yml`
         );
 
+        if (!username) {
+          return;
+        }
         if (!currentYaml || currentYaml?.errno) {
           const actionsConfirmYaml = ['Create', 'Cancel'];
           const templateYaml = {
@@ -211,19 +214,19 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
           await this.messageService
             .info(
-              `You need a valid .gitlab-ci.yml file, the root repository.`,
+              `You need a valid .smartclide-ci.yml file, the root repository.`,
               ...actionsConfirmYaml
             )
             .then(async (action) => {
               if (action === 'Create') {
                 this.smartCLIDEBackendService.fileWriteYaml(
-                  `${currentPath}/.gitlab-ci.yml`,
+                  `${currentPath}/.smartclide-ci.yml`,
                   JSON.parse(JSON.stringify(templateYaml))
                 );
               }
               const newCurrentYaml =
                 await this.smartCLIDEBackendService.fileReadYaml(
-                  `${currentPath}/.gitlab-ci.yml`
+                  `${currentPath}/.smartclide-ci.yml`
                 );
               settings.yml = JSON.stringify(newCurrentYaml);
             });

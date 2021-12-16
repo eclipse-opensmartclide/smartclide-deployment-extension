@@ -18,6 +18,7 @@
   },
   "workspaces": [
     "smartclide-deployment-widget",
-    "browser-app"
+    "browser-app",
+    "electron-app"
   ]
 }
