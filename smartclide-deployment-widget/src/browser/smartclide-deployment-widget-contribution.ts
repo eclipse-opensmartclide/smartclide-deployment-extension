@@ -36,38 +36,39 @@ import {
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
-  label: 'Deployment Widget',
+  label: 'Deployment: Dashboard',
 };
 
 const CommandBuild: Command = {
   id: 'command-deployment-build.command',
-  label: 'New Build',
+  label: 'Deployment: New Build',
 };
 
 const CommandBuildStatus: Command = {
   id: 'command-deployment-build-status.command',
-  label: 'Build Status',
+  label: 'Deployment: Build Status',
 };
 
 const CommandDeploymentDeploy: Command = {
   id: 'command-deployment-deploy.command',
-  label: 'New Deploy',
+  label: 'Deployment: New Deploy',
 };
 const CommandDeploymentStatus: Command = {
   id: 'command-deployment-deploy-monitoring.command',
-  label: 'Deployment Monitoring',
+  label: 'Deployment: Deployment Status',
 };
 
 interface Settings {
-  username: string;
+  repoUser: string;
+  repoUrl: string;
   project: string;
   token: string;
   branch: string;
   yml: string;
   image: string;
   port: string;
-  hostname: string;
   replicas: string;
+  apiHost: string;
 }
 @injectable()
 export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribution<SmartCLIDEDeploymentWidget> {
@@ -109,17 +110,18 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandBuild, {
       execute: async () => {
-        //// ---------- CONST ------------ /////
+        //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          username: '',
+          repoUser: '',
+          repoUrl: '',
           project: '',
           token: '',
           branch: '',
           yml: '',
           image: '',
           port: '',
-          hostname: '',
           replicas: '1',
+          apiHost: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -147,101 +149,58 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           this.workspaceService.workspace?.resource.path.toString() || '';
 
         const prevSettings = await this.smartCLIDEBackendService.fileRead(
-          `${currentPath}/.settings.json`
+          `${currentPath}/.smartclide-settings.json`
         );
 
         if (prevSettings.errno) {
           this.smartCLIDEBackendService.fileWrite(
-            `${currentPath}/.settings.json`,
+            `${currentPath}/.smartclide-settings.json`,
             JSON.stringify(settings)
           );
           const newSettings = await this.smartCLIDEBackendService.fileRead(
-            `${currentPath}/.settings.json`
+            `${currentPath}/.smartclide-settings.json`
           );
           settings = newSettings && { ...JSON.parse(newSettings) };
         } else {
           settings = { ...JSON.parse(prevSettings) };
         }
 
-        const optionsUsername: InputOptions = {
-          placeHolder: 'username',
-          prompt: 'Enter Username:',
-          value: settings.username,
+        const optionsApiHost: InputOptions = {
+          placeHolder: 'Api Host url ',
+          prompt: 'Enter Api Host Url:',
+          value: settings.apiHost,
         };
-        const username = !settings?.username
-          ? await this.monacoQuickInputService
-              .input(optionsUsername)
-              .then((value): string => value || '')
-          : settings?.username;
 
-        settings.username = username;
+        const apiHost = !settings?.apiHost
+          ? await this.monacoQuickInputService
+              .input(optionsApiHost)
+              .then((value): string => value || '')
+          : settings?.apiHost;
+
+        settings.apiHost = apiHost;
+
+        const optionsRepoUrl: InputOptions = {
+          placeHolder: 'Repository url ',
+          prompt: 'Enter Repository Url:',
+          value: settings.repoUrl,
+        };
+
+        const repoUrl = !settings?.repoUrl
+          ? await this.monacoQuickInputService
+              .input(optionsRepoUrl)
+              .then((value): string => value || '')
+          : settings?.repoUrl;
+        settings.repoUrl = repoUrl;
+
+        settings.repoUser = new URL(settings?.repoUrl).pathname.split('/')[1];
+
         settings.project = currentProject;
         settings.branch = curentBranch;
-
-        if (!currentPath || currentPath === '') {
-          this.messageService.error(
-            `There have been problems getting the route.`
-          );
-          return;
-        }
-
-        const currentYaml = await this.smartCLIDEBackendService.fileReadYaml(
-          `${currentPath}/.smartclide-ci.yml`
-        );
-
-        if (!username) {
-          return;
-        }
-        if (!currentYaml || currentYaml?.errno) {
-          const actionsConfirmYaml = ['Create', 'Cancel'];
-          const templateYaml = {
-            image: 'docker:latest',
-            services: ['docker:dind'],
-            stages: ['build'],
-            variables: {
-              CONTAINER_IMAGE: `${settings.username}/${settings.project}`,
-            },
-            build: {
-              stage: 'build',
-              script: [
-                'docker login',
-                `docker build -t ${settings.username}/${settings.project} .`,
-                `docker push ${settings.username}/${settings.project}`,
-              ],
-            },
-            deploy: { services: '' },
-          };
-
-          await this.messageService
-            .info(
-              `You need a valid .smartclide-ci.yml file, the root repository.`,
-              ...actionsConfirmYaml
-            )
-            .then(async (action) => {
-              if (action === 'Create') {
-                this.smartCLIDEBackendService.fileWriteYaml(
-                  `${currentPath}/.smartclide-ci.yml`,
-                  JSON.parse(JSON.stringify(templateYaml))
-                );
-              }
-              const newCurrentYaml =
-                await this.smartCLIDEBackendService.fileReadYaml(
-                  `${currentPath}/.smartclide-ci.yml`
-                );
-              settings.yml = JSON.stringify(newCurrentYaml);
-            });
-        } else {
-          settings.yml = JSON.stringify(currentYaml);
-        }
-
-        //// ---------- FLOW ------------ /////
 
         const optionsToken: InputOptions = {
           placeHolder: 'Enter Project Secrect Token',
           prompt: 'Enter Project Secrect Token:',
         };
-
-        //// ---------- FLOW ------------ /////
         const newToken = !settings?.token
           ? await this.monacoQuickInputService
               .input(optionsToken)
@@ -250,10 +209,70 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         settings.token = newToken;
 
+        if (!currentPath || currentPath === '') {
+          this.messageService.error(
+            `There have been problems getting the route.`
+          );
+          return;
+        }
+        const currentYaml = await this.smartCLIDEBackendService.fileReadYaml(
+          `${currentPath}/.gitlab-ci.yml`
+        );
+
+        if (!currentYaml || currentYaml?.errno) {
+          const actionsConfirmYaml = ['Create', 'Cancel'];
+
+          const templateYaml = {
+            image: 'docker:latest',
+            services: ['docker:dind'],
+            stages: ['build'],
+            variables: {
+              CONTAINER_IMAGE: `${settings.repoUser}/${settings.project}`,
+            },
+            build: {
+              stage: 'build',
+              script: [
+                'docker login',
+                `docker build -t ${settings.repoUser}/${settings.project} .`,
+                `docker push ${settings.repoUser}/${settings.project}`,
+              ],
+            },
+            // deploy: { services: '' },
+          };
+
+          await this.messageService
+            .info(
+              `You need a valid .gitlab-ci.yml file, the root repository.`,
+              ...actionsConfirmYaml
+            )
+            .then(async (action) => {
+              if (action === 'Create') {
+                this.smartCLIDEBackendService.fileWriteYaml(
+                  `${currentPath}/.gitlab-ci.yml`,
+                  JSON.parse(JSON.stringify(templateYaml))
+                );
+                const newCurrentYaml =
+                  await this.smartCLIDEBackendService.fileReadYaml(
+                    `${currentPath}/.gitlab-ci.yml`
+                  );
+                settings.yml = JSON.stringify(newCurrentYaml);
+              } else {
+                return;
+              }
+            });
+        } else {
+          settings.yml = JSON.stringify(currentYaml);
+        }
+        if (settings.yml?.length === 0) {
+          return;
+        }
+
+        //// ---------- FLOW ------------ /////
+
         //// ---------- MOCK PREPARE TO BUILD ------------ /////
-        settings.image = `${username}/${currentProject}`;
+        settings.image = `${settings.repoUser}/${currentProject}`;
         this.smartCLIDEBackendService.fileWrite(
-          `${currentPath}/.settings.json`,
+          `${currentPath}/.smartclide-settings.json`,
           JSON.stringify(settings)
         );
         channel.show();
@@ -264,7 +283,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         //// ---------- PROCESS PREPARE BUILD ------------ /////
         const actionsConfirmBuild = ['Build now', 'Cancel'];
         let interval: any;
-        newToken
+        settings?.token
           ? this.messageService
               .info(
                 `Are you sure launch build to PROJECT: ${settings.project}?`,
@@ -273,43 +292,37 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then(async (action) => {
                 if (action === 'Build now') {
                   this.smartCLIDEBackendService.fileWrite(
-                    `${currentPath}/.settings.json`,
+                    `${currentPath}/.smartclide-settings.json`,
                     JSON.stringify(settings)
                   );
                   channel.show();
                   channel.appendLine(`Start build ${settings.project}...`);
                   const res: Record<string, any> = await postBuild(
+                    settings.apiHost,
                     settings.project,
                     settings.token,
                     settings.branch,
                     settings.yml
                   );
-
-                  if (res?.status === 'pending') {
-                    this.messageService.warn(res?.message);
+                  console.log('res?.status', res?.status);
+                  if (res?.status === 'running') {
+                    this.messageService.warn('Job building...');
                     channel.appendLine(
-                      res?.message,
+                      'Job building...',
                       OutputChannelSeverity.Info
                     );
-                    setTimeout(() => {
-                      this.messageService.warn('Job building...');
-                      channel.appendLine(
-                        'Job building...',
-                        OutputChannelSeverity.Warning
-                      );
-                    }, 2000);
                     interval = setInterval(async () => {
                       const resp: Record<string, any> = await getBuildStatus(
+                        settings.apiHost,
                         settings.project,
                         settings.token
                       );
-                      console.log('resp', resp.status);
-
+                      console.log('resp?.status', resp?.status);
                       if (resp?.status === 'success') {
                         if (resp.image) {
-                          settings.image = res.image;
+                          settings.image = res?.image;
                           this.smartCLIDEBackendService.fileWrite(
-                            `${currentPath}/.settings.json`,
+                            `${currentPath}/.smartclide-settings.json`,
                             JSON.stringify(settings)
                           );
                         }
@@ -339,6 +352,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                       OutputChannelSeverity.Error
                     );
                   }
+                } else {
+                  return;
                 }
               })
               .catch((err) => this.messageService.error(err.message))
@@ -349,17 +364,18 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandBuildStatus, {
       execute: async () => {
-        //// ---------- CONST ------------ /////
+        //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          username: '',
+          repoUser: '',
           project: '',
+          repoUrl: '',
           token: '',
           branch: '',
           yml: '',
           image: '',
           port: '',
-          hostname: '',
           replicas: '1',
+          apiHost: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -379,16 +395,16 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           this.workspaceService.workspace?.resource.path.toString() || '';
 
         const prevSettings = await this.smartCLIDEBackendService.fileRead(
-          `${currentPath}/.settings.json`
+          `${currentPath}/.smartclide-settings.json`
         );
 
         if (prevSettings.errno) {
           this.smartCLIDEBackendService.fileWrite(
-            `${currentPath}/.settings.json`,
+            `${currentPath}/.smartclide-settings.json`,
             JSON.stringify(settings)
           );
           const newSettings = await this.smartCLIDEBackendService.fileRead(
-            `${currentPath}/.settings.json`
+            `${currentPath}/.smartclide-settings.json`
           );
           settings = newSettings && { ...JSON.parse(newSettings) };
         } else {
@@ -410,7 +426,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           placeHolder: 'Enter Project Secrect Token',
           prompt: 'Enter Project Secrect Token:',
         };
-        const actionsConfirmBuild = ['Check now', 'Cancel'];
 
         //// ---------- FLOW ------------ /////
         const newToken = !settings?.token
@@ -421,8 +436,10 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         settings.token = newToken;
 
+        const actionsConfirmBuild = ['Check now', 'Cancel'];
+
         //// ---------- PREPARE TO BUILD ------------ /////
-        newToken
+        settings?.token
           ? this.messageService
               .info(`PROJECT: ${settings.project}`, ...actionsConfirmBuild)
               .then(async (action) => {
@@ -431,15 +448,15 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   channel.appendLine(`Checking status ${settings.project}...`);
 
                   const res: Record<string, any> = await getBuildStatus(
+                    settings.apiHost,
                     settings.project,
                     settings.token
                   );
-                  console.log('response', res);
 
                   settings.image = res.image || 'mock';
 
                   this.smartCLIDEBackendService.fileWrite(
-                    `${currentPath}/.settings.json`,
+                    `${currentPath}/.smartclide-settings.json`,
                     JSON.stringify(settings)
                   );
 
@@ -447,6 +464,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     `Status: ${res?.status || res?.detail}...`,
                     OutputChannelSeverity.Warning
                   );
+                } else {
+                  return;
                 }
               })
               .catch((err) => this.messageService.error(err.message))
@@ -456,17 +475,18 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
-        //// ---------- CONST ------------ /////
+        //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          username: '',
+          repoUser: '',
+          repoUrl: '',
           project: '',
           token: '',
           branch: '',
           yml: '',
           image: '',
           port: '',
-          hostname: '',
           replicas: '1',
+          apiHost: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -486,16 +506,16 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           this.workspaceService.workspace?.resource.path.toString() || '';
 
         const prevSettings = await this.smartCLIDEBackendService.fileRead(
-          `${currentPath}/.settings.json`
+          `${currentPath}/.smartclide-settings.json`
         );
 
         if (prevSettings.errno) {
           this.smartCLIDEBackendService.fileWrite(
-            `${currentPath}/.settings.json`,
+            `${currentPath}/.smartclide-settings.json`,
             JSON.stringify(settings)
           );
           const newSettings = await this.smartCLIDEBackendService.fileRead(
-            `${currentPath}/.settings.json`
+            `${currentPath}/.smartclide-settings.json`
           );
           settings = newSettings && { ...JSON.parse(newSettings) };
         } else {
@@ -510,33 +530,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         }
 
         //// ---------- FLOW ------------ /////
-        const optionsHostname: InputOptions = {
-          placeHolder: 'Enter Hostname',
-          prompt: 'Enter Hostname:',
-        };
-        const optionsPort: InputOptions = {
-          placeHolder: 'Enter Port',
-          prompt: 'Enter Port:',
-        };
+
         const optionsToken: InputOptions = {
           placeHolder: 'Enter Project Secrect Token',
           prompt: 'Enter Project Secrect Token:',
         };
-        const hostname = !settings?.hostname
-          ? await this.monacoQuickInputService
-              .input(optionsHostname)
-              .then((value): string => value || '')
-          : settings?.hostname;
-
-        settings.hostname = hostname;
-
-        const port = !settings?.port
-          ? await this.monacoQuickInputService
-              .input(optionsPort)
-              .then((value): string => value || '')
-          : settings?.port;
-
-        settings.port = port;
 
         //// ---------- FLOW ------------ /////
         const newToken = !settings?.token
@@ -546,9 +544,25 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           : settings?.token;
 
         settings.token = newToken;
+
+        //// ---------- PREPARE TO BUILD ------------ /////
+        settings?.token;
+        const optionsPort: InputOptions = {
+          placeHolder: 'Enter Deploy Port',
+          prompt: 'Enter Deploy Port:',
+        };
+
+        const port = !settings?.port
+          ? await this.monacoQuickInputService
+              .input(optionsPort)
+              .then((value): string => value || '')
+          : settings?.port;
+
+        settings.port = port;
+
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         let interval: any;
-        if (settings.image) {
+        if (settings?.image && settings?.token && settings.port) {
           this.messageService
             .info(
               `Are you sure launch deploy to PROJECT: ${settings.project}?`,
@@ -557,21 +571,21 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             .then(async (action) => {
               if (action === 'Deploy now') {
                 this.smartCLIDEBackendService.fileWrite(
-                  `${currentPath}/.settings.json`,
+                  `${currentPath}/.smartclide-settings.json`,
                   JSON.stringify(settings)
                 );
                 channel.show();
                 channel.appendLine(`Start deploy ${settings.project}...`);
                 const res: Record<string, any> = await postDeploy(
+                  settings.apiHost,
                   settings.image,
                   settings.token,
                   settings.port,
-                  settings.hostname,
                   settings.image,
                   settings.replicas
                 );
 
-                if (res?.status === 'pending') {
+                if (res?.status === 'running') {
                   this.messageService.warn(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Info);
                   setTimeout(() => {
@@ -583,6 +597,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   }, 2000);
                   interval = setInterval(async () => {
                     const resp: Record<string, any> = await getDeployStatus(
+                      settings.apiHost,
                       settings.project,
                       settings.token
                     );
@@ -592,7 +607,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                       if (resp.image) {
                         settings.image = res.image;
                         this.smartCLIDEBackendService.fileWrite(
-                          `${currentPath}/.settings.json`,
+                          `${currentPath}/.smartclide-settings.json`,
                           JSON.stringify(settings)
                         );
                       }
@@ -619,6 +634,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   this.messageService.error(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Error);
                 }
+              } else {
+                return;
               }
             });
         } else {
@@ -634,7 +651,112 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandDeploymentStatus, {
       execute: async () => {
-        await this.messageService.warn('SmartCLIDE4 World!');
+        //// ---------- VARIABLES ------------ /////
+        let settings: Settings = {
+          repoUser: '',
+          project: '',
+          repoUrl: '',
+          token: '',
+          branch: '',
+          yml: '',
+          image: '',
+          port: '',
+          replicas: '1',
+          apiHost: '',
+        };
+
+        const channel = this.outputChannelManager.getChannel('SmartCLIDE');
+        channel.clear();
+
+        const currentProject: string | undefined =
+          this.workspaceService.workspace?.name?.split('.')[0] || '';
+
+        if (!currentProject) {
+          this.messageService.error(
+            `It is necessary to have at least one repository open.`
+          );
+          return;
+        }
+
+        const currentPath =
+          this.workspaceService.workspace?.resource.path.toString() || '';
+
+        const prevSettings = await this.smartCLIDEBackendService.fileRead(
+          `${currentPath}/.smartclide-settings.json`
+        );
+
+        if (prevSettings.errno) {
+          this.smartCLIDEBackendService.fileWrite(
+            `${currentPath}/.smartclide-settings.json`,
+            JSON.stringify(settings)
+          );
+          const newSettings = await this.smartCLIDEBackendService.fileRead(
+            `${currentPath}/.smartclide-settings.json`
+          );
+          settings = newSettings && { ...JSON.parse(newSettings) };
+        } else {
+          settings = { ...JSON.parse(prevSettings) };
+        }
+
+        settings.project = currentProject;
+
+        if (!currentPath || currentPath === '') {
+          this.messageService.error(
+            `There have been problems getting the route.`
+          );
+          return;
+        }
+
+        //// ---------- FLOW ------------ /////
+
+        const optionsToken: InputOptions = {
+          placeHolder: 'Enter Project Secrect Token',
+          prompt: 'Enter Project Secrect Token:',
+        };
+
+        //// ---------- FLOW ------------ /////
+        const newToken = !settings?.token
+          ? await this.monacoQuickInputService
+              .input(optionsToken)
+              .then((value): string => value || '')
+          : settings?.token;
+
+        settings.token = newToken;
+
+        const actionsConfirmBuild = ['Check now', 'Cancel'];
+
+        //// ---------- PREPARE TO BUILD ------------ /////
+        settings?.token
+          ? this.messageService
+              .info(`PROJECT: ${settings.project}`, ...actionsConfirmBuild)
+              .then(async (action) => {
+                if (action === 'Check now') {
+                  channel.show();
+                  channel.appendLine(`Checking status ${settings.project}...`);
+
+                  const res: Record<string, any> = await getDeployStatus(
+                    settings.apiHost,
+                    settings.project,
+                    settings.token
+                  );
+
+                  settings.image = res.image || 'mock';
+
+                  this.smartCLIDEBackendService.fileWrite(
+                    `${currentPath}/.smartclide-settings.json`,
+                    JSON.stringify(settings)
+                  );
+
+                  channel.appendLine(
+                    `Status: ${res?.status || res?.detail}...`,
+                    OutputChannelSeverity.Warning
+                  );
+                } else {
+                  return;
+                }
+              })
+              .catch((err) => this.messageService.error(err.message))
+          : this.messageService.error(`Error TOKEN are required`);
       },
     });
   }

@@ -14,21 +14,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
             <Card.Subtitle>Details</Card.Subtitle>
             <hr className="white mt-1 mb-1" />
             <Card.Text>
-              <b>username</b>: pberr
-              <br />
               <b>project</b>: test-kubernetes
-              <br />
-              <b>token</b>: ················
               <br />
               <b>branch</b>: master
               <br />
+              <b>token</b>: ················
+              <br />
               <b>yml file</b>: found
               <br />
-              <b>image</b>: test-kubernetes/mge
+              <b>image</b>: found
               <br />
-              <b>port</b>: 9090
-              <br />
-              <b>hostname</b>: gitlabdoman.lab
             </Card.Text>
           </Card.Body>
         </Card>

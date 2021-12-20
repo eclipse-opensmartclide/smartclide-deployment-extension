@@ -28,7 +28,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
           </Button>
         ))}
       </ButtonGroup>
-      <ButtonGroup className="me-2" aria-label="Actions">
+      <ButtonGroup className="pull-right" aria-label="Actions">
         <Button
           onClick={() =>
             commandRegistry.executeCommand('command-deployment-build.command')

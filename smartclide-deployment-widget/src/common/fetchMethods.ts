@@ -1,12 +1,11 @@
-import { BASE_URL } from './constants';
-
 export const postBuild = async (
+  apiHost: string,
   project: string,
   token: string,
   branch: string,
   yml: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/builds?project=${project}&branch=${branch}`, {
+  return await fetch(`${apiHost}/builds?project=${project}&branch=${branch}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -21,10 +20,11 @@ export const postBuild = async (
 };
 
 export const getBuildStatus = async (
+  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/builds/${project}`, {
+  return await fetch(`${apiHost}/builds/${project}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -37,15 +37,15 @@ export const getBuildStatus = async (
     });
 };
 export const postDeploy = async (
+  apiHost: string,
   project: string,
   token: string,
-  hostname: string,
   image: string,
   port: string,
   replicas: string
 ): Promise<Record<string, any>> => {
   return await fetch(
-    `${BASE_URL}/deployments?project=${project}&hostname=${hostname}&image=${image}&port=${port}&replicas=${replicas}`,
+    `${apiHost}/deployments?project=${project}&image=${image}&port=${port}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
@@ -60,10 +60,11 @@ export const postDeploy = async (
     });
 };
 export const getDeployStatus = async (
+  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/deployments?name=${name}`, {
+  return await fetch(`${apiHost}/deployments?name=${name}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -77,10 +78,11 @@ export const getDeployStatus = async (
 };
 
 export const getBuildList = async (
+  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/builds?project=${project}`, {
+  return await fetch(`${apiHost}/builds?project=${project}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -93,10 +95,11 @@ export const getBuildList = async (
     });
 };
 export const getDeploymentList = async (
+  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/deployments?project=${project}`, {
+  return await fetch(`${apiHost}/deployments?project=${project}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
