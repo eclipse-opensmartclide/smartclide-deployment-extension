@@ -1,0 +1,10 @@
+*.pyc
+*.log
+*.egg-info
+*.deb
+*.idea
+*.env
+yarn.lock
+**/.venv
+**/.vscode
+.DS_Store
