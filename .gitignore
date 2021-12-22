@@ -8,3 +8,8 @@ yarn.lock
 **/.venv
 **/.vscode
 .DS_Store
+node_modules
+.browser_modules
+lib
+*-app/*
+!*-app/package.json
