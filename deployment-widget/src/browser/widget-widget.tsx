@@ -1,7 +1,7 @@
 import React from 'react';
 import App from './app';
 
-import '../../src/browser/app/style/index.css';
+// import '../../src/browser/app/style/index.css';
 
 import {
   injectable,
