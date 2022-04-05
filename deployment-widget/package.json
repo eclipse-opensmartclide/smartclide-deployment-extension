@@ -1,5 +1,5 @@
 {
-  "name": "smartclide-deployment-widget",
+  "name": "deployment-widget",
   "keywords": [
     "theia-widget"
   ],
@@ -47,7 +47,7 @@
   },
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/smartclide-deployment-widget-frontend-module",
+      "frontend": "lib/browser/deployment-widget-frontend-module",
       "backend": "lib/node/backend-module"
     }
   ]

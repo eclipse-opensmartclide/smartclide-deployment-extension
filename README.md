@@ -1,6 +1,6 @@
-# smartclide-deployment-extension
+# Deployment-extension
 
-The example of how to build the Theia-based applications with the smartclide-deployment-extension.
+The example of how to build the Theia-based applications with the deployment-extension.
 
 ## Getting started
 
