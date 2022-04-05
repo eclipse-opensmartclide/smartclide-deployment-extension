@@ -44,14 +44,11 @@ const CommandDeploymentStatus: Command = {
 };
 
 interface Settings {
-  repoUser: string;
-  repoUrl: string;
+  k8sUrl: string;
+  k8sToken: string;
   project: string;
-  token: string;
+  gitLabToken: string;
   branch: string;
-  yml: string;
-  image: string;
-  port: string;
   replicas: string;
   apiHost: string;
 }
@@ -98,14 +95,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          repoUser: '',
-          repoUrl: '',
+          k8sUrl: '',
+          k8sToken: '',
           project: '',
-          token: '',
+          gitLabToken: '',
           branch: '',
-          yml: '',
-          image: '',
-          port: '',
           replicas: '1',
           apiHost: '',
         };
@@ -158,32 +152,40 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         };
 
         //// ---------- FLOW ------------ /////
-        const newToken = !settings?.token
+        const newToken = !settings?.gitLabToken
           ? await this.monacoQuickInputService
               .input(optionsToken)
               .then((value): string => value || '')
-          : settings?.token;
+          : settings?.gitLabToken;
 
-        settings.token = newToken;
+        settings.gitLabToken = newToken;
 
         //// ---------- PREPARE TO BUILD ------------ /////
-        settings?.token;
-        const optionsPort: InputOptions = {
-          placeHolder: 'Enter Deploy Port',
-          prompt: 'Enter Deploy Port:',
-        };
+        settings?.gitLabToken;
+        // const optionsPort: InputOptions = {
+        //   placeHolder: 'Enter Deploy Port',
+        //   prompt: 'Enter Deploy Port:',
+        // };
 
-        const port = !settings?.port
-          ? await this.monacoQuickInputService
-              .input(optionsPort)
-              .then((value): string => value || '')
-          : settings?.port;
+        // const port = !settings?.port
+        //   ? await this.monacoQuickInputService
+        //       .input(optionsPort)
+        //       .then((value): string => value || '')
+        //   : settings?.port;
 
-        settings.port = port;
+        // settings.port = port;
 
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         let interval: any;
-        if (settings?.image && settings?.token && settings.port) {
+        if (
+          settings.k8sUrl &&
+          settings.k8sToken &&
+          settings.project &&
+          settings.gitLabToken &&
+          settings.branch &&
+          settings.replicas &&
+          settings.apiHost
+        ) {
           this.messageService
             .info(
               `Are you sure launch deploy to PROJECT: ${settings.project}?`,
@@ -198,12 +200,13 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 channel.show();
                 channel.appendLine(`Start deploy ${settings.project}...`);
                 const res: Record<string, any> = await postDeploy(
-                  settings.apiHost,
-                  settings.image,
-                  settings.token,
-                  settings.port,
-                  settings.image,
-                  settings.replicas
+                  settings.k8sUrl,
+                  settings.k8sToken,
+                  settings.project,
+                  settings.gitLabToken,
+                  settings.branch,
+                  settings.replicas,
+                  settings.apiHost
                 );
 
                 if (res?.status === 'running') {
@@ -220,18 +223,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     const resp: Record<string, any> = await getDeployStatus(
                       settings.apiHost,
                       settings.project,
-                      settings.token
+                      settings.gitLabToken
                     );
                     console.log('resp', resp.status);
 
                     if (resp?.status === 'success') {
-                      if (resp.image) {
-                        settings.image = res.image;
-                        this.smartCLIDEBackendService.fileWrite(
-                          `${currentPath}/.smartclide-settings.json`,
-                          JSON.stringify(settings)
-                        );
-                      }
                       clearInterval(interval);
                       this.messageService.info('Job ready to deploy');
                       channel.appendLine(
@@ -274,14 +270,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          repoUser: '',
+          k8sUrl: '',
+          k8sToken: '',
           project: '',
-          repoUrl: '',
-          token: '',
+          gitLabToken: '',
           branch: '',
-          yml: '',
-          image: '',
-          port: '',
           replicas: '1',
           apiHost: '',
         };
@@ -336,18 +329,18 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         };
 
         //// ---------- FLOW ------------ /////
-        const newToken = !settings?.token
+        const newToken = !settings?.gitLabToken
           ? await this.monacoQuickInputService
               .input(optionsToken)
               .then((value): string => value || '')
-          : settings?.token;
+          : settings?.gitLabToken;
 
-        settings.token = newToken;
+        settings.gitLabToken = newToken;
 
         const actionsConfirmBuild = ['Check now', 'Cancel'];
 
         //// ---------- PREPARE TO BUILD ------------ /////
-        settings?.token
+        settings?.gitLabToken
           ? this.messageService
               .info(`PROJECT: ${settings.project}`, ...actionsConfirmBuild)
               .then(async (action) => {
@@ -358,10 +351,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   const res: Record<string, any> = await getDeployStatus(
                     settings.apiHost,
                     settings.project,
-                    settings.token
+                    settings.gitLabToken
                   );
-
-                  settings.image = res.image || 'mock';
 
                   this.smartCLIDEBackendService.fileWrite(
                     `${currentPath}/.smartclide-settings.json`,
@@ -386,11 +377,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     menus.registerSubmenu(subMenuPath, 'Deployments', {
       order: '5',
     });
-    menus.registerMenuAction(subMenuPath, {
-      commandId: SmartCLIDEDeploymentWidgetCommand.id,
-      label: 'Dashboard',
-      order: '4',
-    });
+    // menus.registerMenuAction(subMenuPath, {
+    //   commandId: SmartCLIDEDeploymentWidgetCommand.id,
+    //   label: 'Dashboard',
+    //   order: '4',
+    // });
     menus.registerMenuAction(subMenuPath, {
       commandId: CommandDeploymentStatus.id,
       label: 'Deployment Status',
