@@ -12,21 +12,12 @@
     "@theia/core": "^1.19.0",
     "@theia/git": "1.19.0",
     "@theia/output": "1.19.0",
-    "@types/js-yaml": "^4.0.4",
     "@types/node": "16.11.9",
-    "@types/react-bootstrap-table-next": "^4.0.16",
-    "@types/react-bootstrap-table2-paginator": "^2.1.2",
-    "bootstrap": "4.6.0",
-    "react-bootstrap": "^2.0.2",
-    "react-bootstrap-table-next": "^4.0.3",
-    "react-bootstrap-table2-paginator": "^2.1.2",
     "recharts": "^2.1.6"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.7",
-    "@types/faker": "^5.5.9",
     "@types/jest": "^26.0.20",
-    "faker": "^5.5.3",
     "jest": "^26.6.3",
     "rimraf": "latest",
     "ts-jest": "^26.5.6",
@@ -47,7 +38,7 @@
   },
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/deployment-widget-frontend-module",
+      "frontend": "lib/browser/widget-frontend-module",
       "backend": "lib/node/backend-module"
     }
   ]
