@@ -1,6 +1,6 @@
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core';
-import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
+import { SmartCLIDEDeploymentWidget } from './widget-widget';
 import {
   AbstractViewContribution,
   FrontendApplication,
