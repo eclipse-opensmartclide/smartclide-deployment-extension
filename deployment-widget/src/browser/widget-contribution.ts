@@ -22,11 +22,11 @@ import {
 } from '@theia/output/lib/browser/output-channel';
 import { InputOptions } from '@theia/core/lib/browser/';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
-import { Git } from '@theia/git/lib/common';
-import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
 import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-input-service';
 import { SmartCLIDEBackendService } from '../common/protocol';
-
+import { Git, Repository } from '@theia/git/lib/common';
+import { GitQuickOpenService } from '@theia/git/lib/browser/git-quick-open-service';
+import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
 import { postDeploy, getDeployStatus } from '../common/fetchMethods';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
@@ -90,7 +90,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     commands.registerCommand(SmartCLIDEDeploymentWidgetCommand, {
       execute: () => this.openView({ activate: true, reveal: true }),
     });
-
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
@@ -101,7 +100,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           gitLabToken: '',
           branch: '',
           replicas: '1',
-          apiHost: '',
+          apiHost: 'mockApiHost',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -144,37 +143,56 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           return;
         }
 
-        //// ---------- FLOW ------------ /////
+        //// ---------- RETRIEVE USER DATA ------------ /////
+        const localUri: Repository | undefined =
+          this.gitRepositoryProvider.selectedRepository;
 
-        const optionsToken: InputOptions = {
-          placeHolder: 'Enter Project Secrect Token',
-          prompt: 'Enter Project Secrect Token:',
+        const branchName =
+          (localUri &&
+            (await this.git.branch(localUri, { type: 'current' }))?.name) ||
+          'main';
+
+        console.log('branchName', branchName);
+
+        const optionsGitLabToken: InputOptions = {
+          placeHolder: 'Enter GitLab Token',
+          prompt: 'Enter GitLab Token:',
         };
 
-        //// ---------- FLOW ------------ /////
-        const newToken = !settings?.gitLabToken
+        const optionsK8sUrl: InputOptions = {
+          placeHolder: 'Enter Kubernetes Url',
+          prompt: 'Enter Kubernetes Url:',
+        };
+        const optionsK8sToken: InputOptions = {
+          placeHolder: 'Enter Kubernetes Token',
+          prompt: 'Enter Kubernetes Token:',
+        };
+
+        const k8sUrl = !settings?.k8sUrl
           ? await this.monacoQuickInputService
-              .input(optionsToken)
+              .input(optionsK8sUrl)
+              .then((value): string => value || '')
+          : settings?.k8sUrl;
+
+        const k8sToken = !settings?.k8sToken
+          ? await this.monacoQuickInputService
+              .input(optionsK8sToken)
+              .then((value): string => value || '')
+          : settings?.k8sToken;
+
+        const gitLabToken = !settings?.gitLabToken
+          ? await this.monacoQuickInputService
+              .input(optionsGitLabToken)
               .then((value): string => value || '')
           : settings?.gitLabToken;
 
-        settings.gitLabToken = newToken;
+        settings.project = currentProject;
+        settings.branch = branchName;
+        settings.k8sToken = k8sToken;
+        settings.k8sUrl = k8sUrl;
+        settings.gitLabToken = gitLabToken;
 
         //// ---------- PREPARE TO BUILD ------------ /////
-        settings?.gitLabToken;
-        // const optionsPort: InputOptions = {
-        //   placeHolder: 'Enter Deploy Port',
-        //   prompt: 'Enter Deploy Port:',
-        // };
-
-        // const port = !settings?.port
-        //   ? await this.monacoQuickInputService
-        //       .input(optionsPort)
-        //       .then((value): string => value || '')
-        //   : settings?.port;
-
-        // settings.port = port;
-
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         let interval: any;
         if (
