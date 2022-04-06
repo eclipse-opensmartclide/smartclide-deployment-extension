@@ -29,4 +29,15 @@ _or:_
 
 _or:_ launch `Start Browser Backend` configuration from VS code.
 
+## Running the watch mode
+
+    1 yarn
+    2 yarn start:browser
+    3 split terminal
+    4 yarn wacth
+
+## Build
+
+### TODO:
+
 Open http://localhost:3000 in the browser.
