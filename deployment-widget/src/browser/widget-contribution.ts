@@ -377,20 +377,20 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     menus.registerSubmenu(subMenuPath, 'Deployments', {
       order: '5',
     });
-    // menus.registerMenuAction(subMenuPath, {
-    //   commandId: SmartCLIDEDeploymentWidgetCommand.id,
-    //   label: 'Dashboard',
-    //   order: '4',
-    // });
+    menus.registerMenuAction(subMenuPath, {
+      commandId: SmartCLIDEDeploymentWidgetCommand.id,
+      label: 'Dashboard',
+      order: '3',
+    });
     menus.registerMenuAction(subMenuPath, {
       commandId: CommandDeploymentStatus.id,
       label: 'Deployment Status',
-      order: '3',
+      order: '2',
     });
     menus.registerMenuAction(subMenuPath, {
       commandId: CommandDeploymentDeploy.id,
       label: 'New Deploy',
-      order: '2',
+      order: '1',
     });
   }
 
