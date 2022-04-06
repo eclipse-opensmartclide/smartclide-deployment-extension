@@ -152,8 +152,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             (await this.git.branch(localUri, { type: 'current' }))?.name) ||
           'main';
 
-        console.log('branchName', branchName);
-
         const optionsGitLabToken: InputOptions = {
           placeHolder: 'Enter GitLab Token',
           prompt: 'Enter GitLab Token:',
