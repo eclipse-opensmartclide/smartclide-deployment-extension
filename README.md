@@ -36,8 +36,14 @@ _or:_ launch `Start Browser Backend` configuration from VS code.
     3 split terminal
     4 yarn wacth
 
-## Build
-
-### TODO:
-
 Open http://localhost:3000 in the browser.
+
+## Publishing smartclide-deployment-widget-theia
+
+Create a npm user and login to the npm registry, [more on npm publishing](https://docs.npmjs.com/getting-started/publishing-npm-packages).
+
+    npm login
+
+Publish packages with lerna to update versions properly across local packages, [more on publishing with lerna](https://github.com/lerna/lerna#publish).
+
+    npx lerna publish
