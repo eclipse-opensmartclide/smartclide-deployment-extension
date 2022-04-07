@@ -25,7 +25,6 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-input-service';
 import { SmartCLIDEBackendService } from '../common/protocol';
 import { Git, Repository } from '@theia/git/lib/common';
-import { GitQuickOpenService } from '@theia/git/lib/browser/git-quick-open-service';
 import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
 import { postDeploy, getDeployStatus } from '../common/fetchMethods';
 

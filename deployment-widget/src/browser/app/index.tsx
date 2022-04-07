@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 
-// import { Container, Col, Row, Spinner } from 'react-bootstrap';
+import Dashboard from './domain/Dashboard';
+import Deployment from './domain/Deployment';
 
-// import Navigation from './views/Navigation';
-// import Dashboard from './views/Dashboard';
-// import Builds from './views/Builds';
-// import Deployments from './views/Deployments';
+import Navigation from './componets/Navigation';
+
 // import Monitoring from './views/Monitoring';
 
 import { useBackendContext } from './contexts/BackendContext';
 
-// const viewList: Record<string, string>[] = [
-//   { name: 'Dashboard', value: 'dashboard' },
-//   { name: 'Builds', value: 'builds' },
-//   { name: 'Deployments', value: 'deployments' },
-// ];
+const viewList: Record<string, string>[] = [
+  { name: 'Dashboard', value: 'dashboard' },
+  { name: 'Deployments', value: 'deployments' },
+];
 
 interface AppProps {
   commandRegistry?: any;
@@ -25,7 +23,7 @@ interface AppProps {
 const App: React.FC<AppProps> = (props): JSX.Element => {
   const { workspaceService, backendService, commandRegistry } = props;
 
-  // const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [currentView, setCurrentView] = useState<string>('dashboard');
   const [loading, setLoading] = useState<boolean>(true);
 
   const { backend, setBackend } = useBackendContext();
@@ -43,13 +41,20 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
   }, [backend]);
 
   return !loading ? (
-    <div id="SmartCLIDE-Widget-Bar" className="text-white">
-      Hello
-    </div>
+    <>
+      <div id="SmartCLIDE-Widget-Bar">{/* <Monitoring /> */}</div>
+      <div id="SmartCLIDE-Widget-App">
+        <Navigation
+          viewList={viewList}
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+        />
+        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'deployments' && <Deployment />}
+      </div>
+    </>
   ) : (
-    <div className="text-center" style={{ minHeight: 200 }}>
-      Loading
-    </div>
+    <div style={{ minHeight: 200 }}>Loading</div>
   );
 };
 
