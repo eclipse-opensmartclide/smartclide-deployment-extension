@@ -1,6 +1,6 @@
 {
   "name": "smartclide-deployment-widget-theia",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "engines": {
     "yarn": ">=1.7.0 <2.x.x",
@@ -20,6 +20,7 @@
   },
   "workspaces": [
     "deployment-widget",
-    "browser-app"
+    "browser-app",
+    "electron-app"
   ]
 }
