@@ -1,7 +1,7 @@
 import React from 'react';
 import App from './app';
 
-import '../../src/browser/app/style/index.css';
+import './app/style/index.css';
 
 import {
   injectable,
@@ -12,7 +12,7 @@ import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { BackendContextProvider } from './app/contexts/BackendContext';
 import { SmartCLIDEBackendService } from '../common/protocol';
-import { CommandRegistry } from '@theia/core/lib/common';
+import { CommandRegistry } from '@theia/core';
 
 @injectable()
 export class SmartCLIDEDeploymentWidget extends ReactWidget {

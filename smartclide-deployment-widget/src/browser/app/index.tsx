@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
-import { Container, Col, Row, Spinner } from 'react-bootstrap';
+import Dashboard from './domain/Dashboard';
+import Deployment from './domain/Deployment';
 
-import Navigation from './views/Navigation';
-import Dashboard from './views/Dashboard';
-import Builds from './views/Builds';
-import Deployments from './views/Deployments';
-import Monitoring from './views/Monitoring';
+import Navigation from './componets/Navigation';
+
+// import Monitoring from './views/Monitoring';
 
 import { useBackendContext } from './contexts/BackendContext';
 
 const viewList: Record<string, string>[] = [
   { name: 'Dashboard', value: 'dashboard' },
-  { name: 'Builds', value: 'builds' },
   { name: 'Deployments', value: 'deployments' },
 ];
 
@@ -44,30 +42,19 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
 
   return !loading ? (
     <>
-      <div id="SmartCLIDE-Widget-Bar" className="text-white">
-        <Monitoring />
+      <div id="SmartCLIDE-Widget-Bar">{/* <Monitoring /> */}</div>
+      <div id="SmartCLIDE-Widget-App">
+        <Navigation
+          viewList={viewList}
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+        />
+        {currentView === 'dashboard' && <Dashboard />}
+        {currentView === 'deployments' && <Deployment />}
       </div>
-      <Container id="SmartCLIDE-Widget-App">
-        <Row className="items-center">
-          <Col md={12}>
-            <Navigation
-              viewList={viewList}
-              currentView={currentView}
-              setCurrentView={setCurrentView}
-            />
-          </Col>
-          <Col md={12} className="mt-4">
-            {currentView === 'dashboard' && <Dashboard />}
-            {currentView === 'builds' && <Builds />}
-            {currentView === 'deployments' && <Deployments />}
-          </Col>
-        </Row>
-      </Container>
     </>
   ) : (
-    <div className="text-center" style={{ minHeight: 200 }}>
-      <Spinner animation="border" variant="light" />
-    </div>
+    <div style={{ minHeight: 200 }}>Loading</div>
   );
 };
 

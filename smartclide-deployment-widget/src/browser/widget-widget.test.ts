@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { MessageService } from '@theia/core';
 import { ContainerModule, Container } from '@theia/core/shared/inversify';
-import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
+import { SmartCLIDEDeploymentWidget } from './widget-widget';
 import { render } from '@testing-library/react';
 describe('SmartCLIDEDeploymentWidget', () => {
   let widget: SmartCLIDEDeploymentWidget;

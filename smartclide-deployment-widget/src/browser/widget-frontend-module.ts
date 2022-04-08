@@ -1,6 +1,6 @@
 import { ContainerModule } from '@theia/core/shared/inversify';
-import { SmartCLIDEDeploymentWidget } from './smartclide-deployment-widget-widget';
-import { SmartCLIDEDeploymentWidgetContribution } from './smartclide-deployment-widget-contribution';
+import { SmartCLIDEDeploymentWidget } from './widget-widget';
+import { SmartCLIDEDeploymentWidgetContribution } from './widget-contribution';
 import {
   bindViewContribution,
   FrontendApplicationContribution,
