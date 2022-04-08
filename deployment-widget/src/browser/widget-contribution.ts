@@ -7,6 +7,8 @@ import {
 } from '@theia/core/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
+import { BASE_URL } from '../common/constants';
+
 import {
   Command,
   MAIN_MENU_BAR,
@@ -20,6 +22,7 @@ import {
   OutputChannelManager,
   OutputChannelSeverity,
 } from '@theia/output/lib/browser/output-channel';
+
 import { InputOptions } from '@theia/core/lib/browser/';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-input-service';
@@ -99,7 +102,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           gitLabToken: '',
           branch: '',
           replicas: '1',
-          apiHost: 'mockApiHost',
+          apiHost: BASE_URL,
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -236,9 +239,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   }, 2000);
                   interval = setInterval(async () => {
                     const resp: Record<string, any> = await getDeployStatus(
-                      settings.apiHost,
+                      settings.k8sUrl,
+                      settings.k8sToken,
                       settings.project,
-                      settings.gitLabToken
+                      settings.gitLabToken,
+                      settings.branch,
+                      settings.apiHost
                     );
                     console.log('resp', resp.status);
 
@@ -364,9 +370,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   channel.appendLine(`Checking status ${settings.project}...`);
 
                   const res: Record<string, any> = await getDeployStatus(
-                    settings.apiHost,
+                    settings.k8sUrl,
+                    settings.k8sToken,
                     settings.project,
-                    settings.gitLabToken
+                    settings.gitLabToken,
+                    settings.branch,
+                    settings.apiHost
                   );
 
                   this.smartCLIDEBackendService.fileWrite(

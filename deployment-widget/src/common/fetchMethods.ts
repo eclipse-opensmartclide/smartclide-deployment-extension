@@ -13,7 +13,7 @@ export const postDeploy = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-token': gitLabToken,
+        gitLabToken: gitLabToken,
         k8sToken: k8sToken,
       },
     }
@@ -24,17 +24,24 @@ export const postDeploy = async (
     });
 };
 export const getDeployStatus = async (
-  apiHost: string,
+  k8sUrl: string,
+  k8sToken: string,
   project: string,
-  token: string
+  gitLabToken: string,
+  branch: string,
+  apiHost: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${apiHost}/deployments?name=${name}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-token': token,
-    },
-  })
+  return await fetch(
+    `${apiHost}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        gitLabToken: gitLabToken,
+        k8sToken: k8sToken,
+      },
+    }
+  )
     .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => {
       return err;
