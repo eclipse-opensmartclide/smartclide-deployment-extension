@@ -1,14 +1,15 @@
+import { BASE_URL } from '../common/constants';
+
 export const postDeploy = async (
   k8sUrl: string,
   k8sToken: string,
   project: string,
   gitLabToken: string,
   branch: string,
-  replicas: string,
-  apiHost: string
+  replicas: string
 ): Promise<Record<string, any>> => {
   return await fetch(
-    `${apiHost}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}&replicas=${replicas}`,
+    `${BASE_URL}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
@@ -28,11 +29,10 @@ export const getDeployStatus = async (
   k8sToken: string,
   project: string,
   gitLabToken: string,
-  branch: string,
-  apiHost: string
+  branch: string
 ): Promise<Record<string, any>> => {
   return await fetch(
-    `${apiHost}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}`,
+    `${BASE_URL}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}`,
     {
       method: 'GET',
       headers: {
@@ -49,11 +49,10 @@ export const getDeployStatus = async (
 };
 
 export const getBuildList = async (
-  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${apiHost}/builds?project=${project}`, {
+  return await fetch(`${BASE_URL}/builds?project=${project}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -66,11 +65,10 @@ export const getBuildList = async (
     });
 };
 export const getDeploymentList = async (
-  apiHost: string,
   project: string,
   token: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${apiHost}/deployments?project=${project}`, {
+  return await fetch(`${BASE_URL}/deployments?project=${project}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

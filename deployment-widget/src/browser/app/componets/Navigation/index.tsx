@@ -15,7 +15,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
       {viewList?.map((view, idx) => (
         <React.Fragment key={idx}>
           <Button
-            className={currentView === view.value ? 'active' : ''}
+            className={currentView === view.value ? 'btn-primary active' : ''}
             onClick={() => setCurrentView(view.value)}
           >
             {view.name}
