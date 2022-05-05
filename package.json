@@ -1,5 +1,5 @@
 {
-  "name": "smartclide-deployment-widget-theia",
+  "name": "smartclide-deployment-extension",
   "version": "0.0.0",
   "private": true,
   "engines": {
@@ -20,7 +20,6 @@
   },
   "workspaces": [
     "deployment-widget",
-    "browser-app",
-    "electron-app"
+    "browser-app"
   ]
 }
