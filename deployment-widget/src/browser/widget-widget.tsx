@@ -2,6 +2,9 @@ import React from 'react';
 import App from './app';
 
 import '../../src/browser/app/style/index.css';
+import '../../src/browser/app/style/nav/index.css';
+import '../../src/browser/app/style/spinner/index.css';
+import '../../src/browser/app/style/button/index.css';
 
 import {
   injectable,

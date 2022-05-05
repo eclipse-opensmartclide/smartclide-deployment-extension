@@ -7,8 +7,6 @@ import {
 } from '@theia/core/lib/browser';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
-import { BASE_URL } from '../common/constants';
-
 import {
   Command,
   MAIN_MENU_BAR,
@@ -52,7 +50,6 @@ interface Settings {
   gitLabToken: string;
   branch: string;
   replicas: string;
-  apiHost: string;
 }
 @injectable()
 export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribution<SmartCLIDEDeploymentWidget> {
@@ -102,7 +99,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           gitLabToken: '',
           branch: '',
           replicas: '1',
-          apiHost: BASE_URL,
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -201,8 +197,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           settings.project &&
           settings.gitLabToken &&
           settings.branch &&
-          settings.replicas &&
-          settings.apiHost
+          settings.replicas
         ) {
           this.messageService
             .info(
@@ -223,8 +218,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   settings.project,
                   settings.gitLabToken,
                   settings.branch,
-                  settings.replicas,
-                  settings.apiHost
+                  settings.replicas
                 );
 
                 if (res?.status === 'running') {
@@ -243,8 +237,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                       settings.k8sToken,
                       settings.project,
                       settings.gitLabToken,
-                      settings.branch,
-                      settings.apiHost
+                      settings.branch
                     );
                     console.log('resp', resp.status);
 
@@ -297,7 +290,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           gitLabToken: '',
           branch: '',
           replicas: '1',
-          apiHost: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -374,8 +366,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     settings.k8sToken,
                     settings.project,
                     settings.gitLabToken,
-                    settings.branch,
-                    settings.apiHost
+                    settings.branch
                   );
 
                   this.smartCLIDEBackendService.fileWrite(

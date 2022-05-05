@@ -5,7 +5,7 @@ import Deployment from './domain/Deployment';
 
 import Navigation from './componets/Navigation';
 
-// import Monitoring from './views/Monitoring';
+import Monitoring from './domain/Monitoring';
 
 import { useBackendContext } from './contexts/BackendContext';
 
@@ -42,7 +42,9 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
 
   return !loading ? (
     <>
-      <div id="SmartCLIDE-Widget-Bar">{/* <Monitoring /> */}</div>
+      <div id="SmartCLIDE-Widget-Bar">
+        <Monitoring />
+      </div>
       <div id="SmartCLIDE-Widget-App">
         <Navigation
           viewList={viewList}

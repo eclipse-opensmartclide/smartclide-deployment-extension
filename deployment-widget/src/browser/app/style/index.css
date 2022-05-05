@@ -1,7 +1,31 @@
 #SmartCLIDE-Widget-App {
   padding: 50px;
 }
-#SmartCLIDE-Widget-App .Navigation--flex {
-  display: flex;
-  justify-content: space-between;
+
+/* ELEMENTS IN MAIN WINDOW  */
+.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {
+  display: block;
+}
+.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-Bar {
+  display: none;
+}
+
+/* ELEMENTS IN SIDE WINDOW  */
+.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-App {
+  display: none;
+}
+.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-Bar {
+  display: block;
+}
+
+/* ICON FOR EXTENSION SHOW IN DOCK LOCK PANEL  */
+.icon-custom {
+  background-image: url('../images/deployment-icon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+  opacity: 0.33;
+}
+.icon-custom:hover {
+  opacity: 0.7;
 }
