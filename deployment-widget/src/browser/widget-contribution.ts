@@ -27,6 +27,8 @@ import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-
 import { SmartCLIDEBackendService } from '../common/protocol';
 import { Git, Repository } from '@theia/git/lib/common';
 import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
+
+import { Settings } from '../common/ifaces';
 import { postDeploy, getDeployStatus } from '../common/fetchMethods';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
@@ -43,14 +45,6 @@ const CommandDeploymentStatus: Command = {
   label: 'Deployment: Deployment Status',
 };
 
-interface Settings {
-  k8sUrl: string;
-  k8sToken: string;
-  project: string;
-  gitLabToken: string;
-  branch: string;
-  replicas: string;
-}
 @injectable()
 export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribution<SmartCLIDEDeploymentWidget> {
   /**

@@ -5,20 +5,9 @@ import { getDeploymentList } from '../../../common/fetchMethods';
 
 import Spinner from '../componets/Spinner';
 import TableWidhtAction from '../componets/Table/TableWidhtAction';
+import { Settings, Pagination, SourceData } from '../../../common/ifaces';
 
 interface DeploymentProps {}
-interface Settings {
-  k8sUrl: string;
-  k8sToken: string;
-  project: string;
-  gitLabToken: string;
-  branch: string;
-  replicas: string;
-}
-interface Pagination {
-  skip: string;
-  limit: string;
-}
 
 const initialPagination: Pagination = {
   skip: '0',
@@ -44,7 +33,7 @@ const Deployment: React.FC<DeploymentProps> = () => {
         );
       //TODO: If dont have settnigs show conosole msg and return
       const { gitLabToken, project } = prevSettings;
-      const builds =
+      const deployments: SourceData[] =
         gitLabToken &&
         project &&
         (await getDeploymentList(
@@ -53,8 +42,7 @@ const Deployment: React.FC<DeploymentProps> = () => {
           pagination.limit,
           pagination.skip
         ));
-      console.log('builds', builds);
-      builds && setLoading(false);
+      deployments && setLoading(false);
     })();
   }, []);
 
