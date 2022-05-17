@@ -1,19 +1,10 @@
 import React from 'react';
 import Button from '../../Button';
 
-interface TableProps {
+export interface TableProps {
   columns: [];
-  dataSource: SourceData[];
+  dataSource: any[];
   action: (i: string) => void;
-}
-interface SourceData {
-  id: string;
-  created?: string;
-  state?: string;
-  username?: string;
-  repository?: string;
-  branch?: string;
-  updated?: string;
 }
 
 const TableWidthAction: React.FC<TableProps> = (props) => {
