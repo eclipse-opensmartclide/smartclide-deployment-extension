@@ -2,40 +2,40 @@ import React from 'react';
 import Button from '../../Button';
 
 export interface TableProps {
-  columns: [];
-  dataSource: any[];
-  action: (i: string) => void;
+  columnsSource: string[];
+  dataSource?: any[];
+  action?: (i: string) => void;
 }
 
 const TableWidthAction: React.FC<TableProps> = (props) => {
-  const { columns, dataSource, action } = props;
+  const { columnsSource, dataSource, action } = props;
   return (
-    <table>
+    <table className="deployment-table">
       <thead>
-        {columns.length !== 0 && (
+        {columnsSource.length !== 0 && (
           <tr>
-            {columns.map((col) => (
-              <th>{col}</th>
+            {columnsSource.map((col, key) => (
+              <th key={key}>{col}</th>
             ))}
           </tr>
         )}
       </thead>
       <tbody>
-        {dataSource.length !== 0 ? (
+        {dataSource && dataSource.length !== 0 ? (
           dataSource.map((data, index) => {
             return (
               <tr key={index}>
-                <td>{data.id}</td>
-                <td>{data.created}</td>
-                <td>{data.updated}</td>
-                <td>{data.state}</td>
-                <td>{data.repository}</td>
-                <td>{data.username}</td>
-                <td>{data.branch}</td>
+                <td>{data.project}</td>
+                <td>{data.user}</td>
+                <td>{data.domain}</td>
+                <td>{data.port}</td>
+                <td>{data.replicas}</td>
+                <td>{data.status}</td>
+                <td>{new Date(data.timestamp).toLocaleDateString()}</td>
                 <td>
                   <Button
                     className="btn-primary"
-                    onClick={() => action(data.id)}
+                    onClick={() => action && action(data._id)}
                   >
                     Deploy
                   </Button>
@@ -45,7 +45,9 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
           })
         ) : (
           <tr>
-            <td colSpan={columns.length !== 0 ? columns.length : 1}>No data</td>
+            <td colSpan={columnsSource.length !== 0 ? columnsSource.length : 1}>
+              No data
+            </td>
           </tr>
         )}
       </tbody>

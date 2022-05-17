@@ -12,8 +12,8 @@ export interface Pagination {
   limit: string;
 }
 
-export interface SourceData {
-  id: string;
+export interface deploymentData {
+  _id: string;
   user: string;
   project: string;
   domain: string;

@@ -23,7 +23,7 @@ interface AppProps {
 const App: React.FC<AppProps> = (props): JSX.Element => {
   const { workspaceService, backendService, commandRegistry } = props;
 
-  const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [currentView, setCurrentView] = useState<string>('deployments');
   const [loading, setLoading] = useState<boolean>(true);
 
   const { backend, setBackend } = useBackendContext();
