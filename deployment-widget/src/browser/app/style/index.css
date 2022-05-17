@@ -1,7 +1,16 @@
 #SmartCLIDE-Widget-App {
   padding: 50px;
 }
-
+.d-flex {
+  display: flex;
+  padding: 3px 2px;
+}
+.d-flex.space-bettwen {
+  justify-content: space-between;
+}
+.d-flex.space-bettwen.center {
+  align-items: center;
+}
 /* ELEMENTS IN MAIN WINDOW  */
 .p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {
   display: block;

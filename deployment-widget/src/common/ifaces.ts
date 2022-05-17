@@ -7,7 +7,7 @@ export interface Settings {
   replicas: string;
 }
 
-export interface Pagination {
+export interface PaginationState {
   skip: string;
   limit: string;
 }
