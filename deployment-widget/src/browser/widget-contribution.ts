@@ -268,7 +268,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               } else {
                 return;
               }
-            });
+            })
+            .catch((err) => console.log('err', err));
         } else {
           this.messageService.error(
             'Error you need to have at least one build image'
