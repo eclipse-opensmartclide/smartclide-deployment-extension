@@ -4,12 +4,17 @@ import { useBackendContext } from '../contexts/BackendContext';
 import { getDeploymentList } from '../../../common/fetchMethods';
 
 import Spinner from '../componets/Spinner';
+import Pagination from '../componets/Pagination/';
 import TableWidhtAction from '../componets/Table/TableWidhtAction';
-import { Settings, Pagination, deploymentData } from '../../../common/ifaces';
+import {
+  Settings,
+  PaginationState,
+  deploymentData,
+} from '../../../common/ifaces';
 
 interface DeploymentProps {}
 
-const initialPagination: Pagination = {
+const initialPagination: PaginationState = {
   skip: '0',
   limit: '25',
 };
@@ -20,7 +25,8 @@ const Deployment: React.FC<DeploymentProps> = () => {
     []
   );
   const [columnsSource, setColumnsSource] = useState<string[]>([]);
-  const [pagination] = useState<Pagination>(initialPagination);
+  const [pagination, setPagination] =
+    useState<PaginationState>(initialPagination);
   const { backend } = useBackendContext();
   const { workspaceService, backendService } = backend;
 
@@ -79,6 +85,7 @@ const Deployment: React.FC<DeploymentProps> = () => {
         dataSource={deploymentsSource}
         action={handleGetStatus}
       />
+      <Pagination state={pagination} setState={setPagination} />
     </div>
   ) : (
     <Spinner isVisible={loading} />
