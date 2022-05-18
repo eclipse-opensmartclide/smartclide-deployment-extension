@@ -23,7 +23,7 @@ export const postDeploy = async (
     .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => err);
 };
-export const getDeployStatus = async (
+export const getDeploymentStatus = async (
   k8sUrl: string,
   k8sToken: string,
   project: string,
@@ -41,6 +41,20 @@ export const getDeployStatus = async (
       },
     }
   )
+    .then((res: any): any => res.json().then((res: any): any => res))
+    .catch((err: any): any => err);
+};
+export const getDeploymentMetrics = async (
+  id: string,
+  k8sToken: string
+): Promise<Record<string, any>> => {
+  return await fetch(`${BASE_URL}/metrics/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      k8s_token: k8sToken,
+    },
+  })
     .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => err);
 };
@@ -73,12 +87,14 @@ export const getDeploymentList = async (
     .catch((err: any): any => err);
 };
 export const deleteDeployment = async (
-  id: string
+  id: string,
+  k8sToken: string
 ): Promise<Record<string, any>> => {
-  return await fetch(`${BASE_URL}/deployments/?id=${id}`, {
+  return await fetch(`${BASE_URL}/deployments/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
+      k8s_token: k8sToken,
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))

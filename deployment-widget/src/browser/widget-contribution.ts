@@ -29,7 +29,7 @@ import { Git, Repository } from '@theia/git/lib/common';
 import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
 
 import { Settings } from '../common/ifaces';
-import { postDeploy, getDeployStatus } from '../common/fetchMethods';
+import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
@@ -240,7 +240,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     );
                   }, 2000);
                   interval = setInterval(async () => {
-                    const resp: Record<string, any> = await getDeployStatus(
+                    const resp: Record<string, any> = await getDeploymentStatus(
                       settings.k8sUrl,
                       settings.k8sToken,
                       settings.project,
@@ -371,7 +371,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   channel.show();
                   channel.appendLine(`Checking status ${settings.project}...`);
 
-                  const res: Record<string, any> = await getDeployStatus(
+                  const res: Record<string, any> = await getDeploymentStatus(
                     settings.k8sUrl,
                     settings.k8sToken,
                     settings.project,
