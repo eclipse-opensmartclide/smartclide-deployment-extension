@@ -15,12 +15,17 @@
   font-size: 0.8rem;
   line-height: 1.2;
   border-radius: 0rem;
-  background-color: #c8cacc;
 }
 
 #SmartCLIDE-Widget-App .btn:hover {
   background-color: #90a4ae;
   cursor: pointer;
+}
+#SmartCLIDE-Widget-App .btn:disabled {
+  opacity: 0.5;
+  background-color: #a5abae;
+  color: #2e2f30;
+  cursor: not-allowed;
 }
 
 #SmartCLIDE-Widget-App .btn-primary {
