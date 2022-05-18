@@ -4,6 +4,7 @@ import { useBackendContext } from '../contexts/BackendContext';
 import {
   deleteDeployment,
   getDeploymentList,
+  getDeploymentMetrics,
 } from '../../../common/fetchMethods';
 
 import Spinner from '../componets/Spinner';
@@ -93,43 +94,64 @@ const Deployment: React.FC = () => {
     })();
   }, [pagination.skip, pagination.limit]);
 
-  const handleGetStatus = (id: string) => {
-    console.log('handleGetStatus', id);
+  const handleGetMetrics = async (id: string) => {
+    const currentPath =
+      workspaceService.workspace?.resource.path.toString() || '';
+    const prevSettings: Settings =
+      currentPath &&
+      JSON.parse(
+        await backendService.fileRead(
+          `${currentPath}/.smartclide-settings.json`
+        )
+      );
+    const { k8sToken } = prevSettings;
+    const metricsData = k8sToken && (await getDeploymentMetrics(id, k8sToken));
+    console.log('metricsData', metricsData);
   };
 
   const handleDelete = async (id: string) => {
-    const deploymentDeleted = await deleteDeployment(id);
-    deploymentDeleted &&
-      (async () => {
-        const currentPath =
-          workspaceService.workspace?.resource.path.toString() || '';
-        const prevSettings: Settings =
-          currentPath &&
-          JSON.parse(
-            await backendService.fileRead(
-              `${currentPath}/.smartclide-settings.json`
-            )
-          );
-        const { gitLabToken, project, user } = prevSettings;
-        const deploymentFetchData =
-          gitLabToken &&
-          project &&
-          (await getDeploymentList(
-            user,
-            project,
-            pagination.limit.toString(),
-            pagination.skip.toString()
-          ));
-        if (deploymentFetchData) {
-          setDeploymentsSource(deploymentFetchData.data);
-          setPagination(
-            (prev: PaginationState): PaginationState => ({
-              ...prev,
-              total: deploymentFetchData.total,
-            })
-          );
-        }
-      })();
+    const currentPath =
+      workspaceService.workspace?.resource.path.toString() || '';
+    const prevSettings: Settings =
+      currentPath &&
+      JSON.parse(
+        await backendService.fileRead(
+          `${currentPath}/.smartclide-settings.json`
+        )
+      );
+    const { k8sToken } = prevSettings;
+    const deploymentDeleted =
+      k8sToken && (await deleteDeployment(id, k8sToken));
+    if (deploymentDeleted) {
+      const currentPath =
+        workspaceService.workspace?.resource.path.toString() || '';
+      const prevSettings: Settings =
+        currentPath &&
+        JSON.parse(
+          await backendService.fileRead(
+            `${currentPath}/.smartclide-settings.json`
+          )
+        );
+      const { gitLabToken, project, user } = prevSettings;
+      const deploymentFetchData =
+        gitLabToken &&
+        project &&
+        (await getDeploymentList(
+          user,
+          project,
+          pagination.limit.toString(),
+          pagination.skip.toString()
+        ));
+      if (deploymentFetchData) {
+        setDeploymentsSource(deploymentFetchData.data);
+        setPagination(
+          (prev: PaginationState): PaginationState => ({
+            ...prev,
+            total: deploymentFetchData.total,
+          })
+        );
+      }
+    }
   };
 
   return (
@@ -140,7 +162,7 @@ const Deployment: React.FC = () => {
           <TableWidhtAction
             columnsSource={columnsSource}
             dataSource={deploymentsSource}
-            actionEdit={handleGetStatus}
+            actionEdit={handleGetMetrics}
             actionDelete={handleDelete}
           />
           <Pagination
