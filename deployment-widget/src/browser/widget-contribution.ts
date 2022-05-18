@@ -87,7 +87,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          user: 'pberrocal',
+          user: '',
           k8sUrl: '',
           k8sToken: '',
           project: '',
@@ -158,6 +158,15 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           placeHolder: 'Enter Kubernetes Token',
           prompt: 'Enter Kubernetes Token:',
         };
+        const optionsUser: InputOptions = {
+          placeHolder: 'Enter Project Secrect User',
+          prompt: 'Enter Project Secrect User:',
+        };
+        const user = !settings?.user
+          ? await this.monacoQuickInputService
+              .input(optionsUser)
+              .then((value): string => value || '')
+          : settings?.user;
 
         const k8sUrl = !settings?.k8sUrl
           ? await this.monacoQuickInputService
@@ -177,6 +186,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then((value): string => value || '')
           : settings?.gitLabToken;
 
+        settings.user = user;
         settings.project = currentProject;
         settings.branch = branchName;
         settings.k8sToken = k8sToken;
@@ -280,7 +290,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          user: 'pberrocal',
+          user: '',
           k8sUrl: '',
           k8sToken: '',
           project: '',
