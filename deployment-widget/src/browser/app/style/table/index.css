@@ -1,6 +1,8 @@
+.table,
 .deployment-table {
   max-width: 900px;
   min-width: 100%;
+  overflow: scroll;
 }
 .deployment-table thead tr,
 .deployment-table thead th {
