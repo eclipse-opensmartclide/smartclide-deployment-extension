@@ -1,4 +1,5 @@
 export interface Settings {
+  user: string;
   k8sUrl: string;
   k8sToken: string;
   project: string;
@@ -24,6 +25,7 @@ export interface deploymentData {
   domain?: string;
   port?: number;
   replicas?: number;
+  k8s_url?: string;
   status?: string;
   timestamp?: string;
 }

@@ -46,21 +46,27 @@ export const getDeployStatus = async (
 };
 
 export const getDeploymentList = async (
+  user: string,
+  project: string,
   limit: string,
   skip: string
 ): Promise<deploymentResponseData> => {
-  return await fetch(`${BASE_URL}/deployments/?skip=${skip}&limit=${limit}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return await fetch(
+    `${BASE_URL}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  )
     .then((res: any): any =>
       res.json().then((res: any): any => {
-        console.log('res', res);
+        const data = res ? res : [];
+        const total = res.total ? res.total : res.length;
         return {
-          data: res.message,
-          total: res.total || res.message.length,
+          data,
+          total,
         };
       })
     )
