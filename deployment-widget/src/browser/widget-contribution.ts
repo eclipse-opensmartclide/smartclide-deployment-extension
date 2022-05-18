@@ -145,6 +145,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             (await this.git.branch(localUri, { type: 'current' }))?.name) ||
           'main';
 
+        const optionsUser: InputOptions = {
+          placeHolder: 'Enter User Name',
+          prompt: 'Enter User Name:',
+        };
+
         const optionsGitLabToken: InputOptions = {
           placeHolder: 'Enter GitLab Token',
           prompt: 'Enter GitLab Token:',
@@ -154,14 +159,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           placeHolder: 'Enter Kubernetes Url',
           prompt: 'Enter Kubernetes Url:',
         };
+
         const optionsK8sToken: InputOptions = {
           placeHolder: 'Enter Kubernetes Token',
           prompt: 'Enter Kubernetes Token:',
         };
-        const optionsUser: InputOptions = {
-          placeHolder: 'Enter Project Secrect User',
-          prompt: 'Enter Project Secrect User:',
-        };
+
         const user = !settings?.user
           ? await this.monacoQuickInputService
               .input(optionsUser)
