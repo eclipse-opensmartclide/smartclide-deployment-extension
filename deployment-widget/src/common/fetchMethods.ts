@@ -1,5 +1,5 @@
 import { BASE_URL } from '../common/constants';
-import { deploymentData } from './ifaces';
+import { deploymentResponseData } from './ifaces';
 
 export const postDeploy = async (
   k8sUrl: string,
@@ -48,13 +48,33 @@ export const getDeployStatus = async (
 export const getDeploymentList = async (
   limit: string,
   skip: string
-): Promise<deploymentData[]> => {
+): Promise<deploymentResponseData> => {
   return await fetch(`${BASE_URL}/deployments/?skip=${skip}&limit=${limit}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   })
-    .then((res: any): any => res.json().then((res: any): any => res.message))
+    .then((res: any): any =>
+      res.json().then((res: any): any => {
+        console.log('res', res);
+        return {
+          data: res.message,
+          total: res.total || res.message.length,
+        };
+      })
+    )
+    .catch((err: any): any => err);
+};
+export const deleteDeployment = async (
+  id: string
+): Promise<Record<string, any>> => {
+  return await fetch(`${BASE_URL}/deployments/?id=${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => err);
 };

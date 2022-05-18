@@ -8,17 +8,22 @@ export interface Settings {
 }
 
 export interface PaginationState {
-  skip: string;
-  limit: string;
+  skip: number;
+  limit: number;
+  total: number;
 }
 
+export interface deploymentResponseData {
+  data: deploymentData[];
+  total: number;
+}
 export interface deploymentData {
   _id: string;
-  user: string;
-  project: string;
-  domain: string;
-  port: number;
-  replicas: number;
-  status: string;
-  timestamp: string;
+  user?: string;
+  project?: string;
+  domain?: string;
+  port?: number;
+  replicas?: number;
+  status?: string;
+  timestamp?: string;
 }
