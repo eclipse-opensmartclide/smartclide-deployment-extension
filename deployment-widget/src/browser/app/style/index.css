@@ -1,6 +1,9 @@
 #SmartCLIDE-Widget-App {
   padding: 50px;
 }
+#SmartCLIDE-Widget-Bar {
+  padding: 15px 50px;
+}
 #SmartCLIDE-Widget-App .d-flex {
   display: flex;
 }
@@ -36,13 +39,13 @@
 }
 
 /* ICON FOR EXTENSION SHOW IN DOCK LOCK PANEL  */
-#SmartCLIDE-Widget-App .icon-custom {
+.icon-deployment-extension {
   background-image: url('../images/deployment-icon.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 60%;
   opacity: 0.33;
 }
-#SmartCLIDE-Widget-App .icon-custom:hover {
+.icon-deployment-extension:hover {
   opacity: 0.7;
 }

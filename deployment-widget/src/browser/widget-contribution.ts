@@ -87,6 +87,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
+          user: 'pberrocal',
           k8sUrl: '',
           k8sToken: '',
           project: '',
@@ -279,6 +280,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
+          user: 'pberrocal',
           k8sUrl: '',
           k8sToken: '',
           project: '',

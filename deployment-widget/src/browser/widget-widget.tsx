@@ -36,7 +36,7 @@ export class SmartCLIDEDeploymentWidget extends ReactWidget {
     this.title.label = SmartCLIDEDeploymentWidget.LABEL;
     this.title.caption = SmartCLIDEDeploymentWidget.LABEL;
     this.title.closable = true;
-    this.title.iconClass = 'codicon icon-custom'; // example widget icon.
+    this.title.iconClass = 'codicon icon-deployment-extension'; // example widget icon.
     this.update();
   }
 

@@ -15,16 +15,6 @@ import {
   deploymentData,
 } from '../../../common/ifaces';
 
-// const mockData: deploymentData = {
-//   _id: 'string',
-//   user: 'string',
-//   project: 'string',
-//   domain: 'string',
-//   port: 0,
-//   replicas: 0,
-//   status: 'string',
-//   timestamp: 'string',
-// };
 const initialPagination: PaginationState = {
   skip: 0,
   limit: 25,
@@ -50,11 +40,13 @@ const Deployment: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    deploymentsSource.length !== 0 &&
+    deploymentsSource &&
+      deploymentsSource.length !== 0 &&
+      // 'project',
+      // 'user',
       setColumnsSource([
-        'project',
-        'user',
         'domain',
+        'k8 url',
         'port',
         'replicas',
         'status',
@@ -64,7 +56,7 @@ const Deployment: React.FC = () => {
   }, [deploymentsSource]);
 
   useEffect(() => {
-    columnsSource.length !== 0 && setLoading(false);
+    columnsSource && columnsSource.length !== 0 && setLoading(false);
   }, [columnsSource]);
 
   useEffect(() => {
@@ -79,11 +71,13 @@ const Deployment: React.FC = () => {
             `${currentPath}/.smartclide-settings.json`
           )
         );
-      const { gitLabToken, project } = prevSettings;
+      const { gitLabToken, project, user } = prevSettings;
       const deploymentFetchData =
         gitLabToken &&
         project &&
         (await getDeploymentList(
+          user,
+          project,
           pagination.limit.toString(),
           pagination.skip.toString()
         ));
@@ -92,7 +86,7 @@ const Deployment: React.FC = () => {
         setPagination(
           (prev: PaginationState): PaginationState => ({
             ...prev,
-            total: deploymentFetchData.total | 0,
+            total: deploymentFetchData.total,
           })
         );
       }
@@ -102,6 +96,7 @@ const Deployment: React.FC = () => {
   const handleGetStatus = (id: string) => {
     console.log('handleGetStatus', id);
   };
+
   const handleDelete = async (id: string) => {
     const deploymentDeleted = await deleteDeployment(id);
     deploymentDeleted &&
@@ -115,11 +110,13 @@ const Deployment: React.FC = () => {
               `${currentPath}/.smartclide-settings.json`
             )
           );
-        const { gitLabToken, project } = prevSettings;
+        const { gitLabToken, project, user } = prevSettings;
         const deploymentFetchData =
           gitLabToken &&
           project &&
           (await getDeploymentList(
+            user,
+            project,
             pagination.limit.toString(),
             pagination.skip.toString()
           ));
@@ -128,7 +125,7 @@ const Deployment: React.FC = () => {
           setPagination(
             (prev: PaginationState): PaginationState => ({
               ...prev,
-              total: deploymentFetchData.total | 0,
+              total: deploymentFetchData.total,
             })
           );
         }

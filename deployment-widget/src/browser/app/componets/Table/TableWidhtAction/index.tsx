@@ -14,7 +14,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
     <div className="table">
       <table className="deployment-table">
         <thead>
-          {columnsSource.length !== 0 && (
+          {columnsSource && columnsSource.length !== 0 && (
             <tr>
               {columnsSource.map((col, key) => (
                 <th key={key}>{col}</th>
@@ -27,13 +27,14 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
             dataSource.map((data, index) => {
               return (
                 <tr key={index}>
-                  <td>{data.project}</td>
-                  <td>{data.user}</td>
+                  {/* <td>{data.project}</td> */}
+                  {/* <td>{data.user}</td> */}
                   <td>{data.domain}</td>
+                  <td>{data.k8s_url}</td>
                   <td>{data.port}</td>
                   <td>{data.replicas}</td>
                   <td>{data.status}</td>
-                  <td>{new Date(data.timestamp).toLocaleDateString()}</td>
+                  <td>{new Date(data.created_at).toLocaleDateString()}</td>
                   <td>
                     {actionEdit && data.status === 'active' && (
                       <Button
