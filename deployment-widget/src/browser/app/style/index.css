@@ -1,15 +1,23 @@
 #SmartCLIDE-Widget-App {
   padding: 50px;
 }
-.d-flex {
+#SmartCLIDE-Widget-App .d-flex {
   display: flex;
-  padding: 3px 2px;
 }
-.d-flex.space-bettwen {
+#SmartCLIDE-Widget-App .d-flex.space-bettwen {
   justify-content: space-between;
 }
-.d-flex.space-bettwen.center {
+#SmartCLIDE-Widget-App .d-flex.space-bettwen.center {
   align-items: center;
+}
+#SmartCLIDE-Widget-App p {
+  margin: 0;
+}
+#SmartCLIDE-Widget-App .p-xs {
+  padding: 5px;
+}
+#SmartCLIDE-Widget-App .mr-xs {
+  margin-right: 5px;
 }
 /* ELEMENTS IN MAIN WINDOW  */
 .p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {
@@ -28,13 +36,13 @@
 }
 
 /* ICON FOR EXTENSION SHOW IN DOCK LOCK PANEL  */
-.icon-custom {
+#SmartCLIDE-Widget-App .icon-custom {
   background-image: url('../images/deployment-icon.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 60%;
   opacity: 0.33;
 }
-.icon-custom:hover {
+#SmartCLIDE-Widget-App .icon-custom:hover {
   opacity: 0.7;
 }
