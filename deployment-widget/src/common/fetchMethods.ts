@@ -1,22 +1,31 @@
 import { BASE_URL } from '../common/constants';
-import { deploymentResponseData } from './ifaces';
+import {
+  DeploymentResponseData,
+  ResponseData,
+  MetricsResponseData,
+  DeploymentData,
+} from './ifaces';
 
 export const postDeploy = async (
-  k8sUrl: string,
-  k8sToken: string,
+  user: string,
+  gitRepoUrl: string,
   project: string,
-  gitLabToken: string,
+  k8sUrl: string,
+  hostname: string,
   branch: string,
-  replicas: string
-): Promise<Record<string, any>> => {
+  replicas: number,
+  deploymentPort: number,
+  k8sToken: string,
+  gitLabToken: string
+): Promise<ResponseData | DeploymentData> => {
   return await fetch(
-    `${BASE_URL}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}&replicas=${replicas}`,
+    `${BASE_URL}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        gitLabToken: gitLabToken,
-        k8sToken: k8sToken,
+        'gitlab-token': gitLabToken,
+        'k8s-token': k8sToken,
       },
     }
   )
@@ -24,35 +33,28 @@ export const postDeploy = async (
     .catch((err: any): any => err);
 };
 export const getDeploymentStatus = async (
-  k8sUrl: string,
-  k8sToken: string,
-  project: string,
-  gitLabToken: string,
-  branch: string
-): Promise<Record<string, any>> => {
-  return await fetch(
-    `${BASE_URL}/deployments?project=${project}&branch=${branch}&k8sUrl=${k8sUrl}`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        gitLabToken: gitLabToken,
-        k8sToken: k8sToken,
-      },
-    }
-  )
+  id: string,
+  k8sToken: string
+): Promise<ResponseData | DeploymentData> => {
+  return await fetch(`${BASE_URL}/deployments/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'k8s-token': k8sToken,
+    },
+  })
     .then((res: any): any => res.json().then((res: any): any => res))
     .catch((err: any): any => err);
 };
 export const getDeploymentMetrics = async (
   id: string,
   k8sToken: string
-): Promise<Record<string, any>> => {
+): Promise<MetricsResponseData> => {
   return await fetch(`${BASE_URL}/metrics/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      k8s_token: k8sToken,
+      'k8s-token': k8sToken,
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))
@@ -64,7 +66,7 @@ export const getDeploymentList = async (
   project: string,
   limit: string,
   skip: string
-): Promise<deploymentResponseData> => {
+): Promise<DeploymentResponseData> => {
   return await fetch(
     `${BASE_URL}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
     {
@@ -76,8 +78,8 @@ export const getDeploymentList = async (
   )
     .then((res: any): any =>
       res.json().then((res: any): any => {
-        const data = res ? res : [];
-        const total = res.total ? res.total : res.length;
+        const data = res.data ? res.data : [];
+        const total = res.count ? res.count : res.data.length;
         return {
           data,
           total,
@@ -89,12 +91,12 @@ export const getDeploymentList = async (
 export const deleteDeployment = async (
   id: string,
   k8sToken: string
-): Promise<Record<string, any>> => {
+): Promise<ResponseData> => {
   return await fetch(`${BASE_URL}/deployments/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      k8s_token: k8sToken,
+      'k8s-token': k8sToken,
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))

@@ -1,11 +1,15 @@
 export interface Settings {
   user: string;
-  k8sUrl: string;
-  k8sToken: string;
+  gitRepoUrl: string;
   project: string;
-  gitLabToken: string;
+  k8sUrl: string;
+  hostname: string;
   branch: string;
-  replicas: string;
+  replicas: number;
+  deploymentPort: number;
+  k8sToken: string;
+  gitLabToken: string;
+  lastDeploy?: string;
 }
 
 export interface PaginationState {
@@ -13,12 +17,22 @@ export interface PaginationState {
   limit: number;
   total: number;
 }
-
-export interface deploymentResponseData {
-  data: deploymentData[];
+export interface ResponseData {
+  message: string;
+}
+export interface UsageMetrics {
+  cpu: string;
+  memory: string;
+}
+export interface MetricsResponseData {
+  name: string;
+  usage: UsageMetrics;
+}
+export interface DeploymentResponseData {
+  data: DeploymentData[];
   total: number;
 }
-export interface deploymentData {
+export interface DeploymentData {
   _id: string;
   user?: string;
   project?: string;
@@ -27,5 +41,6 @@ export interface deploymentData {
   replicas?: number;
   k8s_url?: string;
   status?: string;
-  timestamp?: string;
+  created_at?: string;
+  stopped_at?: string;
 }
