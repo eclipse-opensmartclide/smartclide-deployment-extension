@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import('dotenv/config');
 const BASE_URL = process.env.BASE_URL;
 
 import {
