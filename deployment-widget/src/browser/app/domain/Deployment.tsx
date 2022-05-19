@@ -13,7 +13,7 @@ import TableWidhtAction from '../componets/Table/TableWidhtAction';
 import {
   Settings,
   PaginationState,
-  deploymentData,
+  DeploymentData,
 } from '../../../common/ifaces';
 
 const initialPagination: PaginationState = {
@@ -24,7 +24,7 @@ const initialPagination: PaginationState = {
 
 const Deployment: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [deploymentsSource, setDeploymentsSource] = useState<deploymentData[]>(
+  const [deploymentsSource, setDeploymentsSource] = useState<DeploymentData[]>(
     []
   );
   const [columnsSource, setColumnsSource] = useState<string[]>([]);
@@ -109,7 +109,7 @@ const Deployment: React.FC = () => {
     console.log('metricsData', metricsData);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleStop = async (id: string) => {
     const currentPath =
       workspaceService.workspace?.resource.path.toString() || '';
     const prevSettings: Settings =
@@ -163,7 +163,7 @@ const Deployment: React.FC = () => {
             columnsSource={columnsSource}
             dataSource={deploymentsSource}
             actionEdit={handleGetMetrics}
-            actionDelete={handleDelete}
+            actionStop={handleStop}
           />
           <Pagination
             limit={pagination.limit}

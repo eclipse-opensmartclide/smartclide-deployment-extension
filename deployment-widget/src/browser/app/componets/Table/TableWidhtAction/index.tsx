@@ -5,16 +5,16 @@ export interface TableProps {
   columnsSource: string[];
   dataSource?: any[];
   actionEdit?: (i: string) => void;
-  actionDelete?: (i: string) => void;
+  actionStop?: (i: string) => void;
 }
 
 const TableWidthAction: React.FC<TableProps> = (props) => {
-  const { columnsSource, dataSource, actionEdit, actionDelete } = props;
+  const { columnsSource, dataSource, actionEdit, actionStop } = props;
   return (
     <div className="table">
       <table className="deployment-table">
         <thead>
-          {columnsSource && columnsSource.length !== 0 && (
+          {columnsSource && columnsSource?.length !== 0 && (
             <tr>
               {columnsSource.map((col, key) => (
                 <th key={key}>{col}</th>
@@ -23,8 +23,8 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
           )}
         </thead>
         <tbody>
-          {dataSource && dataSource.length !== 0 ? (
-            dataSource.map((data, index) => {
+          {dataSource && dataSource?.length > 0 ? (
+            dataSource?.map((data, index) => {
               return (
                 <tr key={index}>
                   <td>{data.domain}</td>
@@ -34,21 +34,25 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                   <td>{data.status}</td>
                   <td>{new Date(data.created_at).toLocaleDateString()}</td>
                   <td>
-                    {actionEdit && data.status === 'active' && (
-                      <Button
-                        className="btn-primary small mr-xs"
-                        onClick={() => actionEdit(data._id)}
-                      >
-                        Metrics
-                      </Button>
-                    )}
-                    {actionDelete && (
-                      <Button
-                        className="btn-danger small"
-                        onClick={() => actionDelete(data._id)}
-                      >
-                        Delete
-                      </Button>
+                    {data.status === 'active' && (
+                      <>
+                        {actionEdit && (
+                          <Button
+                            className="btn-primary small mr-xs"
+                            onClick={() => actionEdit(data._id)}
+                          >
+                            Metrics
+                          </Button>
+                        )}
+                        {actionStop && (
+                          <Button
+                            className="btn-danger small"
+                            onClick={() => actionStop(data._id)}
+                          >
+                            Stop
+                          </Button>
+                        )}
+                      </>
                     )}
                   </td>
                 </tr>

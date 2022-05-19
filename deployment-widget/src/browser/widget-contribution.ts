@@ -28,8 +28,11 @@ import { SmartCLIDEBackendService } from '../common/protocol';
 import { Git, Repository } from '@theia/git/lib/common';
 import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
 
-import { Settings } from '../common/ifaces';
 import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
+import { Settings } from './../common/ifaces';
+
+/// TODO: remove this mock data
+import { mockSettings } from './../common/constants';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
@@ -38,11 +41,11 @@ const SmartCLIDEDeploymentWidgetCommand: Command = {
 
 const CommandDeploymentDeploy: Command = {
   id: 'command-deployment-deploy.command',
-  label: 'Deployment: New Deploy',
+  label: 'Deployment: New deployment',
 };
 const CommandDeploymentStatus: Command = {
   id: 'command-deployment-deploy-monitoring.command',
-  label: 'Deployment: Deployment Status',
+  label: 'Deployment: Last deployment status',
 };
 
 @injectable()
@@ -88,12 +91,16 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
           user: '',
-          k8sUrl: '',
-          k8sToken: '',
+          gitRepoUrl: '',
           project: '',
-          gitLabToken: '',
+          k8sUrl: '',
+          hostname: '',
           branch: '',
-          replicas: '1',
+          replicas: 1,
+          deploymentPort: 8080,
+          k8sToken: '',
+          gitLabToken: '',
+          lastDeploy: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -135,6 +142,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           );
           return;
         }
+        settings = mockSettings;
 
         //// ---------- RETRIEVE USER DATA ------------ /////
         const localUri: Repository | undefined =
@@ -198,7 +206,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         //// ---------- PREPARE TO BUILD ------------ /////
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
-        let interval: any;
         if (
           settings.k8sUrl &&
           settings.k8sToken &&
@@ -221,57 +228,34 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 channel.show();
                 channel.appendLine(`Start deploy ${settings.project}...`);
                 const res: Record<string, any> = await postDeploy(
-                  settings.k8sUrl,
-                  settings.k8sToken,
+                  settings.user,
+                  settings.gitRepoUrl,
                   settings.project,
-                  settings.gitLabToken,
+                  settings.k8sUrl,
+                  settings.hostname,
                   settings.branch,
-                  settings.replicas
+                  settings.replicas,
+                  settings.deploymentPort,
+                  settings.k8sToken,
+                  settings.gitLabToken
                 );
-
-                if (res?.status === 'running') {
+                if (res?.message) {
                   this.messageService.warn(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Info);
-                  setTimeout(() => {
-                    this.messageService.warn('Job building...');
-                    channel.appendLine(
-                      'Job building...',
-                      OutputChannelSeverity.Warning
-                    );
-                  }, 2000);
-                  interval = setInterval(async () => {
-                    const resp: Record<string, any> = await getDeploymentStatus(
-                      settings.k8sUrl,
-                      settings.k8sToken,
-                      settings.project,
-                      settings.gitLabToken,
-                      settings.branch
-                    );
-                    console.log('resp', resp.status);
-
-                    if (resp?.status === 'success') {
-                      clearInterval(interval);
-                      this.messageService.info('Job ready to deploy');
-                      channel.appendLine(
-                        'Job ready to deploy',
-                        OutputChannelSeverity.Info
-                      );
-                    }
-                    if (resp?.status === 'error') {
-                      console.log('error fecth', resp);
-                      clearInterval(interval);
-                      this.messageService.error(resp?.message);
-                      channel.appendLine(
-                        resp?.message,
-                        OutputChannelSeverity.Error
-                      );
-                    }
-                  }, 8000);
-                }
-                if (res?.status === 'error') {
-                  console.log('error fecth', res);
-                  this.messageService.error(res?.message);
-                  channel.appendLine(res?.message, OutputChannelSeverity.Error);
+                } else if (res._id) {
+                  settings.lastDeploy = res._id;
+                  this.smartCLIDEBackendService.fileWrite(
+                    `${currentPath}/.smartclide-settings.json`,
+                    JSON.stringify(settings)
+                  );
+                } else {
+                  this.messageService.error(
+                    'Something is worng restart process'
+                  );
+                  channel.appendLine(
+                    'Something is worng restart process',
+                    OutputChannelSeverity.Error
+                  );
                 }
               } else {
                 return;
@@ -294,12 +278,16 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
           user: '',
-          k8sUrl: '',
-          k8sToken: '',
+          gitRepoUrl: '',
           project: '',
-          gitLabToken: '',
+          k8sUrl: '',
+          hostname: '',
           branch: '',
-          replicas: '1',
+          replicas: 1,
+          deploymentPort: 8080,
+          k8sToken: '',
+          gitLabToken: '',
+          lastDeploy: '',
         };
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
@@ -370,24 +358,27 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 if (action === 'Check now') {
                   channel.show();
                   channel.appendLine(`Checking status ${settings.project}...`);
-
-                  const res: Record<string, any> = await getDeploymentStatus(
-                    settings.k8sUrl,
-                    settings.k8sToken,
-                    settings.project,
-                    settings.gitLabToken,
-                    settings.branch
-                  );
-
-                  this.smartCLIDEBackendService.fileWrite(
-                    `${currentPath}/.smartclide-settings.json`,
-                    JSON.stringify(settings)
-                  );
-
-                  channel.appendLine(
-                    `Status: ${res?.status || res?.detail}...`,
-                    OutputChannelSeverity.Warning
-                  );
+                  if (settings.lastDeploy && settings.k8sToken) {
+                    const res: any = await getDeploymentStatus(
+                      settings.lastDeploy,
+                      settings.k8sToken
+                    );
+                    this.smartCLIDEBackendService.fileWrite(
+                      `${currentPath}/.smartclide-settings.json`,
+                      JSON.stringify(settings)
+                    );
+                    if (!res.message) {
+                      channel.appendLine(
+                        `Status: Deployment are running...`,
+                        OutputChannelSeverity.Warning
+                      );
+                    } else {
+                      channel.appendLine(
+                        `Status: ${res?.message}...`,
+                        OutputChannelSeverity.Warning
+                      );
+                    }
+                  }
                 } else {
                   return;
                 }
@@ -409,12 +400,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     menus.registerMenuAction(subMenuPath, {
       commandId: CommandDeploymentStatus.id,
-      label: 'Deployment Status',
+      label: 'Last deployment status',
       order: '2',
     });
     menus.registerMenuAction(subMenuPath, {
       commandId: CommandDeploymentDeploy.id,
-      label: 'New Deploy',
+      label: 'New deployment',
       order: '1',
     });
   }
