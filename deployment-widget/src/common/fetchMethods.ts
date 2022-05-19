@@ -1,4 +1,7 @@
-import { BASE_URL } from '../common/constants';
+import dotenv from 'dotenv';
+dotenv.config();
+const { BASE_URL } = process.env;
+
 import {
   DeploymentResponseData,
   ResponseData,
