@@ -1,5 +1,4 @@
-import('dotenv/config');
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = 'http://localhost:3000';
 
 import {
   DeploymentResponseData,

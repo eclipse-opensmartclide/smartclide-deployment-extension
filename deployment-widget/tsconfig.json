@@ -15,9 +15,9 @@
     "resolveJsonModule": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2017",
+    "target": "ES2019",
     "jsx": "react",
-    "lib": ["ES2017", "dom"],
+    "lib": ["ES2019", "dom"],
     "sourceMap": true,
     "rootDir": "src",
     "outDir": "lib"
