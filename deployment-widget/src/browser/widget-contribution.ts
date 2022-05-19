@@ -5,6 +5,7 @@ import {
   AbstractViewContribution,
   FrontendApplication,
 } from '@theia/core/lib/browser';
+
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 import {
@@ -32,7 +33,7 @@ import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
 import { Settings } from './../common/ifaces';
 
 /// TODO: remove this mock data
-import { mockSettings } from './../common/constants';
+import { mockSettings } from './../common/secrets';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
