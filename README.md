@@ -36,7 +36,7 @@ _or:_ launch `Start Browser Backend` configuration from VS code.
     3 split terminal
     4 yarn wacth
 
-Open http://localhost:3000 in the browser.
+Open http://localhost:3001 in the browser.
 
 ## Publishing smartclide-deployment-widget-theia
 
