@@ -1,5 +1,4 @@
 import React from 'react';
-import App from './app';
 
 import '../../src/browser/app/style/index.css';
 import '../../src/browser/app/style/nav/index.css';
@@ -13,11 +12,19 @@ import {
   inject,
   postConstruct,
 } from '@theia/core/shared/inversify';
+import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
+import { ApplicationProps } from '@theia/application-package/lib/application-props';
+FrontendApplicationConfigProvider.set({
+  ...ApplicationProps.DEFAULT.frontend.config,
+});
+
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
-import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { BackendContextProvider } from './app/contexts/BackendContext';
 import { SmartCLIDEBackendService } from '../common/protocol';
 import { CommandRegistry } from '@theia/core/lib/common';
+import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
+
+import App from './app';
 
 @injectable()
 export class SmartCLIDEDeploymentWidget extends ReactWidget {
@@ -45,7 +52,7 @@ export class SmartCLIDEDeploymentWidget extends ReactWidget {
       <BackendContextProvider>
         <App
           commandRegistry={this.commandRegistry}
-          workspaceService={this.workspaceService}
+          // workspaceService={this.workspaceService}
           backendService={this.smartCLIDEBackendService}
         />
       </BackendContextProvider>
