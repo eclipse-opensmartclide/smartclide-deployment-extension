@@ -20,6 +20,7 @@
   },
   "workspaces": [
     "deployment-widget",
-    "browser-app"
+    "browser-app",
+    "electron-app"
   ]
 }

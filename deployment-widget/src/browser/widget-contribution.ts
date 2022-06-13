@@ -33,7 +33,7 @@ import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
 import { Settings } from './../common/ifaces';
 
 /// TODO: remove this mock data
-import { mockSettings } from './../common/secrets';
+// import { mockSettings } from './../common/secrets';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
@@ -143,7 +143,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           );
           return;
         }
-        settings = mockSettings;
+        // settings = mockSettings;
 
         //// ---------- RETRIEVE USER DATA ------------ /////
         const localUri: Repository | undefined =
