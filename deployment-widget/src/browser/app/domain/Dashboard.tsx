@@ -67,10 +67,6 @@ const Dashboard: React.FC = () => {
   }, [message]);
 
   useEffect(() => {
-    console.log('settings', settings);
-  }, [settings]);
-
-  useEffect(() => {
     setLoading(true);
     if (
       settings !== undefined &&
@@ -131,27 +127,19 @@ const Dashboard: React.FC = () => {
   }, [columnsSource]);
 
   useEffect(() => {
-    console.log('currentDeployment', currentDeployment);
-    if (currentDeployment.length !== 0) {
+    if (currentDeployment.length !== 0 && settings !== undefined) {
+      const { k8sToken } = settings;
+      currentDeployment &&
+        k8sToken &&
+        getDeploymentMetrics(currentDeployment, k8sToken)
+          .then((res) => {
+            setMetrics(res);
+          })
+          .catch((err) => err);
     }
   }, [currentDeployment]);
 
   const handleGetMetrics = async (id: string) => {
-    const currentPath =
-      workspaceService.workspace?.resource.path.toString() || '';
-    const prevSettings: Settings =
-      currentPath &&
-      JSON.parse(
-        await backendService.fileRead(
-          `${currentPath}/.smartclide-settings.json`
-        )
-      );
-    const { k8sToken } = prevSettings;
-    if (k8sToken && id.length) {
-      getDeploymentMetrics(id, k8sToken)
-        .then((res) => res)
-        .catch((err) => err);
-    }
     setCurrentDeployment(id);
   };
 
