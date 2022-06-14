@@ -4,6 +4,7 @@ import '../../src/browser/app/style/index.css';
 import '../../src/browser/app/style/nav/index.css';
 import '../../src/browser/app/style/spinner/index.css';
 import '../../src/browser/app/style/button/index.css';
+import '../../src/browser/app/style/card/index.css';
 import '../../src/browser/app/style/table/index.css';
 import '../../src/browser/app/style/select/index.css';
 

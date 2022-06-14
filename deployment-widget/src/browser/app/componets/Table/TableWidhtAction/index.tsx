@@ -61,7 +61,9 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
           ) : (
             <tr>
               <td
-                colSpan={columnsSource.length !== 0 ? columnsSource.length : 1}
+                colSpan={
+                  columnsSource?.length !== 0 ? columnsSource?.length : 1
+                }
               >
                 No data
               </td>

@@ -10,6 +10,7 @@
 #SmartCLIDE-Widget-App .d-flex.space-bettwen {
   justify-content: space-between;
 }
+
 #SmartCLIDE-Widget-App .d-flex.space-bettwen.center {
   align-items: center;
 }
@@ -21,6 +22,15 @@
 }
 #SmartCLIDE-Widget-App .mr-xs {
   margin-right: 5px;
+}
+#SmartCLIDE-Widget-App .text-left {
+  text-align: left;
+}
+#SmartCLIDE-Widget-App .mt-1 {
+  margin-top: 1rem;
+}
+#SmartCLIDE-Widget-App .mb-0 {
+  margin-bottom: 0;
 }
 /* ELEMENTS IN MAIN WINDOW  */
 .p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {

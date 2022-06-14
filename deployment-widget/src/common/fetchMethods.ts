@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://192.168.1.46:3000';
 
 import {
   DeploymentResponseData,
@@ -79,8 +79,15 @@ export const getDeploymentList = async (
   )
     .then((res: any): any =>
       res.json().then((res: any): any => {
-        const data = res.data ? res.data : [];
-        const total = res.count ? res.count : res.data.length;
+        if (res?.message) {
+          return res;
+        }
+        const data = res?.data ? res?.data : [];
+        const total = res?.count
+          ? res?.count
+          : res?.data
+          ? res?.data?.length
+          : 0;
         return {
           data,
           total,
