@@ -1,0 +1,46 @@
+{
+  "name": "smartclide-deployment-widget",
+  "version": "0.0.0",
+  "keywords": [
+    "theia-widget"
+  ],
+  "files": [
+    "lib",
+    "src"
+  ],
+  "dependencies": {
+    "@theia/core": "1.19.0",
+    "@theia/git": "1.19.0",
+    "@theia/output": "1.19.0",
+    "@types/node": "16.11.9",
+    "recharts": "2.1.6"
+  },
+  "devDependencies": {
+    "@testing-library/react": "11.2.7",
+    "@types/jest": "26.0.20",
+    "css-loader": "^6.7.1",
+    "jest": "26.6.3",
+    "rimraf": "latest",
+    "ts-jest": "26.5.6",
+    "ts-node": "9.1.1",
+    "typescript": "latest"
+  },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest --config configs/jest.config.ts"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/widget-frontend-module",
+      "backend": "lib/node/backend-module"
+    }
+  ]
+}

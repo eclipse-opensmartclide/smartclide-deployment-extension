@@ -1,6 +1,6 @@
-# smartclide-deployment-extension
+# Deployment-extension
 
-The example of how to build the Theia-based applications with the smartclide-deployment-extension.
+The example of how to build the Theia-based applications with the deployment-extension.
 
 ## Getting started
 
@@ -29,4 +29,21 @@ _or:_
 
 _or:_ launch `Start Browser Backend` configuration from VS code.
 
-Open http://localhost:3000 in the browser.
+## Running the watch mode
+
+    1 yarn
+    2 yarn start:browser
+    3 split terminal
+    4 yarn wacth
+
+Open http://localhost:3001 in the browser.
+
+## Publishing smartclide-deployment-widget-theia
+
+Create a npm user and login to the npm registry, [more on npm publishing](https://docs.npmjs.com/getting-started/publishing-npm-packages).
+
+    npm login
+
+Publish packages with lerna to update versions properly across local packages, [more on publishing with lerna](https://github.com/lerna/lerna#publish).
+
+    npx lerna publish

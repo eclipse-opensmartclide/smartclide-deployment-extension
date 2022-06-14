@@ -13,3 +13,5 @@ node_modules
 lib
 *-app/*
 !*-app/package.json
+coverage/
+secrets.ts

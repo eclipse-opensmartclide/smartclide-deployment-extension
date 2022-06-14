@@ -3,21 +3,23 @@
   "name": "electron-app",
   "version": "0.0.0",
   "dependencies": {
-    "@theia/core": "latest",
-    "@theia/editor": "latest",
-    "@theia/electron": "latest",
-    "@theia/filesystem": "latest",
-    "@theia/markers": "latest",
-    "@theia/messages": "latest",
-    "@theia/monaco": "latest",
-    "@theia/navigator": "latest",
-    "@theia/preferences": "latest",
-    "@theia/process": "latest",
-    "@theia/terminal": "latest",
-    "@theia/workspace": "latest"
+    "@theia/core": "1.19.0",
+    "@theia/editor": "1.19.0",
+    "@theia/electron": "1.19.0",
+    "@theia/filesystem": "1.19.0",
+    "@theia/markers": "1.19.0",
+    "@theia/messages": "1.19.0",
+    "@theia/monaco": "1.19.0",
+    "@theia/navigator": "1.19.0",
+    "@theia/preferences": "1.19.0",
+    "@theia/process": "1.19.0",
+    "@theia/terminal": "1.19.0",
+    "@theia/workspace": "1.19.0",
+    "smartclide-deployment-widget": "0.0.0"
   },
   "devDependencies": {
-    "@theia/cli": "latest"
+    "@theia/cli": "1.19.0",
+    "electron": "^15.3.5"
   },
   "scripts": {
     "prepare": "theia build --mode development",
