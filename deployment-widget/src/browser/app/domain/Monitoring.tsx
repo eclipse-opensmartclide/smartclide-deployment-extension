@@ -4,21 +4,23 @@ import Spinner from '../componets/Spinner';
 import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
 import PriceCard from '../componets/Card/Price';
 
-import { MetricsResponseData } from '../../../common/ifaces';
+import { MetricsResponseData, UsageMetrics } from '../../../common/ifaces';
 
 const Monitoring: React.FC<MetricsResponseData> = (props) => {
   const { usage, cost } = props;
-  console.log('usage, cost', usage, cost);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  const [loadingChart, setLoadingChart] = useState<boolean>(true);
+  const [usageData, setUsageData] = useState<UsageMetrics[]>();
+  const [costData, setCostData] = useState<UsageMetrics[]>();
 
   useEffect(() => {
-    const timmer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => {
-      clearTimeout(timmer);
-    };
-  }, []);
+    setLoadingChart(false);
+    setUsageData((prev) => (prev ? [...prev, usage] : [usage]));
+  }, [usage]);
+
+  useEffect(() => {
+    console.log('usageData', usageData);
+  }, [usageData]);
 
   return !loading ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
@@ -41,7 +43,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
       </div>
     </div>
   ) : (
-    <Spinner isVisible={loading} />
+    <Spinner isVisible={loading || } />
   );
 };
 
