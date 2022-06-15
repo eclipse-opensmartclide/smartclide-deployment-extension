@@ -351,6 +351,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         const actionsConfirmBuild = ['Check now', 'Cancel'];
 
+        if (!settings.lastDeploy || settings.lastDeploy === '') {
+          channel.show();
+          channel.appendLine(`We have not found the last deployment ...`);
+          return;
+        }
+
         //// ---------- PREPARE TO BUILD ------------ /////
         settings?.gitLabToken
           ? this.messageService
