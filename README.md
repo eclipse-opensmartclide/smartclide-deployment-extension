@@ -1,4 +1,4 @@
-# Deployment-extension
+# SmartClIDE Deployment Extension
 
 The example of how to build the Theia-based applications with the deployment-extension.
 
@@ -10,8 +10,8 @@ Install [nvm](https://github.com/creationix/nvm#install-script).
 
 Install npm and node.
 
-    nvm install v12.18.3
-    nvm use v12.18.3
+    nvm install v12.22.11
+    nvm use 12.22.11
 
 Install yarn.
 
@@ -36,14 +36,4 @@ _or:_ launch `Start Browser Backend` configuration from VS code.
     3 split terminal
     4 yarn wacth
 
-Open http://localhost:3001 in the browser.
-
-## Publishing smartclide-deployment-widget-theia
-
-Create a npm user and login to the npm registry, [more on npm publishing](https://docs.npmjs.com/getting-started/publishing-npm-packages).
-
-    npm login
-
-Publish packages with lerna to update versions properly across local packages, [more on publishing with lerna](https://github.com/lerna/lerna#publish).
-
-    npx lerna publish
+Open http://localhost:3000 in the browser.
