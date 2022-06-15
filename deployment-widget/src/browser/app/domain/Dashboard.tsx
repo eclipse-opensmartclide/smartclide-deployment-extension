@@ -67,6 +67,10 @@ const Dashboard: React.FC = () => {
   }, [message]);
 
   useEffect(() => {
+    console.log('metrics', metrics);
+  }, [metrics]);
+
+  useEffect(() => {
     setLoading(true);
     if (
       settings !== undefined &&
@@ -127,17 +131,33 @@ const Dashboard: React.FC = () => {
   }, [columnsSource]);
 
   useEffect(() => {
-    if (currentDeployment.length !== 0 && settings !== undefined) {
-      const { k8sToken } = settings;
-      currentDeployment &&
-        k8sToken &&
-        getDeploymentMetrics(currentDeployment, k8sToken)
-          .then((res) => {
-            setMetrics(res);
-          })
-          .catch((err) => err);
+    let interval: any;
+    if (currentDeployment.length !== 0) {
+      interval = setInterval(async () => {
+        const newMetrics = await getGetMetrics(currentDeployment);
+        newMetrics && setMetrics(newMetrics);
+      }, 6000);
     }
+    return () => {
+      setMetrics(null);
+      clearInterval(interval);
+    };
   }, [currentDeployment]);
+
+  const getGetMetrics = async (
+    id: string
+  ): Promise<MetricsResponseData | null> => {
+    if (!id || settings === undefined) {
+      return null;
+    } else {
+      const { k8sToken } = settings;
+      if (!k8sToken) {
+        return null;
+      }
+      const newMetric = await getDeploymentMetrics(id, k8sToken);
+      return newMetric;
+    }
+  };
 
   const handleGetMetrics = async (id: string) => {
     setCurrentDeployment(id);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   AreaChart,
   Area,
@@ -9,62 +9,13 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const initialData: DataChart[] = [
-  {
-    memory: 4000,
-    cpu: 20,
-  },
-  {
-    memory: 3000,
-    cpu: 27,
-  },
-  {
-    memory: 2000,
-    cpu: 57,
-  },
-  {
-    memory: 2780,
-    cpu: 62,
-  },
-  {
-    memory: 1890,
-    cpu: 69,
-  },
-  {
-    memory: 2390,
-    cpu: 18,
-  },
-  {
-    memory: 3490,
-    cpu: 42,
-  },
-];
-
-interface ChartSynchronizedAreaProps {}
-interface DataChart {
-  memory: number;
-  cpu: number;
+import { UsageMetrics } from '../../../../common/ifaces';
+interface ChartSynchronizedAreaProps {
+  data: UsageMetrics[] | undefined;
 }
-let interval: any;
-const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = () => {
-  const [data, setData] = useState<DataChart[]>(initialData);
-  useEffect(() => {
-    interval = setInterval(() => {
-      setData((prev) => {
-        prev.length >= 6 && prev.shift();
-        return [
-          ...prev,
-          {
-            memory: Math.round(Math.random() * (6000 - 1000 + 1) + 1000),
-            cpu: Math.round(Math.random() * 100) + 1,
-          },
-        ];
-      });
-    }, 3000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+// let interval: any;
+const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = (props) => {
+  const { data } = props;
 
   return (
     <div>
