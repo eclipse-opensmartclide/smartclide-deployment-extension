@@ -52,6 +52,8 @@ const Dashboard: React.FC = () => {
     if (backendService !== undefined && workspaceService !== undefined) {
       const currentPath =
         workspaceService.workspace?.resource.path.toString() || '';
+      !currentPath &&
+        setMessage('It is necessary to have at least one repository open.');
       if (currentPath) {
         backendService
           .fileRead(`${currentPath}/.smartclide-settings.json`)

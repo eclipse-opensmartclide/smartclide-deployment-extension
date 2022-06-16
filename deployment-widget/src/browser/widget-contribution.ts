@@ -265,10 +265,10 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             .catch((err) => console.log('err', err));
         } else {
           this.messageService.error(
-            'Error you need to have at least one build image'
+            'It is necessary to have at least one repository open.'
           );
           channel.appendLine(
-            'Error you need to have at least one build image',
+            'It is necessary to have at least one repository open.',
             OutputChannelSeverity.Error
           );
         }
@@ -299,7 +299,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         if (!currentProject) {
           this.messageService.error(
-            `It is necessary to have at least one repository open.`
+            'It is necessary to have at least one repository open.'
           );
           return;
         }
