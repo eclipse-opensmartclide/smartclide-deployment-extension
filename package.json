@@ -10,7 +10,7 @@
     "prepare": "lerna run prepare",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
-    "start:browser": "yarn rebuild:browser && yarn --cwd browser-app start --port 3001",
+    "start:browser": "yarn rebuild:browser && yarn --cwd browser-app start",
     "start:electron": "yarn rebuild:electron && yarn --cwd electron-app start",
     "watch": "lerna run --parallel watch",
     "test": "cd deployment-widget && yarn test"
