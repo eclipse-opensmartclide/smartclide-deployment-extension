@@ -1,43 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../componets/Button';
+
 import Spinner from '../componets/Spinner';
-
 import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
+import PriceCard from '../componets/Card/Price';
 
-// import SynchronizedAreaChart from '../../components/charts/SynchronizedAreaChart';
+import {
+  MetricsResponseData,
+  UsageMetrics,
+  CostMetrics,
+} from '../../../common/ifaces';
 
-interface MonitoringProps {}
+const Monitoring: React.FC<MetricsResponseData> = (props) => {
+  const { usage, cost } = props;
 
-const Monitoring: React.FC<MonitoringProps> = () => {
-  const [process, setProcess] = useState<boolean>(Math.random() < 0.5);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingChart, setLoadingChart] = useState<boolean>(true);
+  const [loadingPrice, setLoadingPrice] = useState<boolean>(true);
+  const [usageData, setUsageData] = useState<UsageMetrics[]>();
+  const [costData, setCostData] = useState<CostMetrics[]>();
 
   useEffect(() => {
-    const timmer = setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-    return () => {
-      clearTimeout(timmer);
-    };
-  }, []);
+    setLoadingChart(false);
+    setUsageData((prev) => (prev ? [...prev, usage] : [usage]));
+  }, [usage]);
 
-  return !loading ? (
+  useEffect(() => {
+    setLoadingPrice(false);
+    setCostData(cost);
+  }, [cost]);
+
+  useEffect(() => {
+    console.log('usageData', usageData);
+  }, [usageData]);
+
+  useEffect(() => {
+    console.log('costData', costData);
+  }, [costData]);
+
+  return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
-      {process ? (
-        <h4 className="text-white">Deployment {'id'} is running</h4>
+      <h4 className="text-white">Deployment is running</h4>
+      {!loadingChart ? (
+        <ChartSynchronizedArea data={usageData} />
       ) : (
-        <h4 className="text-white">Dont have running any deployment</h4>
+        <Spinner isVisible={loadingChart} />
       )}
-      {process ? (
-        <ChartSynchronizedArea />
+      {!loadingPrice ? (
+        <div className="d-flex mt-1">
+          {costData?.map((costData: CostMetrics, index: number) => {
+            const { cost, cost_type, name, current } = costData;
+            return (
+              <PriceCard
+                key={index}
+                cost={cost}
+                cost_type={cost_type}
+                name={name}
+                current={current}
+              />
+            );
+          })}
+        </div>
       ) : (
-        <Button className="btn-primary" onClick={() => setProcess(true)}>
-          Deploy last build!
-        </Button>
+        <Spinner isVisible={loadingPrice} />
       )}
     </div>
   ) : (
-    <Spinner isVisible={loading} />
+    <Spinner isVisible={loadingChart && loadingPrice} />
   );
 };
 

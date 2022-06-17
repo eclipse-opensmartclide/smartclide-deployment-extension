@@ -24,13 +24,20 @@ export interface UsageMetrics {
   cpu: string;
   memory: string;
 }
-export interface MetricsResponseData {
+export interface CostMetrics {
+  cost: number;
+  cost_type: string;
   name: string;
+  current: boolean;
+}
+export interface MetricsResponseData {
   usage: UsageMetrics;
+  cost?: CostMetrics[];
 }
 export interface DeploymentResponseData {
-  data: DeploymentData[];
-  total: number;
+  data?: DeploymentData[];
+  total?: number;
+  message?: string;
 }
 export interface DeploymentData {
   _id: string;

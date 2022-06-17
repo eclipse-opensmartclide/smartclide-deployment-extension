@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 import Dashboard from './domain/Dashboard';
-import Deployment from './domain/Deployment';
 
-import Navigation from './componets/Navigation';
-
-import Monitoring from './domain/Monitoring';
+// import Monitoring from './domain/Monitoring';
+import Spinner from './componets/Spinner';
 
 import { useBackendContext } from './contexts/BackendContext';
-
-const viewList: Record<string, string>[] = [
-  { name: 'Dashboard', value: 'dashboard' },
-  { name: 'Deployments', value: 'deployments' },
-];
 
 interface AppProps {
   commandRegistry?: any;
@@ -23,7 +16,6 @@ interface AppProps {
 const App: React.FC<AppProps> = (props): JSX.Element => {
   const { workspaceService, backendService, commandRegistry } = props;
 
-  const [currentView, setCurrentView] = useState<string>('deployments');
   const [loading, setLoading] = useState<boolean>(true);
 
   const { backend, setBackend } = useBackendContext();
@@ -42,21 +34,13 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
 
   return !loading ? (
     <>
-      <div id="SmartCLIDE-Widget-Bar">
-        <Monitoring />
-      </div>
+      <div id="SmartCLIDE-Widget-Bar">{/* <Monitoring /> */}</div>
       <div id="SmartCLIDE-Widget-App">
-        <Navigation
-          viewList={viewList}
-          currentView={currentView}
-          setCurrentView={setCurrentView}
-        />
-        {currentView === 'dashboard' && <Dashboard />}
-        {currentView === 'deployments' && <Deployment />}
+        <Dashboard />
       </div>
     </>
   ) : (
-    <div style={{ minHeight: 200 }}>Loading</div>
+    <Spinner isVisible={loading} />
   );
 };
 
