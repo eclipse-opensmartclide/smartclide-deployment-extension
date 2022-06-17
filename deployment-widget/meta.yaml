@@ -1,11 +1,11 @@
 apiVersion: v2
-publisher: Kairos Digital Solutions
+publisher: Wellness Tech Group
 name: smartclide-deployment-extension
 version: 0.0.0
-type: Che Plugin
+type: Che Extension
 displayName: SmartCLIDE Deployment Extension
 title: SmartCLIDE Deployment Extension
-description: Che Plug-in deploy an image Dockerfile of a Docker container in a Kubernetes cluster.
+description: Che Extension deploy an image Dockerfile of a Docker container in a Kubernetes cluster.
 icon: https://www.eclipse.org/che/images/logo-eclipseche.svg
 repository: https://github.com/eclipse-researchlabs/smartclide-deployment-extension
 firstPublicationDate: '2022-06-16'
