@@ -7,7 +7,6 @@
     "node": "12.22.11"
   },
   "scripts": {
-    "build": "cd deployment-widget && yarn build",
     "prepare": "lerna run prepare",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",

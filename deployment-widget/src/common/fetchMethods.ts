@@ -1,4 +1,6 @@
-const BASE_URL = 'http://192.168.1.46:3000';
+const SERVICE_URL = process.env.SERVICE_URL;
+
+console.log('SERVICE_URL', SERVICE_URL);
 
 import {
   DeploymentResponseData,
@@ -20,7 +22,7 @@ export const postDeploy = async (
   gitLabToken: string
 ): Promise<ResponseData | DeploymentData> => {
   return await fetch(
-    `${BASE_URL}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
+    `${SERVICE_URL}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
@@ -37,7 +39,7 @@ export const getDeploymentStatus = async (
   id: string,
   k8sToken: string
 ): Promise<ResponseData | DeploymentData> => {
-  return await fetch(`${BASE_URL}/deployments/${id}`, {
+  return await fetch(`${SERVICE_URL}/deployments/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +53,7 @@ export const getDeploymentMetrics = async (
   id: string,
   k8sToken: string
 ): Promise<MetricsResponseData> => {
-  return await fetch(`${BASE_URL}/metrics/${id}`, {
+  return await fetch(`${SERVICE_URL}/metrics/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ export const getDeploymentList = async (
   skip: string
 ): Promise<DeploymentResponseData> => {
   return await fetch(
-    `${BASE_URL}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
+    `${SERVICE_URL}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
     {
       method: 'GET',
       headers: {
@@ -100,7 +102,7 @@ export const deleteDeployment = async (
   id: string,
   k8sToken: string
 ): Promise<ResponseData> => {
-  return await fetch(`${BASE_URL}/deployments/${id}`, {
+  return await fetch(`${SERVICE_URL}/deployments/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

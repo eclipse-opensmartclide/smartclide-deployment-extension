@@ -1,13 +1,5 @@
 import React from 'react';
 
-import '../../src/browser/app/style/index.css';
-import '../../src/browser/app/style/nav/index.css';
-import '../../src/browser/app/style/spinner/index.css';
-import '../../src/browser/app/style/button/index.css';
-import '../../src/browser/app/style/card/index.css';
-import '../../src/browser/app/style/table/index.css';
-import '../../src/browser/app/style/select/index.css';
-
 import {
   injectable,
   inject,
@@ -15,6 +7,7 @@ import {
 } from '@theia/core/shared/inversify';
 
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
+
 import { BackendContextProvider } from './app/contexts/BackendContext';
 import { SmartCLIDEBackendService } from '../common/protocol';
 import { CommandRegistry } from '@theia/core/lib/common';
@@ -22,6 +15,13 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 
 import App from './app';
 
+import '../../src/browser/app/style/index.css';
+import '../../src/browser/app/style/nav/index.css';
+import '../../src/browser/app/style/spinner/index.css';
+import '../../src/browser/app/style/button/index.css';
+import '../../src/browser/app/style/card/index.css';
+import '../../src/browser/app/style/table/index.css';
+import '../../src/browser/app/style/select/index.css';
 @injectable()
 export class SmartCLIDEDeploymentWidget extends ReactWidget {
   static readonly ID = 'command-deployment-widget:widget';

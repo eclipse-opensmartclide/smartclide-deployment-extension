@@ -4,6 +4,7 @@
 *.deb
 *.idea
 *.env
+*.theia
 yarn.lock
 **/.venv
 **/.vscode

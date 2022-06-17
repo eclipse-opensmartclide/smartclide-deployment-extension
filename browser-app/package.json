@@ -21,9 +21,9 @@
     "@theia/cli": "1.19.0"
   },
   "scripts": {
-    "prepare": "theia build --mode development",
+    "prepare": "theia build",
     "start": "theia start",
-    "watch": "theia build --watch --mode development"
+    "watch": "theia build --watch"
   },
   "theia": {
     "target": "browser"
