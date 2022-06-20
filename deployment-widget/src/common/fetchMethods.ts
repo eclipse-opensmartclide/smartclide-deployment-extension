@@ -1,6 +1,4 @@
-const SERVICE_URL = process.env.SERVICE_URL;
-
-console.log('SERVICE_URL', SERVICE_URL);
+const SERVICE_URL = 'http://localhost:3000';
 
 import {
   DeploymentResponseData,
