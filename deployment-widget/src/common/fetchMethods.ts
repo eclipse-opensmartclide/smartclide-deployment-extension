@@ -1,5 +1,3 @@
-const SERVICE_URL = 'http://localhost:3000';
-
 import {
   DeploymentResponseData,
   ResponseData,
@@ -8,6 +6,7 @@ import {
 } from './ifaces';
 
 export const postDeploy = async (
+  deployUrl: string,
   user: string,
   gitRepoUrl: string,
   project: string,
@@ -20,7 +19,7 @@ export const postDeploy = async (
   gitLabToken: string
 ): Promise<ResponseData | DeploymentData> => {
   return await fetch(
-    `${SERVICE_URL}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
+    `${deployUrl}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
@@ -34,10 +33,11 @@ export const postDeploy = async (
     .catch((err: any): any => err);
 };
 export const getDeploymentStatus = async (
+  deployUrl: string,
   id: string,
   k8sToken: string
 ): Promise<ResponseData | DeploymentData> => {
-  return await fetch(`${SERVICE_URL}/deployments/${id}`, {
+  return await fetch(`${deployUrl}/deployments/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -48,10 +48,11 @@ export const getDeploymentStatus = async (
     .catch((err: any): any => err);
 };
 export const getDeploymentMetrics = async (
+  deployUrl: string,
   id: string,
   k8sToken: string
 ): Promise<MetricsResponseData> => {
-  return await fetch(`${SERVICE_URL}/metrics/${id}`, {
+  return await fetch(`${deployUrl}/metrics/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -63,13 +64,14 @@ export const getDeploymentMetrics = async (
 };
 
 export const getDeploymentList = async (
+  deployUrl: string,
   user: string,
   project: string,
   limit: string,
   skip: string
 ): Promise<DeploymentResponseData> => {
   return await fetch(
-    `${SERVICE_URL}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
+    `${deployUrl}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
     {
       method: 'GET',
       headers: {
@@ -97,10 +99,11 @@ export const getDeploymentList = async (
     .catch((err: any): any => err);
 };
 export const deleteDeployment = async (
+  deployUrl: string,
   id: string,
   k8sToken: string
 ): Promise<ResponseData> => {
-  return await fetch(`${SERVICE_URL}/deployments/${id}`, {
+  return await fetch(`${deployUrl}/deployments/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

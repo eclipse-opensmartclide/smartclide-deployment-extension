@@ -58,7 +58,11 @@ const Dashboard: React.FC = () => {
         backendService
           .fileRead(`${currentPath}/.smartclide-settings.json`)
           .then((backendRead: any) => {
-            setSettings(JSON.parse(backendRead));
+            !backendRead?.errno
+              ? setSettings(JSON.parse(backendRead))
+              : setMessage(
+                  'It is necessary to have created a new deployment first.'
+                );
           });
       }
     }
@@ -69,7 +73,7 @@ const Dashboard: React.FC = () => {
   }, [message]);
 
   useEffect(() => {
-    console.log('metrics', metrics);
+    metrics && console.log('metrics', metrics);
   }, [metrics]);
 
   useEffect(() => {
@@ -79,10 +83,11 @@ const Dashboard: React.FC = () => {
       pagination.skip !== null &&
       pagination.limit !== null
     ) {
-      const { gitLabToken, project, user } = settings;
+      const { gitLabToken, project, user, deployUrl } = settings;
       if (gitLabToken && project && user) {
         (async () => {
           const deploymentFetchData = await getDeploymentList(
+            deployUrl,
             user,
             project,
             pagination.limit.toString(),
@@ -152,11 +157,11 @@ const Dashboard: React.FC = () => {
     if (!id || settings === undefined) {
       return null;
     } else {
-      const { k8sToken } = settings;
-      if (!k8sToken) {
+      const { k8sToken, deployUrl } = settings;
+      if (!k8sToken && !deployUrl) {
         return null;
       }
-      const newMetric = await getDeploymentMetrics(id, k8sToken);
+      const newMetric = await getDeploymentMetrics(deployUrl, id, k8sToken);
       return newMetric;
     }
   };
@@ -176,9 +181,11 @@ const Dashboard: React.FC = () => {
           `${currentPath}/.smartclide-settings.json`
         )
       );
-    const { k8sToken } = prevSettings;
+    const { k8sToken, deployUrl } = prevSettings;
     const deploymentDeleted =
-      k8sToken && (await deleteDeployment(id, k8sToken));
+      k8sToken &&
+      deployUrl &&
+      (await deleteDeployment(deployUrl, id, k8sToken));
     if (deploymentDeleted) {
       const currentPath =
         workspaceService.workspace?.resource.path.toString() || '';
@@ -190,16 +197,18 @@ const Dashboard: React.FC = () => {
             `${currentPath}/.smartclide-settings.json`
           )
         );
-      const { gitLabToken, project, user } = prevSettings;
+      const { gitLabToken, project, user, deployUrl } = prevSettings;
       const deploymentFetchData =
         gitLabToken &&
         project &&
         (await getDeploymentList(
+          deployUrl,
           user,
           project,
           pagination.limit.toString(),
           pagination.skip.toString()
         ));
+      console.log('deploymentFetchData', deploymentFetchData);
       if (deploymentFetchData) {
         if (deploymentFetchData.message) {
           setDeploymentsSource([]);

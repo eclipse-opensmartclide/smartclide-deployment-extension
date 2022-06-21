@@ -32,9 +32,6 @@ import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-pro
 import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
 import { Settings } from './../common/ifaces';
 
-/// TODO: remove this mock data
-// import { mockSettings } from './../common/secrets';
-
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
   label: 'Deployment: Dashboard',
@@ -91,11 +88,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
+          deployUrl: 'http://10.128.27.31:3001',
           user: '',
           gitRepoUrl: '',
           project: '',
           k8sUrl: '',
-          hostname: '',
+          hostname: 'test-smartclide.eu',
           branch: '',
           replicas: 1,
           deploymentPort: 8080,
@@ -164,6 +162,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           prompt: 'Enter GitLab Token:',
         };
 
+        const optionsGitRepoUrl: InputOptions = {
+          placeHolder: 'Enter GitLab Url',
+          prompt: 'Enter GitLab Url:',
+        };
+
         const optionsK8sUrl: InputOptions = {
           placeHolder: 'Enter Kubernetes Url',
           prompt: 'Enter Kubernetes Url:',
@@ -192,6 +195,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then((value): string => value || '')
           : settings?.k8sToken;
 
+        const gitRepoUrl = !settings?.gitRepoUrl
+          ? await this.monacoQuickInputService
+              .input(optionsGitRepoUrl)
+              .then((value): string => value || '')
+          : settings?.gitRepoUrl;
+
         const gitLabToken = !settings?.gitLabToken
           ? await this.monacoQuickInputService
               .input(optionsGitLabToken)
@@ -203,6 +212,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         settings.branch = branchName;
         settings.k8sToken = k8sToken;
         settings.k8sUrl = k8sUrl;
+        settings.gitRepoUrl = gitRepoUrl;
         settings.gitLabToken = gitLabToken;
 
         //// ---------- PREPARE TO BUILD ------------ /////
@@ -229,6 +239,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 channel.show();
                 channel.appendLine(`Start deploy ${settings.project}...`);
                 const res: Record<string, any> = await postDeploy(
+                  settings.deployUrl,
                   settings.user,
                   settings.gitRepoUrl,
                   settings.project,
@@ -243,8 +254,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 if (res?.message) {
                   this.messageService.warn(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Info);
-                } else if (res._id) {
-                  settings.lastDeploy = res._id;
+                } else if (res.id) {
+                  settings.lastDeploy = res.id;
                   this.smartCLIDEBackendService.fileWrite(
                     `${currentPath}/.smartclide-settings.json`,
                     JSON.stringify(settings)
@@ -278,11 +289,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
+          deployUrl: 'http://10.128.27.31:3001',
           user: '',
           gitRepoUrl: '',
           project: '',
           k8sUrl: '',
-          hostname: '',
+          hostname: 'test-smartclide.eu',
           branch: '',
           replicas: 1,
           deploymentPort: 8080,
@@ -367,6 +379,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   channel.appendLine(`Checking status ${settings.project}...`);
                   if (settings.lastDeploy && settings.k8sToken) {
                     const res: any = await getDeploymentStatus(
+                      settings.deployUrl,
                       settings.lastDeploy,
                       settings.k8sToken
                     );

@@ -1,4 +1,5 @@
 export interface Settings {
+  deployUrl: string;
   user: string;
   gitRepoUrl: string;
   project: string;
@@ -40,7 +41,7 @@ export interface DeploymentResponseData {
   message?: string;
 }
 export interface DeploymentData {
-  _id: string;
+  id: string;
   user?: string;
   project?: string;
   domain?: string;

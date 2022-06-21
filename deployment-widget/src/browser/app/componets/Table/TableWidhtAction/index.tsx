@@ -39,7 +39,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                         {actionEdit && (
                           <Button
                             className="btn-primary small mr-xs"
-                            onClick={() => actionEdit(data._id)}
+                            onClick={() => actionEdit(data.id)}
                           >
                             Metrics
                           </Button>
@@ -47,7 +47,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                         {actionStop && (
                           <Button
                             className="btn-danger small"
-                            onClick={() => actionStop(data._id)}
+                            onClick={() => actionStop(data.id)}
                           >
                             Stop
                           </Button>
