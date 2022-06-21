@@ -19,7 +19,6 @@
   },
   "workspaces": [
     "deployment-widget",
-    "browser-app",
-    "electron-app"
+    "browser-app"
   ]
 }
