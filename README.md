@@ -4,10 +4,6 @@ The example of how to build the Theia-based applications with the deployment-ext
 
 ## Getting started
 
-Create an .env file with the environment variable named DEPLOYMENT_SERVICE_URL
-
-    DEPLOYMENT_SERVICE_URL=http://localhost:port
-
 Install [nvm](https://github.com/creationix/nvm#install-script).
 
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash
