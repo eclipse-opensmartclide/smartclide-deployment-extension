@@ -7,7 +7,7 @@ export interface Settings {
   hostname: string;
   branch: string;
   replicas: number;
-  deploymentPort: number;
+  container_port: number;
   k8sToken: string;
   gitLabToken: string;
   lastDeploy?: string;

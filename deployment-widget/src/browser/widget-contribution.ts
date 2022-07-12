@@ -88,7 +88,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl: 'http://10.128.27.31:3001',
+          deployUrl: 'http://192.168.1.46:3000',
           user: '',
           gitRepoUrl: '',
           project: '',
@@ -96,7 +96,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           hostname: 'test-smartclide.eu',
           branch: '',
           replicas: 1,
-          deploymentPort: 8080,
+          container_port: 6543,
           k8sToken: '',
           gitLabToken: '',
           lastDeploy: '',
@@ -247,7 +247,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   settings.hostname,
                   settings.branch,
                   settings.replicas,
-                  settings.deploymentPort,
+                  settings.container_port,
                   settings.k8sToken,
                   settings.gitLabToken
                 );
@@ -297,7 +297,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           hostname: 'test-smartclide.eu',
           branch: '',
           replicas: 1,
-          deploymentPort: 8080,
+          container_port: 6543,
           k8sToken: '',
           gitLabToken: '',
           lastDeploy: '',

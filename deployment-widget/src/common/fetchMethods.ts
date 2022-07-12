@@ -14,12 +14,12 @@ export const postDeploy = async (
   hostname: string,
   branch: string,
   replicas: number,
-  deploymentPort: number,
+  container_port: number,
   k8sToken: string,
   gitLabToken: string
 ): Promise<ResponseData | DeploymentData> => {
   return await fetch(
-    `${deployUrl}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${deploymentPort}&k8s_url=${k8sUrl}&replicas=${replicas}`,
+    `${deployUrl}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${container_port}&k8s_url=${k8sUrl}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
