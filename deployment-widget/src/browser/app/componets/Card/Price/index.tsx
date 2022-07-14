@@ -1,7 +1,7 @@
 import React from 'react';
-import { CostMetrics } from '../../../../../common/ifaces';
+import { ProviderMetrics } from '../../../../../common/ifaces';
 
-const PriceCard: React.FC<CostMetrics> = (props) => {
+const PriceCard: React.FC<ProviderMetrics> = (props) => {
   const { cost, cost_type, name, current } = props;
 
   return (

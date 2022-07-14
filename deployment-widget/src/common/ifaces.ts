@@ -37,6 +37,7 @@ export interface ProviderMetrics {
   cost: number;
   cost_type: string;
   name: string;
+  current?: boolean;
 }
 export interface MetricsResponseData {
   containers?: ContainerMetrics[];

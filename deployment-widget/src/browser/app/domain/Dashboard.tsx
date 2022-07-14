@@ -80,8 +80,8 @@ const Dashboard: React.FC = () => {
     setLoading(true);
     if (
       settings !== undefined &&
-      pagination.skip !== null &&
-      pagination.limit !== null
+      pagination?.skip !== null &&
+      pagination?.limit !== null
     ) {
       const { gitLabToken, repository_name, username, deployUrl } = settings;
       if (gitLabToken && repository_name && username) {
@@ -90,12 +90,15 @@ const Dashboard: React.FC = () => {
             deployUrl,
             username,
             repository_name,
-            pagination.limit.toString(),
-            pagination.skip.toString()
+            pagination?.limit.toString(),
+            pagination?.skip.toString()
           );
           if (deploymentFetchData) {
-            if (deploymentFetchData.message) {
-              setMessage(deploymentFetchData.message);
+            if (deploymentFetchData.total === 0) {
+              setMessage('No deployments found.');
+            }
+            if (deploymentFetchData?.message) {
+              setMessage(deploymentFetchData?.message);
               setDeploymentsSource([]);
               setPagination(
                 (prev: PaginationState): PaginationState => ({
@@ -103,13 +106,16 @@ const Dashboard: React.FC = () => {
                   total: 0,
                 })
               );
-            } else if (deploymentFetchData.data && deploymentFetchData.total) {
+            } else if (
+              deploymentFetchData?.data &&
+              deploymentFetchData?.total
+            ) {
               setMessage('');
-              setDeploymentsSource(deploymentFetchData.data);
+              setDeploymentsSource(deploymentFetchData?.data);
               setPagination(
                 (prev: PaginationState): PaginationState => ({
                   ...prev,
-                  total: deploymentFetchData.total || 0,
+                  total: deploymentFetchData?.total || 0,
                 })
               );
             }
@@ -142,7 +148,7 @@ const Dashboard: React.FC = () => {
       interval = setInterval(async () => {
         const newMetrics = await getGetMetrics(currentDeployment);
         newMetrics && setMetrics(newMetrics);
-      }, 6000);
+      }, 30000);
     }
     return () => {
       setMetrics(null);
@@ -251,7 +257,10 @@ const Dashboard: React.FC = () => {
               setState={setPagination}
             />
             {metrics && (
-              <Monitoring usage={metrics.usage} cost={metrics.cost} />
+              <Monitoring
+                containers={metrics?.containers}
+                price={metrics?.price}
+              />
             )}
           </>
         )
