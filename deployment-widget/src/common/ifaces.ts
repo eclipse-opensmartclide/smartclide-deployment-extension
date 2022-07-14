@@ -19,19 +19,28 @@ export interface PaginationState {
 export interface ResponseData {
   message: string;
 }
+export interface ContainerMetrics {
+  name: string;
+  usage: UsageMetrics;
+}
+
 export interface UsageMetrics {
   cpu: string;
   memory: string;
 }
-export interface CostMetrics {
+
+export interface PriceMetrics {
+  current_provider?: ProviderMetrics;
+  competitor_provider?: ProviderMetrics[];
+}
+export interface ProviderMetrics {
   cost: number;
   cost_type: string;
   name: string;
-  current: boolean;
 }
 export interface MetricsResponseData {
-  usage: UsageMetrics;
-  cost?: CostMetrics[];
+  containers?: ContainerMetrics[];
+  price?: PriceMetrics;
 }
 export interface DeploymentResponseData {
   data?: DeploymentData[];
