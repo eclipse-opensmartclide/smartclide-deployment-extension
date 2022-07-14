@@ -7,11 +7,10 @@ import {
 
 export const postDeploy = async (
   deployUrl: string,
-  user: string,
+  username: string,
   gitRepoUrl: string,
-  project: string,
-  k8sUrl: string,
-  hostname: string,
+  repository_name: string,
+  k8s_url: string,
   branch: string,
   replicas: number,
   container_port: number,
@@ -19,7 +18,7 @@ export const postDeploy = async (
   gitLabToken: string
 ): Promise<ResponseData | DeploymentData> => {
   return await fetch(
-    `${deployUrl}/deployments?project_name=${project}&user=${user}&git_repo_url=${gitRepoUrl}&hostname=${hostname}&branch=${branch}&deployment_port=${container_port}&k8s_url=${k8sUrl}&replicas=${replicas}`,
+    `${deployUrl}/deployments?repository_name=${repository_name}&username=${username}&repository_url=${gitRepoUrl}&branch=${branch}&container_port=${container_port}&k8s_url=${k8s_url}&replicas=${replicas}`,
     {
       method: 'POST',
       headers: {
@@ -65,13 +64,13 @@ export const getDeploymentMetrics = async (
 
 export const getDeploymentList = async (
   deployUrl: string,
-  user: string,
-  project: string,
+  username: string,
+  repository_name: string,
   limit: string,
   skip: string
 ): Promise<DeploymentResponseData> => {
   return await fetch(
-    `${deployUrl}/deployments/?user=${user}&project=${project}&skip=${skip}&limit=${limit}`,
+    `${deployUrl}/deployments/?user=${username}&project=${repository_name}&skip=${skip}&limit=${limit}`,
     {
       method: 'GET',
       headers: {

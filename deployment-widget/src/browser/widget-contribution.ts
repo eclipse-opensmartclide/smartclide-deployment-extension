@@ -26,10 +26,14 @@ import { InputOptions } from '@theia/core/lib/browser/';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-input-service';
 import { SmartCLIDEBackendService } from '../common/protocol';
-import { Git, Repository } from '@theia/git/lib/common';
 import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider';
+import { CommandService } from '@theia/core/lib/common/command';
 
-import { postDeploy, getDeploymentStatus } from '../common/fetchMethods';
+import {
+  postDeploy,
+  getDeploymentStatus,
+  deleteDeployment,
+} from '../common/fetchMethods';
 import { Settings } from './../common/ifaces';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
@@ -68,10 +72,9 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   private readonly outputChannelManager: OutputChannelManager;
   @inject(MonacoQuickInputService)
   private readonly monacoQuickInputService: MonacoQuickInputService;
-  @inject(Git)
-  protected readonly git: Git;
   @inject(GitRepositoryProvider)
-  protected readonly gitRepositoryProvider: GitRepositoryProvider;
+  protected readonly repositoryProvider: GitRepositoryProvider;
+  @inject(CommandService) protected readonly commandService: CommandService;
   constructor() {
     super({
       widgetId: SmartCLIDEDeploymentWidget.ID,
@@ -88,15 +91,14 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl: 'http://192.168.1.46:3000',
-          user: '',
-          gitRepoUrl: '',
-          project: '',
-          k8sUrl: '',
-          hostname: 'test-smartclide.eu',
+          deployUrl: 'http://10.128.19.137:3000',
+          username: '',
+          repository_url: '',
+          repository_name: '',
+          k8s_url: '',
+          container_port: 6543,
           branch: '',
           replicas: 1,
-          container_port: 6543,
           k8sToken: '',
           gitLabToken: '',
           lastDeploy: '',
@@ -141,17 +143,21 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           );
           return;
         }
-        // settings = mockSettings;
 
         //// ---------- RETRIEVE USER DATA ------------ /////
-        const localUri: Repository | undefined =
-          this.gitRepositoryProvider.selectedRepository;
+        const scmProvider = this.repositoryProvider.selectedScmProvider;
+        const status = scmProvider && scmProvider?.getStatus();
 
-        const branchName =
-          (localUri &&
-            (await this.git.branch(localUri, { type: 'current' }))?.name) ||
-          'main';
+        const branchName = (status && status?.branch) || '';
 
+        if (!scmProvider || !status || !branchName || branchName === '') {
+          this.messageService.error(
+            `There have been problems getting the git provider.`
+          );
+          return;
+        }
+
+        // branchName.leng
         const optionsUser: InputOptions = {
           placeHolder: 'Enter User Name',
           prompt: 'Enter User Name:',
@@ -177,17 +183,17 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           prompt: 'Enter Kubernetes Token:',
         };
 
-        const user = !settings?.user
+        const user = !settings?.username
           ? await this.monacoQuickInputService
               .input(optionsUser)
               .then((value): string => value || '')
-          : settings?.user;
+          : settings?.username;
 
-        const k8sUrl = !settings?.k8sUrl
+        const k8s_url = !settings?.k8s_url
           ? await this.monacoQuickInputService
               .input(optionsK8sUrl)
               .then((value): string => value || '')
-          : settings?.k8sUrl;
+          : settings?.k8s_url;
 
         const k8sToken = !settings?.k8sToken
           ? await this.monacoQuickInputService
@@ -195,11 +201,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then((value): string => value || '')
           : settings?.k8sToken;
 
-        const gitRepoUrl = !settings?.gitRepoUrl
+        const repository_url = !settings?.repository_url
           ? await this.monacoQuickInputService
               .input(optionsGitRepoUrl)
               .then((value): string => value || '')
-          : settings?.gitRepoUrl;
+          : settings?.repository_url;
 
         const gitLabToken = !settings?.gitLabToken
           ? await this.monacoQuickInputService
@@ -207,44 +213,79 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then((value): string => value || '')
           : settings?.gitLabToken;
 
-        settings.user = user;
-        settings.project = currentProject;
+        settings.username = user;
+        settings.repository_name = currentProject;
         settings.branch = branchName;
         settings.k8sToken = k8sToken;
-        settings.k8sUrl = k8sUrl;
-        settings.gitRepoUrl = gitRepoUrl;
+        settings.k8s_url = k8s_url;
+        settings.repository_url = repository_url;
         settings.gitLabToken = gitLabToken;
+
+        //// ---------- CHECK ACTIVES DEPLOYMENTS  ------------ /////
+        const prevDeploy = settings?.lastDeploy;
+
+        if (prevDeploy && prevDeploy.length > 0 && prevDeploy !== '') {
+          const lastDEploy: any = await getDeploymentStatus(
+            settings.deployUrl,
+            prevDeploy,
+            settings.repository_url
+          );
+          if (lastDEploy && lastDEploy?.status === 'active') {
+            const actionsConfirmPrevDeploy = ['Deploy new', 'Cancel'];
+            const actionDeploymentResult = await this.messageService
+              .warn(
+                `There is an active deployment you want to stop it and create a new one or review it?`,
+                ...actionsConfirmPrevDeploy
+              )
+              .then(async (action) => {
+                if (action === 'Deploy new') {
+                  await deleteDeployment(
+                    settings.deployUrl,
+                    prevDeploy,
+                    settings.k8sToken
+                  );
+                }
+                return action;
+              })
+              .catch((err) => err);
+            if (actionDeploymentResult !== 'Deploy new') {
+              return;
+            }
+          }
+        }
 
         //// ---------- PREPARE TO BUILD ------------ /////
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         if (
-          settings.k8sUrl &&
+          settings.k8s_url &&
           settings.k8sToken &&
-          settings.project &&
+          settings.repository_name &&
           settings.gitLabToken &&
           settings.branch &&
           settings.replicas
         ) {
           this.messageService
             .info(
-              `Are you sure launch deploy to PROJECT: ${settings.project}?`,
+              `Are you sure launch deploy to PROJECT: ${settings.repository_name}?`,
               ...actionsConfirmDeploy
             )
             .then(async (action) => {
               if (action === 'Deploy now') {
+                settings.lastDeploy = '';
                 this.smartCLIDEBackendService.fileWrite(
                   `${currentPath}/.smartclide-settings.json`,
                   JSON.stringify(settings)
                 );
                 channel.show();
-                channel.appendLine(`Start deploy ${settings.project}...`);
+                channel.appendLine(
+                  `Start deploy ${settings.repository_name}...`
+                );
                 const res: Record<string, any> = await postDeploy(
                   settings.deployUrl,
-                  settings.user,
-                  settings.gitRepoUrl,
-                  settings.project,
-                  settings.k8sUrl,
-                  settings.hostname,
+                  settings.username,
+                  settings.repository_url,
+                  settings.repository_name,
+                  settings.k8s_url,
                   settings.branch,
                   settings.replicas,
                   settings.container_port,
@@ -255,6 +296,10 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   this.messageService.warn(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Info);
                 } else if (res.id) {
+                  channel.show();
+                  channel.appendLine(
+                    `Deployment ${settings.repository_name} is already...`
+                  );
                   settings.lastDeploy = res.id;
                   this.smartCLIDEBackendService.fileWrite(
                     `${currentPath}/.smartclide-settings.json`,
@@ -276,7 +321,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             .catch((err) => console.log('err', err));
         } else {
           this.messageService.error(
-            'It is necessary to have at least one repository open.'
+            'It is necessary to have at leasts one repository open.'
           );
           channel.appendLine(
             'It is necessary to have at least one repository open.',
@@ -289,12 +334,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl: 'http://10.128.27.31:3001',
-          user: '',
-          gitRepoUrl: '',
-          project: '',
-          k8sUrl: '',
-          hostname: 'test-smartclide.eu',
+          deployUrl: 'http://10.128.19.137:3000',
+          username: '',
+          repository_url: '',
+          repository_name: '',
+          k8s_url: '',
           branch: '',
           replicas: 1,
           container_port: 6543,
@@ -336,7 +380,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           settings = { ...JSON.parse(prevSettings) };
         }
 
-        settings.project = currentProject;
+        settings.repository_name = currentProject;
 
         if (!currentPath || currentPath === '') {
           this.messageService.error(
@@ -372,11 +416,16 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         //// ---------- PREPARE TO BUILD ------------ /////
         settings?.gitLabToken
           ? this.messageService
-              .info(`PROJECT: ${settings.project}`, ...actionsConfirmBuild)
+              .info(
+                `PROJECT: ${settings.repository_name}`,
+                ...actionsConfirmBuild
+              )
               .then(async (action) => {
                 if (action === 'Check now') {
                   channel.show();
-                  channel.appendLine(`Checking status ${settings.project}...`);
+                  channel.appendLine(
+                    `Checking status ${settings.repository_name}...`
+                  );
                   if (settings.lastDeploy && settings.k8sToken) {
                     const res: any = await getDeploymentStatus(
                       settings.deployUrl,

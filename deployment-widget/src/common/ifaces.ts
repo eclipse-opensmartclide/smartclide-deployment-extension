@@ -1,10 +1,9 @@
 export interface Settings {
   deployUrl: string;
-  user: string;
-  gitRepoUrl: string;
-  project: string;
-  k8sUrl: string;
-  hostname: string;
+  username: string;
+  repository_url: string;
+  repository_name: string;
+  k8s_url: string;
   branch: string;
   replicas: number;
   container_port: number;
@@ -12,7 +11,6 @@ export interface Settings {
   gitLabToken: string;
   lastDeploy?: string;
 }
-
 export interface PaginationState {
   skip: number;
   limit: number;

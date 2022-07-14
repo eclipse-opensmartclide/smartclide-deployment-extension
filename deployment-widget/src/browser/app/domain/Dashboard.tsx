@@ -83,13 +83,13 @@ const Dashboard: React.FC = () => {
       pagination.skip !== null &&
       pagination.limit !== null
     ) {
-      const { gitLabToken, project, user, deployUrl } = settings;
-      if (gitLabToken && project && user) {
+      const { gitLabToken, repository_name, username, deployUrl } = settings;
+      if (gitLabToken && repository_name && username) {
         (async () => {
           const deploymentFetchData = await getDeploymentList(
             deployUrl,
-            user,
-            project,
+            username,
+            repository_name,
             pagination.limit.toString(),
             pagination.skip.toString()
           );
@@ -123,7 +123,6 @@ const Dashboard: React.FC = () => {
     deploymentsSource &&
       deploymentsSource?.length !== 0 &&
       setColumnsSource([
-        'domain',
         'k8 url',
         'port',
         'replicas',
@@ -197,18 +196,18 @@ const Dashboard: React.FC = () => {
             `${currentPath}/.smartclide-settings.json`
           )
         );
-      const { gitLabToken, project, user, deployUrl } = prevSettings;
+      const { gitLabToken, repository_name, username, deployUrl } =
+        prevSettings;
       const deploymentFetchData =
         gitLabToken &&
-        project &&
+        repository_name &&
         (await getDeploymentList(
           deployUrl,
-          user,
-          project,
+          username,
+          repository_name,
           pagination.limit.toString(),
           pagination.skip.toString()
         ));
-      console.log('deploymentFetchData', deploymentFetchData);
       if (deploymentFetchData) {
         if (deploymentFetchData.message) {
           setDeploymentsSource([]);

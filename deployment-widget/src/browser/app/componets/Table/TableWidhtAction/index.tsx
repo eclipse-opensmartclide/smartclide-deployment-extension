@@ -27,7 +27,6 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
             dataSource?.map((data, index) => {
               return (
                 <tr key={index}>
-                  <td>{data.domain}</td>
                   <td>{data.k8s_url}</td>
                   <td>{data.port}</td>
                   <td>{data.replicas}</td>
