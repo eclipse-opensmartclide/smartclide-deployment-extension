@@ -72,9 +72,9 @@ const Dashboard: React.FC = () => {
     message.length !== 0 && setLoading(false);
   }, [message]);
 
-  useEffect(() => {
-    metrics && console.log('metrics', metrics);
-  }, [metrics]);
+  // useEffect(() => {
+  //   metrics && console.log('metrics', metrics);
+  // }, [metrics]);
 
   useEffect(() => {
     setLoading(true);
@@ -145,10 +145,20 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     let interval: any;
     if (currentDeployment.length !== 0) {
-      interval = setInterval(async () => {
-        const newMetrics = await getGetMetrics(currentDeployment);
-        newMetrics && setMetrics(newMetrics);
-      }, 30000);
+      getGetMetrics(currentDeployment)
+        .then((response) => {
+          if (response) {
+            setMetrics(response);
+            interval = setInterval(async () => {
+              const newMetrics = await getGetMetrics(currentDeployment);
+              newMetrics && setMetrics(newMetrics);
+            }, 30000);
+          }
+        })
+        .catch(() => {
+          setMessage('No metrics found.');
+          return;
+        });
     }
     return () => {
       setMetrics(null);
@@ -172,6 +182,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleGetMetrics = async (id: string) => {
+    console.log('id', id);
     setCurrentDeployment(id);
   };
 

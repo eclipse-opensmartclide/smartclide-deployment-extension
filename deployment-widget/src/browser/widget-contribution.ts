@@ -91,7 +91,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl: 'http://192.168.1.46:3000',
+          deployUrl: 'http://10.128.19.137:3000',
           username: '',
           repository_url: '',
           repository_name: '',
@@ -334,7 +334,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl: 'http://192.168.1.46:3000',
+          deployUrl: 'http://10.128.19.137:3000',
           username: '',
           repository_url: '',
           repository_name: '',

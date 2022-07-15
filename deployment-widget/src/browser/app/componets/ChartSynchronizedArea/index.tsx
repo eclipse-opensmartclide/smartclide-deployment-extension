@@ -42,7 +42,7 @@ const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = (props) => {
 
   return memory && data?.name && cpu ? (
     <>
-      <p className="text-white mb-0 text-left">{data?.name}</p>
+      {data?.name && <p className="text-white mb-0">{data?.name}</p>}
       {memory && memory.length > 0 && (
         <>
           <p className="text-white mb-0 text-left">RAM</p>

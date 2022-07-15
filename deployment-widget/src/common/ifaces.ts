@@ -34,7 +34,7 @@ export interface PriceMetrics {
   competitor_provider?: ProviderMetrics[];
 }
 export interface ProviderMetrics {
-  cost: number;
+  price: number;
   cost_type: string;
   name: string;
   current?: boolean;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import Spinner from '../componets/Spinner';
-import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
+// import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
 import PriceCard from '../componets/Card/Price';
 
 import {
@@ -29,21 +29,16 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
 
   useEffect(() => {
     setLoadingPrice(false);
+    console.log('price', price);
     setPriceData(price);
   }, [price]);
 
-  useEffect(() => {
-    console.log('containersData', containersData);
-  }, [containersData]);
-
-  useEffect(() => {
-    console.log('priceData', priceData);
-  }, [priceData]);
+  console.log('containersData', containersData);
 
   return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
       <h4 className="text-white">Deployment is running</h4>
-      {!loadingChart ? (
+      {/* {!loadingChart ? (
         <div className="d-flex mt-1">
           {containersData?.map((container, index) => {
             return <ChartSynchronizedArea key={index} data={container} />;
@@ -51,26 +46,26 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
         </div>
       ) : (
         <Spinner isVisible={loadingChart} />
-      )}
+      )} */}
       {!loadingPrice ? (
         <div className="d-flex mt-1">
           {priceData && priceData?.current_provider && (
             <PriceCard
-              cost={priceData?.current_provider?.cost}
+              price={priceData?.current_provider?.price}
               cost_type={priceData?.current_provider?.cost_type}
               name={priceData?.current_provider?.name}
-              current={false}
+              current={true}
             />
           )}
           {priceData &&
             priceData?.competitor_provider &&
             priceData?.competitor_provider?.map(
               (data: ProviderMetrics, index: number) => {
-                const { cost, cost_type, name } = data;
+                const { price, cost_type, name } = data;
                 return (
                   <PriceCard
                     key={index}
-                    cost={cost}
+                    price={price}
                     cost_type={cost_type}
                     name={name}
                     current={false}
