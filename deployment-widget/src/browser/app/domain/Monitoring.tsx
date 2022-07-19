@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import Spinner from '../componets/Spinner';
-// import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
+import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
 import PriceCard from '../componets/Card/Price';
 
 import {
   MetricsResponseData,
-  ContainerMetrics,
   PriceMetrics,
   ProviderMetrics,
+  Serie,
 } from '../../../common/ifaces';
 
 const Monitoring: React.FC<MetricsResponseData> = (props) => {
@@ -16,37 +16,81 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
 
   const [loadingChart, setLoadingChart] = useState<boolean>(true);
   const [loadingPrice, setLoadingPrice] = useState<boolean>(true);
-  const [containersData, setContainersData] = useState<ContainerMetrics[]>();
+  const [containersData, setContainersData] = useState<Serie[]>();
   const [priceData, setPriceData] = useState<PriceMetrics>();
 
   useEffect(() => {
     setLoadingChart(false);
     containers &&
-      setContainersData((prev) =>
-        prev ? [...prev, ...containers] : [...containers]
-      );
+      containers?.map((container) => {
+        setContainersData((prev): Serie[] => {
+          if (!prev) {
+            return [
+              {
+                name: container?.name,
+                series: {
+                  cpu: [container?.usage?.cpu],
+                  memory: [container?.usage?.memory],
+                },
+              },
+            ];
+          } else {
+            const containerNames = prev.map((i) => i.name);
+            if (containerNames.indexOf(container?.name) === -1) {
+              const newContainer = {
+                name: container?.name,
+                series: {
+                  cpu: [container?.usage?.cpu],
+                  memory: [container?.usage?.memory],
+                },
+              };
+              return [...prev, newContainer];
+            } else {
+              const editedPrev = prev?.map((item) => {
+                if (item?.name === container?.name) {
+                  const editedItem = {
+                    name: container?.name,
+                    series: {
+                      cpu: [...item?.series?.cpu, container?.usage?.cpu],
+                      memory: [
+                        ...item?.series?.memory,
+                        container?.usage?.memory,
+                      ],
+                    },
+                  };
+                  return editedItem;
+                }
+                return item;
+              });
+              return editedPrev;
+            }
+          }
+        });
+      });
   }, [containers]);
 
   useEffect(() => {
     setLoadingPrice(false);
-    console.log('price', price);
     setPriceData(price);
   }, [price]);
 
-  console.log('containersData', containersData);
+  useEffect(() => {
+    console.log('containersData', containersData);
+  }, [containersData]);
 
   return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
       <h4 className="text-white">Deployment is running</h4>
-      {/* {!loadingChart ? (
+      {!loadingChart ? (
         <div className="d-flex mt-1">
-          {containersData?.map((container, index) => {
-            return <ChartSynchronizedArea key={index} data={container} />;
-          })}
+          {containersData &&
+            containersData?.map((container, index) => {
+              return <ChartSynchronizedArea key={index} data={container} />;
+            })}
         </div>
       ) : (
         <Spinner isVisible={loadingChart} />
-      )} */}
+      )}
       {!loadingPrice ? (
         <div className="d-flex mt-1">
           {priceData && priceData?.current_provider && (
