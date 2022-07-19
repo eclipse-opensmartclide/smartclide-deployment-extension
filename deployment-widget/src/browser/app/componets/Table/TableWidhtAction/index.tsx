@@ -4,12 +4,13 @@ import Button from '../../Button';
 export interface TableProps {
   columnsSource: string[];
   dataSource?: any[];
+  loading?: boolean;
   actionEdit?: (i: string) => void;
   actionStop?: (i: string) => void;
 }
 
 const TableWidthAction: React.FC<TableProps> = (props) => {
-  const { columnsSource, dataSource, actionEdit, actionStop } = props;
+  const { columnsSource, dataSource, actionEdit, actionStop, loading } = props;
   return (
     <div className="table">
       <table className="deployment-table">
@@ -38,6 +39,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                         {actionEdit && (
                           <Button
                             className="btn-primary small mr-xs"
+                            disabled={loading}
                             onClick={() => actionEdit(data.id)}
                           >
                             Metrics
@@ -46,6 +48,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                         {actionStop && (
                           <Button
                             className="btn-danger small"
+                            disabled={loading}
                             onClick={() => actionStop(data.id)}
                           >
                             Stop

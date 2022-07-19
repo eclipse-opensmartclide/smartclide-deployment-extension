@@ -24,6 +24,14 @@ export interface ContainerMetrics {
   usage: UsageMetrics;
 }
 
+export interface Serie {
+  name: string;
+  series: UsageSeries;
+}
+export interface UsageSeries {
+  cpu: string[];
+  memory: string[];
+}
 export interface UsageMetrics {
   cpu: string;
   memory: string;

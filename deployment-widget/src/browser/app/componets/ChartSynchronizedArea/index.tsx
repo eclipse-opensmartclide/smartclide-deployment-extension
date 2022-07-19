@@ -9,9 +9,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-import { ContainerMetrics } from '../../../../common/ifaces';
 interface ChartSynchronizedAreaProps {
-  data: ContainerMetrics | undefined;
+  data: any | undefined;
 }
 // let interval: any;
 const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = (props) => {

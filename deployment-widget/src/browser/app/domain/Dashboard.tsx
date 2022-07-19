@@ -26,6 +26,7 @@ const initialPagination: PaginationState = {
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMetrics, setLoadingMetrics] = useState<boolean>(false);
   const [settings, setSettings] = useState<Settings>();
   const [message, setMessage] = useState<string>('');
   const [currentDeployment, setCurrentDeployment] = useState<string>('');
@@ -42,6 +43,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     return () => {
       setLoading(true);
+      setLoadingMetrics(false);
       setDeploymentsSource([]);
       setMetrics(null);
       setCurrentDeployment('');
@@ -72,9 +74,9 @@ const Dashboard: React.FC = () => {
     message.length !== 0 && setLoading(false);
   }, [message]);
 
-  // useEffect(() => {
-  //   metrics && console.log('metrics', metrics);
-  // }, [metrics]);
+  useEffect(() => {
+    metrics && setLoadingMetrics(false);
+  }, [metrics]);
 
   useEffect(() => {
     setLoading(true);
@@ -152,7 +154,7 @@ const Dashboard: React.FC = () => {
             interval = setInterval(async () => {
               const newMetrics = await getGetMetrics(currentDeployment);
               newMetrics && setMetrics(newMetrics);
-            }, 30000);
+            }, 10000);
           }
         })
         .catch(() => {
@@ -182,7 +184,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleGetMetrics = async (id: string) => {
-    console.log('id', id);
+    setLoadingMetrics(true);
     setCurrentDeployment(id);
   };
 
@@ -260,6 +262,7 @@ const Dashboard: React.FC = () => {
               dataSource={deploymentsSource}
               actionEdit={handleGetMetrics}
               actionStop={handleStop}
+              loading={loadingMetrics}
             />
             <Pagination
               limit={pagination.limit}
