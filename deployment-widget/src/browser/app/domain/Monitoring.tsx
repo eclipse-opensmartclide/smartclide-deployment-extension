@@ -11,6 +11,19 @@ import {
   Serie,
 } from '../../../common/ifaces';
 
+const truncateEndString = (str: string, chars: number = 0): string => {
+  if ((!str && str.length <= 0) || (!chars && typeof chars !== 'number')) {
+    return '';
+  }
+  return str.substring(0, str.length - chars);
+};
+const getEndString = (str: string, chars: number = 0): string => {
+  if ((!str && str.length <= 0) || (!chars && typeof chars !== 'number')) {
+    return '';
+  }
+  return str.substring(str.length - chars, str.length);
+};
+
 const Monitoring: React.FC<MetricsResponseData> = (props) => {
   const { containers, price } = props;
 
@@ -29,8 +42,12 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               {
                 name: container?.name,
                 series: {
-                  cpu: [container?.usage?.cpu],
-                  memory: [container?.usage?.memory],
+                  cpu: [truncateEndString(container?.usage?.cpu, 1)],
+                  memory: [truncateEndString(container?.usage?.memory, 2)],
+                },
+                units: {
+                  cpu: getEndString(container?.usage?.cpu, 1),
+                  memory: getEndString(container?.usage?.memory, 2),
                 },
               },
             ];
@@ -40,22 +57,37 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               const newContainer = {
                 name: container?.name,
                 series: {
-                  cpu: [container?.usage?.cpu],
-                  memory: [container?.usage?.memory],
+                  cpu: [truncateEndString(container?.usage?.cpu, 1)],
+                  memory: [truncateEndString(container?.usage?.memory, 2)],
+                },
+                units: {
+                  cpu: getEndString(container?.usage?.cpu, 1),
+                  memory: getEndString(container?.usage?.memory, 2),
                 },
               };
               return [...prev, newContainer];
             } else {
               const editedPrev = prev?.map((item) => {
                 if (item?.name === container?.name) {
+                  item?.series?.cpu?.length >= 6 && item?.series?.cpu.shift();
+                  item?.series?.memory?.length >= 6 &&
+                    item?.series?.memory.shift();
+
                   const editedItem = {
                     name: container?.name,
                     series: {
-                      cpu: [...item?.series?.cpu, container?.usage?.cpu],
+                      cpu: [
+                        ...item?.series?.cpu,
+                        truncateEndString(container?.usage?.cpu, 1),
+                      ],
                       memory: [
                         ...item?.series?.memory,
-                        container?.usage?.memory,
+                        truncateEndString(container?.usage?.memory, 2),
                       ],
+                    },
+                    units: {
+                      cpu: getEndString(container?.usage?.cpu, 1),
+                      memory: getEndString(container?.usage?.memory, 2),
                     },
                   };
                   return editedItem;

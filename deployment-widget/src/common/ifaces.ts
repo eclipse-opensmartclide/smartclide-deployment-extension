@@ -27,6 +27,11 @@ export interface ContainerMetrics {
 export interface Serie {
   name: string;
   series: UsageSeries;
+  units?: UnitSeries;
+}
+export interface UnitSeries {
+  cpu: string;
+  memory: string;
 }
 export interface UsageSeries {
   cpu: string[];
