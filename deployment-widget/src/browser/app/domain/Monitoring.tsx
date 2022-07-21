@@ -42,8 +42,10 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               {
                 name: container?.name,
                 series: {
-                  cpu: [truncateEndString(container?.usage?.cpu, 1)],
-                  memory: [truncateEndString(container?.usage?.memory, 2)],
+                  cpu: [parseInt(truncateEndString(container?.usage?.cpu, 1))],
+                  memory: [
+                    parseInt(truncateEndString(container?.usage?.memory, 2)),
+                  ],
                 },
                 units: {
                   cpu: getEndString(container?.usage?.cpu, 1),
@@ -57,8 +59,10 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               const newContainer = {
                 name: container?.name,
                 series: {
-                  cpu: [truncateEndString(container?.usage?.cpu, 1)],
-                  memory: [truncateEndString(container?.usage?.memory, 2)],
+                  cpu: [parseInt(truncateEndString(container?.usage?.cpu, 1))],
+                  memory: [
+                    parseInt(truncateEndString(container?.usage?.memory, 2)),
+                  ],
                 },
                 units: {
                   cpu: getEndString(container?.usage?.cpu, 1),
@@ -106,20 +110,10 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
     setPriceData(price);
   }, [price]);
 
-  useEffect(() => {
-    console.log('containersData', containersData);
-  }, [containersData]);
-
   return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
-      <h4 className="text-white">Deployment is running</h4>
       {!loadingChart ? (
-        <div className="d-flex mt-1">
-          {containersData &&
-            containersData?.map((container, index) => {
-              return <ChartSynchronizedArea key={index} data={container} />;
-            })}
-        </div>
+        containersData && <ChartSynchronizedArea data={containersData} />
       ) : (
         <Spinner isVisible={loadingChart} />
       )}

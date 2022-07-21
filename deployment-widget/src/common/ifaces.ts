@@ -1,3 +1,5 @@
+import { type } from 'os';
+
 export interface Settings {
   deployUrl: string;
   username: string;
@@ -21,7 +23,7 @@ export interface ResponseData {
 }
 export interface ContainerMetrics {
   name: string;
-  usage: UsageMetrics;
+  usage: UnitSeries;
 }
 
 export interface Serie {
@@ -33,14 +35,15 @@ export interface UnitSeries {
   cpu: string;
   memory: string;
 }
+
 export interface UsageSeries {
-  cpu: string[];
-  memory: string[];
+  cpu: number[];
+  memory: number[];
 }
-export interface UsageMetrics {
-  cpu: string;
-  memory: string;
-}
+
+export type CharSerie = {
+  [id: string]: number;
+};
 
 export interface PriceMetrics {
   current_provider?: ProviderMetrics;
