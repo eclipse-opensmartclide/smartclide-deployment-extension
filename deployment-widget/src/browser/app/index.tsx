@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import Dashboard from './domain/Dashboard';
 
-// import Monitoring from './domain/Monitoring';
 import Spinner from './componets/Spinner';
 
 import { useBackendContext } from './contexts/BackendContext';
@@ -34,7 +33,6 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
 
   return !loading ? (
     <>
-      <div id="SmartCLIDE-Widget-Bar">{/* <Monitoring /> */}</div>
       <div id="SmartCLIDE-Widget-App">
         <Dashboard />
       </div>
