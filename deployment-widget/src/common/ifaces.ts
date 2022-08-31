@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 export interface Settings {
   deployUrl: string;
   username: string;
