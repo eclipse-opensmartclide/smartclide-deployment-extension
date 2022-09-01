@@ -98,7 +98,8 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                 }
                 return item;
               });
-              return editedPrev;
+              console.log('editedPrev', editedPrev);
+              // return editedPrev;
             }
           }
         });

@@ -4,7 +4,31 @@ import {
   MetricsResponseData,
   DeploymentData,
 } from './ifaces';
-
+const mockMetrics = {
+  containers: [
+    {
+      name: 'redis',
+      usage: {
+        cpu: '1471123n',
+        memory: '2976Ki',
+      },
+    },
+    {
+      name: 'wellness-challenge',
+      usage: {
+        cpu: '10521849n',
+        memory: '94484Ki',
+      },
+    },
+    {
+      name: 'mongo',
+      usage: {
+        cpu: '4096685n',
+        memory: '65880Ki',
+      },
+    },
+  ],
+};
 export const postDeploy = async (
   deployUrl: string,
   username: string,
@@ -51,15 +75,16 @@ export const getDeploymentMetrics = async (
   id: string,
   k8sToken: string
 ): Promise<MetricsResponseData> => {
-  return await fetch(`${deployUrl}/metrics/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'k8s-token': k8sToken,
-    },
-  })
-    .then((res: any): any => res.json().then((res: any): any => res))
-    .catch((err: any): any => err);
+  return mockMetrics;
+  // return await fetch(`${deployUrl}/metrics/${id}`, {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'k8s-token': k8sToken,
+  //   },
+  // })
+  //   .then((res: any): any => res.json().then((res: any): any => res))
+  //   .catch((err: any): any => err);
 };
 
 export const getDeploymentList = async (

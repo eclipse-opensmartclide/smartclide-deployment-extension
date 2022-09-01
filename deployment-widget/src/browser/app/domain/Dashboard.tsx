@@ -95,7 +95,6 @@ const Dashboard: React.FC = () => {
             pagination?.limit.toString(),
             pagination?.skip.toString()
           );
-          console.log('deploymentFetchData', deploymentFetchData);
           if (deploymentFetchData) {
             if (deploymentFetchData.total === 0) {
               setMessage('No deployments found.');
@@ -152,10 +151,10 @@ const Dashboard: React.FC = () => {
         .then((response) => {
           if (response) {
             setMetrics(response);
-            interval = setInterval(async () => {
-              const newMetrics = await getGetMetrics(currentDeployment);
-              newMetrics && setMetrics(newMetrics);
-            }, 10000);
+            // interval = setInterval(async () => {
+            //   const newMetrics = await getGetMetrics(currentDeployment);
+            //   newMetrics && setMetrics(newMetrics);
+            // }, 10000);
           }
         })
         .catch(() => {
