@@ -16,6 +16,7 @@ import {
   DeploymentData,
   MetricsResponseData,
 } from '../../../common/ifaces';
+import Monitoring from './Monitoring';
 
 const initialPagination: PaginationState = {
   skip: 0,
@@ -94,6 +95,7 @@ const Dashboard: React.FC = () => {
             pagination?.limit.toString(),
             pagination?.skip.toString()
           );
+          console.log('deploymentFetchData', deploymentFetchData);
           if (deploymentFetchData) {
             if (deploymentFetchData.total === 0) {
               setMessage('No deployments found.');
@@ -269,12 +271,11 @@ const Dashboard: React.FC = () => {
               total={pagination.total}
               setState={setPagination}
             />
-            {!metrics && (
-              // <Monitoring
-              //   containers={metrics?.containers}
-              //   price={metrics?.price}
-              // />
-              <Spinner isVisible={!metrics} />
+            {metrics && (
+              <Monitoring
+                containers={metrics?.containers}
+                price={metrics?.price}
+              />
             )}
           </>
         )
