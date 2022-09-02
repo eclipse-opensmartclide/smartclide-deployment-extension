@@ -151,10 +151,10 @@ const Dashboard: React.FC = () => {
         .then((response) => {
           if (response) {
             setMetrics(response);
-            // interval = setInterval(async () => {
-            //   const newMetrics = await getGetMetrics(currentDeployment);
-            //   newMetrics && setMetrics(newMetrics);
-            // }, 10000);
+            interval = setInterval(async () => {
+              const newMetrics = await getGetMetrics(currentDeployment);
+              newMetrics && setMetrics(newMetrics);
+            }, 10000);
           }
         })
         .catch(() => {

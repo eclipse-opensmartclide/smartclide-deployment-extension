@@ -71,22 +71,26 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               };
               return [...prev, newContainer];
             } else {
-              const editedPrev = prev?.map((item) => {
+              return prev?.map((item) => {
                 if (item?.name === container?.name) {
+                  // Set array length to 6 elemt max
                   item?.series?.cpu?.length >= 6 && item?.series?.cpu.shift();
                   item?.series?.memory?.length >= 6 &&
                     item?.series?.memory.shift();
 
+                  // Add to prev item new data
                   const editedItem = {
                     name: container?.name,
                     series: {
                       cpu: [
                         ...item?.series?.cpu,
-                        truncateEndString(container?.usage?.cpu, 1),
+                        parseInt(truncateEndString(container?.usage?.cpu, 1)),
                       ],
                       memory: [
                         ...item?.series?.memory,
-                        truncateEndString(container?.usage?.memory, 2),
+                        parseInt(
+                          truncateEndString(container?.usage?.memory, 2)
+                        ),
                       ],
                     },
                     units: {
@@ -98,8 +102,6 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                 }
                 return item;
               });
-              console.log('editedPrev', editedPrev);
-              // return editedPrev;
             }
           }
         });
