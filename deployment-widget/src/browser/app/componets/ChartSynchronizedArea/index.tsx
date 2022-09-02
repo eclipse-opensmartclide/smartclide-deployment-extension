@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   AreaChart,
   Area,
@@ -17,96 +17,62 @@ interface ChartSynchronizedAreaProps {
 const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = ({
   data,
 }) => {
-  useEffect(() => {
-    console.log('data', data);
-  }, [data]);
-  const data2 = [
-    {
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
   return data ? (
-    <>
-      <ResponsiveContainer width={'100%'} height={200}>
-        <AreaChart
-          width={600}
-          height={200}
-          data={data2}
-          syncId="anyId"
-          margin={{
-            top: 10,
-            right: 0,
-            left: -20,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis />
-          <YAxis type="number" domain={[0, 8000]} />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: '#333333',
-              color: '#ccccc',
-            }}
-            label={false}
-            labelFormatter={() => ''}
-          />
-          <Area
-            isAnimationActive={false}
-            type="monotone"
-            dataKey="uv"
-            stroke="#8884d8"
-            fill="#8884d8"
-          />
-          <Area
-            isAnimationActive={false}
-            type="monotone"
-            dataKey="pv"
-            stroke="#8884d8"
-            fill="#8884d8"
-          />
-          <Area
-            isAnimationActive={false}
-            type="monotone"
-            dataKey="amt"
-            stroke="#8884d8"
-            fill="#8884d8"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </>
+    <div className="d-flex space-bettwen center mt-1">
+      {data.map((container, index) => {
+        const serie = container.series.cpu.map((value, index) => {
+          return { cpu: value, memory: container.series.memory[index] };
+        });
+
+        return (
+          <div key={`${index}-asdasd`} className="w-100 pr-2">
+            <h4>{container.name}</h4>
+            <ResponsiveContainer width={'100%'} height={200}>
+              <AreaChart
+                width={600}
+                height={200}
+                data={serie}
+                syncId="anyId"
+                margin={{
+                  top: 10,
+                  right: 0,
+                  left: 0,
+                  bottom: 0,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis />
+                <YAxis type="number" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#333333',
+                    color: '#ccccc',
+                  }}
+                  label={true}
+                  labelFormatter={() => ''}
+                />
+                <Area
+                  isAnimationActive={true}
+                  type="monotone"
+                  dataKey="memory"
+                  stroke="#d8848c"
+                  fill="#d8848c"
+                  unit="Ki"
+                />
+                <Area
+                  isAnimationActive={true}
+                  type="monotone"
+                  dataKey="cpu"
+                  unit="kn"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      })}
+    </div>
   ) : (
     <p>Non data provive</p>
   );

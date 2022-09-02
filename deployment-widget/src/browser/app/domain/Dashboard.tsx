@@ -74,9 +74,9 @@ const Dashboard: React.FC = () => {
     message.length !== 0 && setLoading(false);
   }, [message]);
 
-  useEffect(() => {
-    metrics && setLoadingMetrics(false);
-  }, [metrics]);
+  // useEffect(() => {
+  //   metrics && setLoadingMetrics(false);
+  // }, [metrics]);
 
   useEffect(() => {
     setLoading(true);

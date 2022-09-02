@@ -34,6 +34,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
 
   useEffect(() => {
     setLoadingChart(false);
+    console.log('containers', containers);
     containers &&
       containers?.map((container) => {
         setContainersData((prev): Serie[] => {
@@ -42,7 +43,10 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               {
                 name: container?.name,
                 series: {
-                  cpu: [parseInt(truncateEndString(container?.usage?.cpu, 1))],
+                  cpu: [
+                    parseInt(truncateEndString(container?.usage?.cpu, 1)) /
+                      1000,
+                  ],
                   memory: [
                     parseInt(truncateEndString(container?.usage?.memory, 2)),
                   ],
@@ -59,7 +63,10 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               const newContainer = {
                 name: container?.name,
                 series: {
-                  cpu: [parseInt(truncateEndString(container?.usage?.cpu, 1))],
+                  cpu: [
+                    parseInt(truncateEndString(container?.usage?.cpu, 1)) /
+                      1000,
+                  ],
                   memory: [
                     parseInt(truncateEndString(container?.usage?.memory, 2)),
                   ],
@@ -84,7 +91,8 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                     series: {
                       cpu: [
                         ...item?.series?.cpu,
-                        parseInt(truncateEndString(container?.usage?.cpu, 1)),
+                        parseInt(truncateEndString(container?.usage?.cpu, 1)) /
+                          1000,
                       ],
                       memory: [
                         ...item?.series?.memory,
@@ -116,37 +124,45 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
   return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
       {!loadingChart ? (
-        containersData && <ChartSynchronizedArea data={containersData} />
+        containersData && (
+          <>
+            <ChartSynchronizedArea data={containersData} />
+            <hr></hr>
+          </>
+        )
       ) : (
         <Spinner isVisible={loadingChart} />
       )}
       {!loadingPrice ? (
-        <div className="d-flex mt-1">
-          {priceData && priceData?.current_provider && (
-            <PriceCard
-              price={priceData?.current_provider?.price}
-              cost_type={priceData?.current_provider?.cost_type}
-              name={priceData?.current_provider?.name}
-              current={true}
-            />
-          )}
-          {priceData &&
-            priceData?.competitor_provider &&
-            priceData?.competitor_provider?.map(
-              (data: ProviderMetrics, index: number) => {
-                const { price, cost_type, name } = data;
-                return (
-                  <PriceCard
-                    key={index}
-                    price={price}
-                    cost_type={cost_type}
-                    name={name}
-                    current={false}
-                  />
-                );
-              }
+        <>
+          <h4>Costs</h4>
+          <div className="d-flex mt-1">
+            {priceData && priceData?.current_provider && (
+              <PriceCard
+                price={priceData?.current_provider?.price}
+                cost_type={priceData?.current_provider?.cost_type}
+                name={priceData?.current_provider?.name}
+                current={true}
+              />
             )}
-        </div>
+            {priceData &&
+              priceData?.competitor_provider &&
+              priceData?.competitor_provider?.map(
+                (data: ProviderMetrics, index: number) => {
+                  const { price, cost_type, name } = data;
+                  return (
+                    <PriceCard
+                      key={index}
+                      price={price}
+                      cost_type={cost_type}
+                      name={name}
+                      current={false}
+                    />
+                  );
+                }
+              )}
+          </div>
+        </>
       ) : (
         <Spinner isVisible={loadingPrice} />
       )}

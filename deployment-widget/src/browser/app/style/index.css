@@ -4,6 +4,9 @@
 #SmartCLIDE-Widget-Bar {
   padding: 15px 50px;
 }
+#SmartCLIDE-Widget-App .w-100 {
+  width: 100%;
+}
 #SmartCLIDE-Widget-App .d-flex {
   display: flex;
 }
@@ -22,6 +25,9 @@
 }
 #SmartCLIDE-Widget-App .mr-xs {
   margin-right: 5px;
+}
+#SmartCLIDE-Widget-App .pr-2 {
+  padding-right: 1.2rem;
 }
 #SmartCLIDE-Widget-App .text-left {
   text-align: left;
