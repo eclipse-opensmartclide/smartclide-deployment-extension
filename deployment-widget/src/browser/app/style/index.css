@@ -1,56 +1,58 @@
-#SmartCLIDE-Widget-App {
+#SmartCLIDE-Deployment-App {
   padding: 50px;
 }
-#SmartCLIDE-Widget-Bar {
+#SmartCLIDE-Deployment-Bar {
   padding: 15px 50px;
 }
-#SmartCLIDE-Widget-App .w-100 {
+#SmartCLIDE-Deployment-App .w-100 {
   width: 100%;
 }
-#SmartCLIDE-Widget-App .d-flex {
+#SmartCLIDE-Deployment-App .d-flex {
   display: flex;
 }
-#SmartCLIDE-Widget-App .d-flex.space-bettwen {
+#SmartCLIDE-Deployment-App .d-flex.space-bettwen {
   justify-content: space-between;
 }
 
-#SmartCLIDE-Widget-App .d-flex.space-bettwen.center {
+#SmartCLIDE-Deployment-App .d-flex.space-bettwen.center {
   align-items: center;
 }
-#SmartCLIDE-Widget-App p {
+#SmartCLIDE-Deployment-App p {
   margin: 0;
 }
-#SmartCLIDE-Widget-App .p-xs {
+#SmartCLIDE-Deployment-App .p-xs {
   padding: 5px;
 }
-#SmartCLIDE-Widget-App .mr-xs {
+#SmartCLIDE-Deployment-App .mr-xs {
   margin-right: 5px;
 }
-#SmartCLIDE-Widget-App .pr-2 {
+#SmartCLIDE-Deployment-App .pr-2 {
   padding-right: 1.2rem;
 }
-#SmartCLIDE-Widget-App .text-left {
+#SmartCLIDE-Deployment-App .text-left {
   text-align: left;
 }
-#SmartCLIDE-Widget-App .mt-1 {
+#SmartCLIDE-Deployment-App .mt-1 {
   margin-top: 1rem;
 }
-#SmartCLIDE-Widget-App .mb-0 {
+#SmartCLIDE-Deployment-App .mb-0 {
   margin-bottom: 0;
 }
 /* ELEMENTS IN MAIN WINDOW  */
-.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-App {
+.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Deployment-App {
   display: block;
 }
-.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Widget-Bar {
+.p-Widget.p-Panel.p-SplitPanel.p-SplitPanel-child #SmartCLIDE-Deployment-Bar {
   display: none;
 }
 
 /* ELEMENTS IN SIDE WINDOW  */
-.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-App {
+.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child
+  #SmartCLIDE-Deployment-App {
   display: none;
 }
-.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child #SmartCLIDE-Widget-Bar {
+.p-Widget.p-DockPanel.theia-side-panel.p-BoxPanel-child
+  #SmartCLIDE-Deployment-Bar {
   display: block;
 }
 

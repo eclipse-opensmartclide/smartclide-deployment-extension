@@ -1,5 +1,5 @@
-#SmartCLIDE-Widget-Bar .btn,
-#SmartCLIDE-Widget-App .btn {
+#SmartCLIDE-Deployment-Bar .btn,
+#SmartCLIDE-Deployment-App .btn {
   display: inline-block;
   font-weight: 400;
   color: #212529;
@@ -11,66 +11,66 @@
   border-radius: 0rem;
   background-color: #c8cacc;
 }
-#SmartCLIDE-Widget-Bar .btn.small,
-#SmartCLIDE-Widget-App .btn.small {
+#SmartCLIDE-Deployment-Bar .btn.small,
+#SmartCLIDE-Deployment-App .btn.small {
   padding: 0.275rem 0.45rem;
   font-size: 0.8rem;
   line-height: 1.2;
   border-radius: 0rem;
 }
 
-#SmartCLIDE-Widget-Bar .btn:hover,
-#SmartCLIDE-Widget-App .btn:hover {
+#SmartCLIDE-Deployment-Bar .btn:hover,
+#SmartCLIDE-Deployment-App .btn:hover {
   background-color: #90a4ae;
   cursor: pointer;
 }
-#SmartCLIDE-Widget-Bar .btn:disabled,
-#SmartCLIDE-Widget-App .btn:disabled {
+#SmartCLIDE-Deployment-Bar .btn:disabled,
+#SmartCLIDE-Deployment-App .btn:disabled {
   opacity: 0.5;
   background-color: #a5abae;
   color: #2e2f30;
   cursor: not-allowed;
 }
 
-#SmartCLIDE-Widget-Bar .btn-primary,
-#SmartCLIDE-Widget-App .btn-primary {
+#SmartCLIDE-Deployment-Bar .btn-primary,
+#SmartCLIDE-Deployment-App .btn-primary {
   color: #fff;
   background-color: #304ffe;
 }
 
-#SmartCLIDE-Widget-Bar .btn-primary:hover,
-#SmartCLIDE-Widget-App .btn-primary:hover {
+#SmartCLIDE-Deployment-Bar .btn-primary:hover,
+#SmartCLIDE-Deployment-App .btn-primary:hover {
   background-color: #1a237e;
 }
 
-#SmartCLIDE-Widget-Bar .btn-danger,
-#SmartCLIDE-Widget-App .btn-danger {
+#SmartCLIDE-Deployment-Bar .btn-danger,
+#SmartCLIDE-Deployment-App .btn-danger {
   color: #fff;
   background-color: #ff3d00;
 }
-#SmartCLIDE-Widget-Bar .btn-danger:hover,
-#SmartCLIDE-Widget-App .btn-danger:hover {
+#SmartCLIDE-Deployment-Bar .btn-danger:hover,
+#SmartCLIDE-Deployment-App .btn-danger:hover {
   background-color: #dd2c00;
 }
 
-#SmartCLIDE-Widget-Bar .btn-warning,
-#SmartCLIDE-Widget-App .btn-warning {
+#SmartCLIDE-Deployment-Bar .btn-warning,
+#SmartCLIDE-Deployment-App .btn-warning {
   color: #fff;
   background-color: #ff6d00;
 }
 
-#SmartCLIDE-Widget-Bar .btn-warning:hover,
-#SmartCLIDE-Widget-App .btn-warning:hover {
+#SmartCLIDE-Deployment-Bar .btn-warning:hover,
+#SmartCLIDE-Deployment-App .btn-warning:hover {
   background-color: #e65100;
 }
 
-#SmartCLIDE-Widget-Bar .btn-success,
-#SmartCLIDE-Widget-App .btn-success {
+#SmartCLIDE-Deployment-Bar .btn-success,
+#SmartCLIDE-Deployment-App .btn-success {
   color: #fff;
   background-color: #33691e;
 }
 
-#SmartCLIDE-Widget-Bar .btn-success:hover,
-#SmartCLIDE-Widget-App .btn-success:hover {
+#SmartCLIDE-Deployment-Bar .btn-success:hover,
+#SmartCLIDE-Deployment-App .btn-success:hover {
   background-color: #1b5e20;
 }

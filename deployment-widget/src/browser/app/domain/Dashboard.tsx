@@ -9,6 +9,8 @@ import {
 
 import Spinner from '../componets/Spinner';
 import Pagination from '../componets/Pagination/';
+import Button from '../componets/Button';
+
 import TableWidhtAction from '../componets/Table/TableWidhtAction';
 import {
   Settings,
@@ -16,6 +18,7 @@ import {
   DeploymentData,
   MetricsResponseData,
 } from '../../../common/ifaces';
+
 import Monitoring from './Monitoring';
 
 const initialPagination: PaginationState = {
@@ -74,9 +77,9 @@ const Dashboard: React.FC = () => {
     message.length !== 0 && setLoading(false);
   }, [message]);
 
-  // useEffect(() => {
-  //   metrics && setLoadingMetrics(false);
-  // }, [metrics]);
+  useEffect(() => {
+    metrics && setLoadingMetrics(false);
+  }, [metrics]);
 
   useEffect(() => {
     setLoading(true);
@@ -187,6 +190,16 @@ const Dashboard: React.FC = () => {
     setLoadingMetrics(true);
     setCurrentDeployment(id);
   };
+  const handleGetCurrentDeployment = () => {
+    setLoadingMetrics(true);
+
+    const currentActive = deploymentsSource.filter((deployment) => {
+      return deployment.status === 'active' && deployment.id;
+    });
+    currentActive.length !== 0 &&
+      currentActive[0].id &&
+      setCurrentDeployment(currentActive[0].id);
+  };
 
   const handleStop = async (id: string) => {
     const currentPath =
@@ -250,38 +263,76 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Deployments</h1>
-      {!loading ? (
-        message ? (
+    <>
+      <div id="SmartCLIDE-Deployment-Bar">
+        <h3>Last Deployment</h3>
+        {message ? (
           <h3 style={{ textAlign: 'center' }}>{message}</h3>
-        ) : (
+        ) : deploymentsSource.length !== 0 && !loadingMetrics ? (
           <>
-            <TableWidhtAction
-              columnsSource={columnsSource}
-              dataSource={deploymentsSource}
-              actionEdit={handleGetMetrics}
-              actionStop={handleStop}
-              loading={loadingMetrics}
-            />
-            <Pagination
-              limit={pagination.limit}
-              skip={pagination.skip}
-              total={pagination.total}
-              setState={setPagination}
-            />
-            {metrics && (
-              <Monitoring
-                containers={metrics?.containers}
-                price={metrics?.price}
-              />
+            {!metrics && (
+              <Button
+                className="btn-primary small mr-xs"
+                disabled={loadingMetrics}
+                onClick={() => handleGetCurrentDeployment()}
+              >
+                Get metrics
+              </Button>
             )}
           </>
-        )
-      ) : (
-        <Spinner isVisible={loading} />
-      )}
-    </div>
+        ) : (
+          <Spinner isVisible={loadingMetrics} />
+        )}
+        {!loading ? (
+          message ? (
+            <h3 style={{ textAlign: 'center' }}>{message}</h3>
+          ) : (
+            <>
+              {metrics && (
+                <Monitoring
+                  containers={metrics?.containers}
+                  price={metrics?.price}
+                />
+              )}
+            </>
+          )
+        ) : (
+          <Spinner isVisible={loading} />
+        )}
+      </div>
+      <div id="SmartCLIDE-Deployment-App">
+        <h1>Deployments</h1>
+        {!loading ? (
+          message ? (
+            <h3 style={{ textAlign: 'center' }}>{message}</h3>
+          ) : (
+            <>
+              <TableWidhtAction
+                columnsSource={columnsSource}
+                dataSource={deploymentsSource}
+                actionEdit={handleGetMetrics}
+                actionStop={handleStop}
+                loading={loadingMetrics}
+              />
+              <Pagination
+                limit={pagination.limit}
+                skip={pagination.skip}
+                total={pagination.total}
+                setState={setPagination}
+              />
+              {metrics && (
+                <Monitoring
+                  containers={metrics?.containers}
+                  price={metrics?.price}
+                />
+              )}
+            </>
+          )
+        ) : (
+          <Spinner isVisible={loading} />
+        )}
+      </div>
+    </>
   );
 };
 

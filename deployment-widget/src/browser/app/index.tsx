@@ -33,9 +33,7 @@ const App: React.FC<AppProps> = (props): JSX.Element => {
 
   return !loading ? (
     <>
-      <div id="SmartCLIDE-Widget-App">
-        <Dashboard />
-      </div>
+      <Dashboard />
     </>
   ) : (
     <Spinner isVisible={loading} />

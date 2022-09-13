@@ -34,7 +34,6 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
 
   useEffect(() => {
     setLoadingChart(false);
-    console.log('containers', containers);
     containers &&
       containers?.map((container) => {
         setContainersData((prev): Serie[] => {
@@ -136,7 +135,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
       {!loadingPrice ? (
         <>
           <h4>Costs</h4>
-          <div className="d-flex mt-1">
+          <div id="WrapperPrice" className="d-flex mt-1">
             {priceData && priceData?.current_provider && (
               <PriceCard
                 price={priceData?.current_provider?.price}
