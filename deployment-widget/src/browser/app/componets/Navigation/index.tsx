@@ -1,14 +1,14 @@
-import React from 'react';
-import Button from '../Button';
+import React from 'react'
+import Button from '../Button'
 
 interface NavigationProps {
-  currentView: string;
-  viewList: Record<string, string>[];
-  setCurrentView: React.Dispatch<React.SetStateAction<string>>;
+  currentView: string
+  viewList: Record<string, string>[]
+  setCurrentView: React.Dispatch<React.SetStateAction<string>>
 }
 
 const Navigation: React.FC<NavigationProps> = (props) => {
-  const { currentView, setCurrentView, viewList } = props;
+  const { currentView, setCurrentView, viewList } = props
 
   return (
     <div className="Navigation--flex">
@@ -23,7 +23,7 @@ const Navigation: React.FC<NavigationProps> = (props) => {
         </React.Fragment>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Navigation;
+export default Navigation

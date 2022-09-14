@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Button from '../Button';
+import React, { useState, useEffect } from 'react'
+import Button from '../Button'
 
-import { PaginationState } from '../../../../common/ifaces';
+import { PaginationState } from '../../../../common/ifaces'
 
 interface PaginationProps {
-  skip: number;
-  total: number;
-  limit: number;
-  setState: React.Dispatch<React.SetStateAction<PaginationState>>;
+  skip: number
+  total: number
+  limit: number
+  setState: React.Dispatch<React.SetStateAction<PaginationState>>
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -16,15 +16,15 @@ const Pagination: React.FC<PaginationProps> = ({
   limit,
   setState,
 }) => {
-  const [currentLimit, setCurrentLimit] = useState<number>(0);
-  const [currentSkip, setCurrentSkip] = useState<number>(0);
-  const [currentTotal, setCurrentTotal] = useState<number>(0);
+  const [currentLimit, setCurrentLimit] = useState<number>(0)
+  const [currentSkip, setCurrentSkip] = useState<number>(0)
+  const [currentTotal, setCurrentTotal] = useState<number>(0)
 
   useEffect(() => {
-    setCurrentLimit(limit);
-    setCurrentSkip(skip);
-    setCurrentTotal(total);
-  }, [skip, total, limit]);
+    setCurrentLimit(limit)
+    setCurrentSkip(skip)
+    setCurrentTotal(total)
+  }, [skip, total, limit])
 
   const handlePrev = () => {
     setState(
@@ -32,16 +32,16 @@ const Pagination: React.FC<PaginationProps> = ({
         ...prev,
         skip: prev.skip - prev.limit,
       })
-    );
-  };
+    )
+  }
   const handleNext = () => {
     setState(
       (prev: PaginationState): PaginationState => ({
         ...prev,
         skip: prev.limit + prev.skip,
       })
-    );
-  };
+    )
+  }
   return (
     <div className="d-flex space-bettwen center pagination p-xs">
       <div className="d-flex space-bettwen center">
@@ -77,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({
                     ...prev,
                     limit: parseInt(e.target.value),
                   })
-                );
+                )
             }}
           >
             <option value="25">25</option>
@@ -87,7 +87,7 @@ const Pagination: React.FC<PaginationProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Pagination;
+export default Pagination

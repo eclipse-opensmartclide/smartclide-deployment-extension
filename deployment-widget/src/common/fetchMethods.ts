@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DeploymentResponseData,
   ResponseData,
   MetricsResponseData,
   DeploymentData,
-} from './ifaces';
+} from './ifaces'
 
 export const postDeploy = async (
   deployUrl: string,
@@ -29,8 +30,8 @@ export const postDeploy = async (
     }
   )
     .then((res: any): any => res.json().then((res: any): any => res))
-    .catch((err: any): any => err);
-};
+    .catch((err: any): any => err)
+}
 export const getDeploymentStatus = async (
   deployUrl: string,
   id: string,
@@ -44,8 +45,8 @@ export const getDeploymentStatus = async (
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))
-    .catch((err: any): any => err);
-};
+    .catch((err: any): any => err)
+}
 export const getDeploymentMetrics = async (
   deployUrl: string,
   id: string,
@@ -59,8 +60,8 @@ export const getDeploymentMetrics = async (
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))
-    .catch((err: any): any => err);
-};
+    .catch((err: any): any => err)
+}
 
 export const getDeploymentList = async (
   deployUrl: string,
@@ -81,22 +82,22 @@ export const getDeploymentList = async (
     .then((res: any): any =>
       res.json().then((res: any): any => {
         if (res?.message) {
-          return res;
+          return res
         }
-        const data = res?.data ? res?.data : [];
+        const data = res?.data ? res?.data : []
         const total = res?.count
           ? res?.count
           : res?.data
           ? res?.data?.length
-          : 0;
+          : 0
         return {
           data,
           total,
-        };
+        }
       })
     )
-    .catch((err: any): any => err);
-};
+    .catch((err: any): any => err)
+}
 export const deleteDeployment = async (
   deployUrl: string,
   id: string,
@@ -110,5 +111,5 @@ export const deleteDeployment = async (
     },
   })
     .then((res: any): any => res.json().then((res: any): any => res))
-    .catch((err: any): any => err);
-};
+    .catch((err: any): any => err)
+}

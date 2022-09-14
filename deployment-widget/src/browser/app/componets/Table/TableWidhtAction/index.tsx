@@ -1,16 +1,17 @@
-import React from 'react';
-import Button from '../../Button';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react'
+import Button from '../../Button'
 
 export interface TableProps {
-  columnsSource: string[];
-  dataSource?: any[];
-  loading?: boolean;
-  actionEdit?: (i: string) => void;
-  actionStop?: (i: string) => void;
+  columnsSource: string[]
+  dataSource?: any[]
+  loading?: boolean
+  actionEdit?: (i: string) => void
+  actionStop?: (i: string) => void
 }
 
 const TableWidthAction: React.FC<TableProps> = (props) => {
-  const { columnsSource, dataSource, actionEdit, actionStop, loading } = props;
+  const { columnsSource, dataSource, actionEdit, actionStop, loading } = props
   return (
     <div className="table">
       <table className="deployment-table">
@@ -58,7 +59,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
                     )}
                   </td>
                 </tr>
-              );
+              )
             })
           ) : (
             <tr>
@@ -74,7 +75,7 @@ const TableWidthAction: React.FC<TableProps> = (props) => {
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default TableWidthAction;
+export default TableWidthAction

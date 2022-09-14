@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   AreaChart,
   Area,
@@ -7,12 +7,12 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
+} from 'recharts'
 
-import { Serie } from '../../../../common/ifaces';
+import { Serie } from '../../../../common/ifaces'
 
 interface ChartSynchronizedAreaProps {
-  data: Serie[] | undefined;
+  data: Serie[] | undefined
 }
 const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = ({
   data,
@@ -21,8 +21,8 @@ const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = ({
     <div className="d-flex space-bettwen center mt-1">
       {data.map((container, index) => {
         const serie = container.series.cpu.map((value, index) => {
-          return { cpu: value, memory: container.series.memory[index] };
-        });
+          return { cpu: value, memory: container.series.memory[index] }
+        })
 
         return (
           <div key={`${index}-asdasd`} className="w-100 pr-2">
@@ -70,12 +70,12 @@ const ChartSynchronizedArea: React.FC<ChartSynchronizedAreaProps> = ({
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        );
+        )
       })}
     </div>
   ) : (
     <p>Non data provive</p>
-  );
-};
+  )
+}
 
-export default ChartSynchronizedArea;
+export default ChartSynchronizedArea

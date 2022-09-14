@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
-import Spinner from '../componets/Spinner';
-import ChartSynchronizedArea from '../componets/ChartSynchronizedArea';
-import PriceCard from '../componets/Card/Price';
+import Spinner from '../componets/Spinner'
+import ChartSynchronizedArea from '../componets/ChartSynchronizedArea'
+import PriceCard from '../componets/Card/Price'
 
 import {
   MetricsResponseData,
   PriceMetrics,
   ProviderMetrics,
   Serie,
-} from '../../../common/ifaces';
+} from '../../../common/ifaces'
 
-const truncateEndString = (str: string, chars: number = 0): string => {
+const truncateEndString = (str: string, chars: number): string => {
   if ((!str && str.length <= 0) || (!chars && typeof chars !== 'number')) {
-    return '';
+    return ''
   }
-  return str.substring(0, str.length - chars);
-};
-const getEndString = (str: string, chars: number = 0): string => {
+  return str.substring(0, str.length - chars)
+}
+const getEndString = (str: string, chars: number): string => {
   if ((!str && str.length <= 0) || (!chars && typeof chars !== 'number')) {
-    return '';
+    return ''
   }
-  return str.substring(str.length - chars, str.length);
-};
+  return str.substring(str.length - chars, str.length)
+}
 
 const Monitoring: React.FC<MetricsResponseData> = (props) => {
-  const { containers, price } = props;
+  const { containers, price } = props
 
-  const [loadingChart, setLoadingChart] = useState<boolean>(true);
-  const [loadingPrice, setLoadingPrice] = useState<boolean>(true);
-  const [containersData, setContainersData] = useState<Serie[]>();
-  const [priceData, setPriceData] = useState<PriceMetrics>();
+  const [loadingChart, setLoadingChart] = useState<boolean>(true)
+  const [loadingPrice, setLoadingPrice] = useState<boolean>(true)
+  const [containersData, setContainersData] = useState<Serie[]>()
+  const [priceData, setPriceData] = useState<PriceMetrics>()
 
   useEffect(() => {
-    setLoadingChart(false);
+    setLoadingChart(false)
     containers &&
       containers?.map((container) => {
         setContainersData((prev): Serie[] => {
@@ -55,9 +55,9 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                   memory: getEndString(container?.usage?.memory, 2),
                 },
               },
-            ];
+            ]
           } else {
-            const containerNames = prev.map((i) => i.name);
+            const containerNames = prev.map((i) => i.name)
             if (containerNames.indexOf(container?.name) === -1) {
               const newContainer = {
                 name: container?.name,
@@ -74,27 +74,27 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                   cpu: getEndString(container?.usage?.cpu, 1),
                   memory: getEndString(container?.usage?.memory, 2),
                 },
-              };
-              return [...prev, newContainer];
+              }
+              return [...prev, newContainer]
             } else {
               return prev?.map((item) => {
                 if (item?.name === container?.name) {
                   // Set array length to 6 elemt max
-                  item?.series?.cpu?.length >= 6 && item?.series?.cpu.shift();
+                  item?.series?.cpu?.length >= 6 && item?.series?.cpu.shift()
                   item?.series?.memory?.length >= 6 &&
-                    item?.series?.memory.shift();
+                    item?.series?.memory.shift()
 
                   // Add to prev item new data
                   const editedItem = {
                     name: container?.name,
                     series: {
                       cpu: [
-                        ...item?.series?.cpu,
+                        ...item.series.cpu,
                         parseInt(truncateEndString(container?.usage?.cpu, 1)) /
                           1000,
                       ],
                       memory: [
-                        ...item?.series?.memory,
+                        ...item.series.memory,
                         parseInt(
                           truncateEndString(container?.usage?.memory, 2)
                         ),
@@ -104,21 +104,21 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                       cpu: getEndString(container?.usage?.cpu, 1),
                       memory: getEndString(container?.usage?.memory, 2),
                     },
-                  };
-                  return editedItem;
+                  }
+                  return editedItem
                 }
-                return item;
-              });
+                return item
+              })
             }
           }
-        });
-      });
-  }, [containers]);
+        })
+      })
+  }, [containers])
 
   useEffect(() => {
-    setLoadingPrice(false);
-    setPriceData(price);
-  }, [price]);
+    setLoadingPrice(false)
+    setPriceData(price)
+  }, [price])
 
   return !loadingChart && !loadingPrice ? (
     <div id="SmartCLIDE-Widget-Monitorig" className="text-center">
@@ -148,7 +148,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
               priceData?.competitor_provider &&
               priceData?.competitor_provider?.map(
                 (data: ProviderMetrics, index: number) => {
-                  const { price, cost_type, name } = data;
+                  const { price, cost_type, name } = data
                   return (
                     <PriceCard
                       key={index}
@@ -157,7 +157,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
                       name={name}
                       current={false}
                     />
-                  );
+                  )
                 }
               )}
           </div>
@@ -168,7 +168,7 @@ const Monitoring: React.FC<MetricsResponseData> = (props) => {
     </div>
   ) : (
     <Spinner isVisible={loadingChart && loadingPrice} />
-  );
-};
+  )
+}
 
-export default Monitoring;
+export default Monitoring
