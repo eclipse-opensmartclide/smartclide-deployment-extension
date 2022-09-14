@@ -283,22 +283,14 @@ const Dashboard: React.FC = () => {
         ) : (
           <Spinner isVisible={loadingMetrics} />
         )}
-        {!loading ? (
-          message ? (
-            <h3 style={{ textAlign: 'center' }}>{message}</h3>
-          ) : (
-            <>
-              {metrics && (
-                <Monitoring
-                  containers={metrics?.containers}
-                  price={metrics?.price}
-                />
-              )}
-            </>
-          )
-        ) : (
-          <Spinner isVisible={loading} />
-        )}
+        <>
+          {metrics && (
+            <Monitoring
+              containers={metrics?.containers}
+              price={metrics?.price}
+            />
+          )}
+        </>
       </div>
       <div id="SmartCLIDE-Deployment-App">
         <h1>Deployments</h1>
