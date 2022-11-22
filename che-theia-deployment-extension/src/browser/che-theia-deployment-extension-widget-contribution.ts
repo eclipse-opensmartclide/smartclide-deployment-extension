@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { injectable, inject } from '@theia/core/shared/inversify'
 import { MenuModelRegistry } from '@theia/core'
-import { SmartCLIDEDeploymentWidget } from './widget-widget'
+import { SmartCLIDEDeploymentWidget } from './che-theia-deployment-extension-widget'
 import { AbstractViewContribution } from '@theia/core/lib/browser'
 
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state'
@@ -32,7 +32,7 @@ import {
   getDeploymentStatus,
   deleteDeployment,
 } from '../common/fetchMethods'
-import { Settings } from './../common/ifaces'
+import { Settings } from '../common/ifaces'
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',

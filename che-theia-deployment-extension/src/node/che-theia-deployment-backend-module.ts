@@ -4,7 +4,7 @@ import {
   SmartCLIDEBackendService,
   SMARTCLIDE_BACKEND_PATH,
 } from '../common/protocol'
-import { SmartCLIDEBackendServiceImpl } from './backend-service'
+import { SmartCLIDEBackendServiceImpl } from './che-theia-deployment-backend-service'
 
 export default new ContainerModule((bind) => {
   bind(SmartCLIDEBackendService)

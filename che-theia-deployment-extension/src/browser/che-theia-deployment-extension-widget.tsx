@@ -11,13 +11,13 @@ import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service
 
 import App from './app'
 
-import '../../src/browser/app/style/index.css'
-import '../../src/browser/app/style/nav/index.css'
-import '../../src/browser/app/style/spinner/index.css'
-import '../../src/browser/app/style/button/index.css'
-import '../../src/browser/app/style/card/index.css'
-import '../../src/browser/app/style/table/index.css'
-import '../../src/browser/app/style/select/index.css'
+import './app/style/index.css'
+import './app/style/nav/index.css'
+import './app/style/spinner/index.css'
+import './app/style/button/index.css'
+import './app/style/card/index.css'
+import './app/style/table/index.css'
+import './app/style/select/index.css'
 @injectable()
 export class SmartCLIDEDeploymentWidget extends ReactWidget {
   static readonly ID = 'command-deployment-widget:widget'

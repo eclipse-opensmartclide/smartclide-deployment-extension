@@ -9,7 +9,7 @@ import {
 } from '../../../common/fetchMethods'
 
 import Spinner from '../componets/Spinner'
-import Pagination from '../componets/Pagination/'
+import Pagination from '../componets/Pagination'
 import Button from '../componets/Button'
 
 import TableWidhtAction from '../componets/Table/TableWidhtAction'
