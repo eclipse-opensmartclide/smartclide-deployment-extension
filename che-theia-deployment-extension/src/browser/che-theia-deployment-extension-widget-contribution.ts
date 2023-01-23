@@ -24,7 +24,6 @@ import { InputOptions } from '@theia/core/lib/browser/'
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service'
 import { MonacoQuickInputService } from '@theia/monaco/lib/browser/monaco-quick-input-service'
 import { SmartCLIDEBackendService } from '../common/protocol'
-import { GitRepositoryProvider } from '@theia/git/lib/browser/git-repository-provider'
 import { CommandService } from '@theia/core/lib/common/command'
 
 import {
@@ -32,7 +31,7 @@ import {
   getDeploymentStatus,
   deleteDeployment,
 } from '../common/fetchMethods'
-import { Settings } from '../common/ifaces'
+import { Settings } from './../common/ifaces'
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
@@ -70,8 +69,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   private readonly outputChannelManager: OutputChannelManager
   @inject(MonacoQuickInputService)
   private readonly monacoQuickInputService: MonacoQuickInputService
-  @inject(GitRepositoryProvider)
-  protected readonly repositoryProvider: GitRepositoryProvider
   @inject(CommandService) protected readonly commandService: CommandService
   constructor() {
     super({
@@ -142,43 +139,40 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           return
         }
 
-        //// ---------- RETRIEVE USER DATA ------------ /////
-        const scmProvider = this.repositoryProvider.selectedScmProvider
-        const status = scmProvider && scmProvider?.getStatus()
-
-        const branchName = (status && status?.branch) || ''
-
-        if (!scmProvider || !status || !branchName || branchName === '') {
-          this.messageService.error(
-            `There have been problems getting the git provider.`
-          )
-          return
-        }
-
-        // branchName.leng
         const optionsUser: InputOptions = {
           placeHolder: 'Enter User Name',
           prompt: 'Enter User Name:',
+          ignoreFocusLost: true,
+        }
+
+        const optionsBranchToken: InputOptions = {
+          placeHolder: 'Enter Branch Name',
+          prompt: 'Enter Branch Name:',
+          ignoreFocusLost: true,
         }
 
         const optionsGitLabToken: InputOptions = {
           placeHolder: 'Enter GitLab Token',
           prompt: 'Enter GitLab Token:',
+          ignoreFocusLost: true,
         }
 
         const optionsGitRepoUrl: InputOptions = {
           placeHolder: 'Enter GitLab Url',
           prompt: 'Enter GitLab Url:',
+          ignoreFocusLost: true,
         }
 
         const optionsK8sUrl: InputOptions = {
           placeHolder: 'Enter Kubernetes Url',
           prompt: 'Enter Kubernetes Url:',
+          ignoreFocusLost: true,
         }
 
         const optionsK8sToken: InputOptions = {
           placeHolder: 'Enter Kubernetes Token',
           prompt: 'Enter Kubernetes Token:',
+          ignoreFocusLost: true,
         }
 
         const user = !settings?.username
@@ -186,6 +180,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .input(optionsUser)
               .then((value): string => value || '')
           : settings?.username
+
+        const branchName = !settings?.branch
+          ? await this.monacoQuickInputService
+              .input(optionsBranchToken)
+              .then((value): string => value || '')
+          : settings?.branch
 
         const k8s_url = !settings?.k8s_url
           ? await this.monacoQuickInputService
