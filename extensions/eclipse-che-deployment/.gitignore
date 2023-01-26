@@ -16,3 +16,4 @@ lib
 !*-app/package.json
 coverage/
 data.json
+configs/

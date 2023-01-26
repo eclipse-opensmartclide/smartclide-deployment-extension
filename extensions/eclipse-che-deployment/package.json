@@ -1,19 +1,21 @@
 {
-  "name": "che-theia-deployment-extension",
+  "name": "eclipse-che-deployment",
   "version": "0.0.1",
   "license": "MIT",
   "keywords": [
-    "theia-widget"
+    "theia-extension"
   ],
   "files": [
     "lib",
     "src"
   ],
   "dependencies": {
-    "@theia/core": "^1.33.0",
-    "@theia/output": "^1.33.0",
-    "recharts": "^2.3.2"
+    "@theia/core": "1.18.0-next.120",
+    "@theia/output": "1.18.0-next.120",
+    "@types/node": "16.11.9",
+    "recharts": "2.1.6"
   },
+  "devDependencies": {},
   "browser": {
     "fs": false,
     "path": false,
@@ -26,13 +28,13 @@
     "lint:fix": "eslint --fix .",
     "prepare": "yarn run clean && yarn run build",
     "clean": "rimraf lib",
-    "build": "tsc",
+    "build": "tsc -b",
     "watch": "tsc -w"
   },
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/che-theia-deployment-extension-module",
-      "backend": "lib/node/che-theia-deployment-backend-module"
+      "frontend": "lib/browser/widget-frontend-module",
+      "backend": "lib/node/backend-module"
     }
   ]
 }
