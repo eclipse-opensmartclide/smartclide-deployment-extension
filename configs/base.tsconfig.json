@@ -1,6 +1,6 @@
 {
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/tsconfig.json",
   "compilerOptions": {
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,
@@ -15,12 +15,12 @@
     "resolveJsonModule": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES2019",
+    "target": "ES2017",
     "jsx": "react",
-    "lib": ["ES2021", "dom"],
-    "sourceMap": true,
-    "rootDir": "src",
-    "outDir": "lib"
-  },
-  "include": ["src"]
+    "lib": [
+      "ES2017",
+      "dom"
+    ],
+    "sourceMap": true
+  }
 }
