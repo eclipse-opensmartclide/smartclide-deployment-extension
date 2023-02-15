@@ -18,7 +18,7 @@
     "lerna": "2.4.0"
   },
   "workspaces": [
-    "deployment-widget",
+    "extensions/eclipse-che-theia-deployment",
     "browser-app"
   ]
 }
