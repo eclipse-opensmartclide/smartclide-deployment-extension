@@ -46,25 +46,25 @@ let SmartCLIDEDeploymentWidget = SmartCLIDEDeploymentWidget_1 = class SmartCLIDE
 SmartCLIDEDeploymentWidget.ID = 'command-deployment-widget:widget';
 SmartCLIDEDeploymentWidget.LABEL = 'Deployment';
 __decorate([
-    inversify_1.inject(workspace_service_1.WorkspaceService),
+    (0, inversify_1.inject)(workspace_service_1.WorkspaceService),
     __metadata("design:type", workspace_service_1.WorkspaceService)
 ], SmartCLIDEDeploymentWidget.prototype, "workspaceService", void 0);
 __decorate([
-    inversify_1.inject(protocol_1.SmartCLIDEBackendService),
+    (0, inversify_1.inject)(protocol_1.SmartCLIDEBackendService),
     __metadata("design:type", Object)
 ], SmartCLIDEDeploymentWidget.prototype, "smartCLIDEBackendService", void 0);
 __decorate([
-    inversify_1.inject(common_1.CommandRegistry),
+    (0, inversify_1.inject)(common_1.CommandRegistry),
     __metadata("design:type", common_1.CommandRegistry)
 ], SmartCLIDEDeploymentWidget.prototype, "commandRegistry", void 0);
 __decorate([
-    inversify_1.postConstruct(),
+    (0, inversify_1.postConstruct)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], SmartCLIDEDeploymentWidget.prototype, "init", null);
 SmartCLIDEDeploymentWidget = SmartCLIDEDeploymentWidget_1 = __decorate([
-    inversify_1.injectable()
+    (0, inversify_1.injectable)()
 ], SmartCLIDEDeploymentWidget);
 exports.SmartCLIDEDeploymentWidget = SmartCLIDEDeploymentWidget;
 //# sourceMappingURL=widget-widget.js.map

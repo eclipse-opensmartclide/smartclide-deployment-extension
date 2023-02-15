@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -25,10 +29,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(require("react"));
 const Button_1 = __importDefault(require("../Button"));
 const Pagination = ({ skip, total, limit, setState, }) => {
-    const [currentLimit, setCurrentLimit] = react_1.useState(0);
-    const [currentSkip, setCurrentSkip] = react_1.useState(0);
-    const [currentTotal, setCurrentTotal] = react_1.useState(0);
-    react_1.useEffect(() => {
+    const [currentLimit, setCurrentLimit] = (0, react_1.useState)(0);
+    const [currentSkip, setCurrentSkip] = (0, react_1.useState)(0);
+    const [currentTotal, setCurrentTotal] = (0, react_1.useState)(0);
+    (0, react_1.useEffect)(() => {
         setCurrentLimit(limit);
         setCurrentSkip(skip);
         setCurrentTotal(total);

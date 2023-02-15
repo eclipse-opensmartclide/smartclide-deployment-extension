@@ -52,7 +52,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 var _a, _b, _c;
                 //// ---------- VARIABLES ------------ /////
                 let settings = {
-                    deployUrl: 'https://api.dev.smartclide.eu/service-deployment/',
+                    deployUrl: 'https://api.dev.smartclide.eu/deployment-service/deployments/',
                     username: '',
                     repository_url: '',
                     repository_name: '',
@@ -155,14 +155,14 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 //// ---------- CHECK ACTIVES DEPLOYMENTS  ------------ /////
                 const prevDeploy = settings === null || settings === void 0 ? void 0 : settings.lastDeploy;
                 if (prevDeploy && prevDeploy.length > 0 && prevDeploy !== '') {
-                    const lastDEploy = await fetchMethods_1.getDeploymentStatus(settings.deployUrl, prevDeploy, settings.repository_url);
+                    const lastDEploy = await (0, fetchMethods_1.getDeploymentStatus)(settings.deployUrl, prevDeploy, settings.repository_url);
                     if (lastDEploy && (lastDEploy === null || lastDEploy === void 0 ? void 0 : lastDEploy.status) === 'active') {
                         const actionsConfirmPrevDeploy = ['Deploy new', 'Cancel'];
                         const actionDeploymentResult = await this.messageService
                             .warn(`There is an active deployment you want to stop it and create a new one or review it?`, ...actionsConfirmPrevDeploy)
                             .then(async (action) => {
                             if (action === 'Deploy new') {
-                                await fetchMethods_1.deleteDeployment(settings.deployUrl, prevDeploy, settings.k8sToken);
+                                await (0, fetchMethods_1.deleteDeployment)(settings.deployUrl, prevDeploy, settings.k8sToken);
                             }
                             return action;
                         })
@@ -188,7 +188,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                             this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                             channel.show();
                             channel.appendLine(`Start deploy ${settings.repository_name}...`);
-                            const res = await fetchMethods_1.postDeploy(settings.deployUrl, settings.username, settings.repository_url, settings.repository_name, settings.k8s_url, settings.branch, settings.replicas, settings.container_port, settings.k8sToken, settings.gitLabToken);
+                            const res = await (0, fetchMethods_1.postDeploy)(settings.deployUrl, settings.username, settings.repository_url, settings.repository_name, settings.k8s_url, settings.branch, settings.replicas, settings.container_port, settings.k8sToken, settings.gitLabToken);
                             if (res === null || res === void 0 ? void 0 : res.message) {
                                 this.messageService.warn(res === null || res === void 0 ? void 0 : res.message);
                                 channel.appendLine(res === null || res === void 0 ? void 0 : res.message, output_channel_1.OutputChannelSeverity.Info);
@@ -221,7 +221,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 var _a, _b, _c;
                 //// ---------- VARIABLES ------------ /////
                 let settings = {
-                    deployUrl: 'https://api.dev.smartclide.eu/service-deployment/',
+                    deployUrl: 'https://api.dev.smartclide.eu/deployment-service/deployments/',
                     username: '',
                     repository_url: '',
                     repository_name: '',
@@ -274,28 +274,29 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                     return;
                 }
                 //// ---------- PREPARE TO BUILD ------------ /////
-                (settings === null || settings === void 0 ? void 0 : settings.gitLabToken) ? this.messageService
-                    .info(`PROJECT: ${settings.repository_name}`, ...actionsConfirmBuild)
-                    .then(async (action) => {
-                    if (action === 'Check now') {
-                        channel.show();
-                        channel.appendLine(`Checking status ${settings.repository_name}...`);
-                        if (settings.lastDeploy && settings.k8sToken) {
-                            const res = await fetchMethods_1.getDeploymentStatus(settings.deployUrl, settings.lastDeploy, settings.k8sToken);
-                            this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
-                            if (!res.message) {
-                                channel.appendLine(`Status: Deployment are running...`, output_channel_1.OutputChannelSeverity.Warning);
-                            }
-                            else {
-                                channel.appendLine(`Status: ${res === null || res === void 0 ? void 0 : res.message}...`, output_channel_1.OutputChannelSeverity.Warning);
+                (settings === null || settings === void 0 ? void 0 : settings.gitLabToken)
+                    ? this.messageService
+                        .info(`PROJECT: ${settings.repository_name}`, ...actionsConfirmBuild)
+                        .then(async (action) => {
+                        if (action === 'Check now') {
+                            channel.show();
+                            channel.appendLine(`Checking status ${settings.repository_name}...`);
+                            if (settings.lastDeploy && settings.k8sToken) {
+                                const res = await (0, fetchMethods_1.getDeploymentStatus)(settings.deployUrl, settings.lastDeploy, settings.k8sToken);
+                                this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
+                                if (!res.message) {
+                                    channel.appendLine(`Status: Deployment are running...`, output_channel_1.OutputChannelSeverity.Warning);
+                                }
+                                else {
+                                    channel.appendLine(`Status: ${res === null || res === void 0 ? void 0 : res.message}...`, output_channel_1.OutputChannelSeverity.Warning);
+                                }
                             }
                         }
-                    }
-                    else {
-                        return;
-                    }
-                })
-                    .catch((err) => this.messageService.error(err.message))
+                        else {
+                            return;
+                        }
+                    })
+                        .catch((err) => this.messageService.error(err.message))
                     : this.messageService.error(`Error TOKEN are required`);
             },
         });
@@ -334,35 +335,35 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
     }
 };
 __decorate([
-    inversify_1.inject(frontend_application_state_1.FrontendApplicationStateService),
+    (0, inversify_1.inject)(frontend_application_state_1.FrontendApplicationStateService),
     __metadata("design:type", frontend_application_state_1.FrontendApplicationStateService)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "stateService", void 0);
 __decorate([
-    inversify_1.inject(workspace_service_1.WorkspaceService),
+    (0, inversify_1.inject)(workspace_service_1.WorkspaceService),
     __metadata("design:type", workspace_service_1.WorkspaceService)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "workspaceService", void 0);
 __decorate([
-    inversify_1.inject(protocol_1.SmartCLIDEBackendService),
+    (0, inversify_1.inject)(protocol_1.SmartCLIDEBackendService),
     __metadata("design:type", Object)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "smartCLIDEBackendService", void 0);
 __decorate([
-    inversify_1.inject(common_1.MessageService),
+    (0, inversify_1.inject)(common_1.MessageService),
     __metadata("design:type", common_1.MessageService)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "messageService", void 0);
 __decorate([
-    inversify_1.inject(output_channel_1.OutputChannelManager),
+    (0, inversify_1.inject)(output_channel_1.OutputChannelManager),
     __metadata("design:type", output_channel_1.OutputChannelManager)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "outputChannelManager", void 0);
 __decorate([
-    inversify_1.inject(monaco_quick_input_service_1.MonacoQuickInputService),
+    (0, inversify_1.inject)(monaco_quick_input_service_1.MonacoQuickInputService),
     __metadata("design:type", monaco_quick_input_service_1.MonacoQuickInputService)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "monacoQuickInputService", void 0);
 __decorate([
-    inversify_1.inject(command_1.CommandService),
+    (0, inversify_1.inject)(command_1.CommandService),
     __metadata("design:type", Object)
 ], SmartCLIDEDeploymentWidgetContribution.prototype, "commandService", void 0);
 SmartCLIDEDeploymentWidgetContribution = __decorate([
-    inversify_1.injectable(),
+    (0, inversify_1.injectable)(),
     __metadata("design:paramtypes", [])
 ], SmartCLIDEDeploymentWidgetContribution);
 exports.SmartCLIDEDeploymentWidgetContribution = SmartCLIDEDeploymentWidgetContribution;
