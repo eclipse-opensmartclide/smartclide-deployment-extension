@@ -8,8 +8,8 @@ import {
 
 export const postDeploy = async (
   deployUrl: string,
-  stateKeycloakToken: string,
   stateServiceID: string,
+  stateKeycloakToken: string,
   username: string,
   gitRepoUrl: string,
   repository_name: string,
@@ -39,8 +39,8 @@ export const postDeploy = async (
 };
 export const getDeploymentStatus = async (
   deployUrl: string,
-  stateKeycloakToken: string,
   stateServiceID: string,
+  stateKeycloakToken: string,
   id: string,
   k8sToken: string
 ): Promise<ResponseData | DeploymentData> => {
@@ -62,8 +62,8 @@ export const getDeploymentStatus = async (
 };
 export const getDeploymentMetrics = async (
   deployUrl: string,
-  stateKeycloakToken: string,
   stateServiceID: string,
+  stateKeycloakToken: string,
   id: string,
   k8sToken: string
 ): Promise<MetricsResponseData> => {
@@ -86,8 +86,8 @@ export const getDeploymentMetrics = async (
 
 export const getDeploymentList = async (
   deployUrl: string,
-  stateKeycloakToken: string,
   stateServiceID: string,
+  stateKeycloakToken: string,
   username: string,
   repository_name: string,
   limit: string,
@@ -126,8 +126,8 @@ export const getDeploymentList = async (
 };
 export const deleteDeployment = async (
   deployUrl: string,
-  stateKeycloakToken: string,
   stateServiceID: string,
+  stateKeycloakToken: string,
   id: string,
   k8sToken: string
 ): Promise<ResponseData> => {

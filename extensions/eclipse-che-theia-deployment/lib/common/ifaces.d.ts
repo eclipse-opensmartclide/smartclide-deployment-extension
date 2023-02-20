@@ -9,8 +9,6 @@ export interface Settings {
     k8sToken: string;
     gitLabToken: string;
     lastDeploy?: string;
-}
-export interface StateDeployment {
     deployUrl: string;
     stateKeycloakToken: any;
     stateServiceID: any;

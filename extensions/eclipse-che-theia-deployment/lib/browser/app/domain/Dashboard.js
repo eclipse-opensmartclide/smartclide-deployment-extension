@@ -89,12 +89,11 @@ const Dashboard = () => {
         if (settings !== undefined &&
             (pagination === null || pagination === void 0 ? void 0 : pagination.skip) !== null &&
             (pagination === null || pagination === void 0 ? void 0 : pagination.limit) !== null) {
-            const { gitLabToken, repository_name, username, deployUrl } = settings;
+            const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = settings;
             if (gitLabToken && repository_name && username) {
                 // eslint-disable-next-line @typescript-eslint/no-extra-semi
-                ;
                 (async () => {
-                    const deploymentFetchData = await (0, fetchMethods_1.getDeploymentList)(deployUrl, username, repository_name, pagination === null || pagination === void 0 ? void 0 : pagination.limit.toString(), pagination === null || pagination === void 0 ? void 0 : pagination.skip.toString());
+                    const deploymentFetchData = await (0, fetchMethods_1.getDeploymentList)(deployUrl, stateServiceID, stateKeycloakToken, username, repository_name, pagination === null || pagination === void 0 ? void 0 : pagination.limit.toString(), pagination === null || pagination === void 0 ? void 0 : pagination.skip.toString());
                     if (deploymentFetchData) {
                         if (deploymentFetchData.total === 0) {
                             setMessage('No deployments found.');
@@ -158,11 +157,11 @@ const Dashboard = () => {
             return null;
         }
         else {
-            const { k8sToken, deployUrl } = settings;
-            if (!k8sToken && !deployUrl) {
+            const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = settings;
+            if (!k8sToken && !deployUrl && !stateServiceID && !stateKeycloakToken) {
                 return null;
             }
-            const newMetric = await (0, fetchMethods_1.getDeploymentMetrics)(deployUrl, id, k8sToken);
+            const newMetric = await (0, fetchMethods_1.getDeploymentMetrics)(deployUrl, stateServiceID, stateKeycloakToken, id, k8sToken);
             return newMetric;
         }
     };
@@ -185,17 +184,21 @@ const Dashboard = () => {
         const prevSettings = currentPath &&
             backendService &&
             JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
-        const { k8sToken, deployUrl } = prevSettings;
-        const deploymentDeleted = k8sToken && deployUrl && (await (0, fetchMethods_1.deleteDeployment)(deployUrl, id, k8sToken));
+        const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = prevSettings;
+        const deploymentDeleted = k8sToken &&
+            deployUrl &&
+            stateServiceID &&
+            stateKeycloakToken &&
+            (await (0, fetchMethods_1.deleteDeployment)(deployUrl, stateServiceID, stateKeycloakToken, id, k8sToken));
         if (deploymentDeleted) {
             const currentPath = ((_b = workspaceService.workspace) === null || _b === void 0 ? void 0 : _b.resource.path.toString()) || '';
             const prevSettings = currentPath &&
                 backendService &&
                 JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
-            const { gitLabToken, repository_name, username, deployUrl } = prevSettings;
+            const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = prevSettings;
             const deploymentFetchData = gitLabToken &&
                 repository_name &&
-                (await (0, fetchMethods_1.getDeploymentList)(deployUrl, username, repository_name, pagination.limit.toString(), pagination.skip.toString()));
+                (await (0, fetchMethods_1.getDeploymentList)(deployUrl, stateServiceID, stateKeycloakToken, username, repository_name, pagination.limit.toString(), pagination.skip.toString()));
             if (deploymentFetchData) {
                 if (deploymentFetchData.message) {
                     setDeploymentsSource([]);
