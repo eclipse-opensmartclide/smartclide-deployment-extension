@@ -27,11 +27,17 @@ import { SmartCLIDEBackendService } from '../common/protocol';
 import { CommandService } from '@theia/core/lib/common/command';
 
 import {
+  messageTypes,
+  buildMessage,
+} from '@unparallel/smartclide-frontend-comm';
+
+import {
   postDeploy,
   getDeploymentStatus,
   deleteDeployment,
 } from '../common/fetchMethods';
-import { Settings } from './../common/ifaces';
+
+import { Settings, StateDeployment } from './../common/ifaces';
 
 const SmartCLIDEDeploymentWidgetCommand: Command = {
   id: 'command-deployment-widget.command',
@@ -78,16 +84,60 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       toggleCommandId: SmartCLIDEDeploymentWidgetCommand.id,
     });
   }
+
   registerCommands(commands: CommandRegistry): void {
+    const state: StateDeployment = {
+      deployUrl: 'https://api.dev.smartclide.eu/deployment-service/',
+      stateKeycloakToken: null,
+      stateServiceID: null,
+    };
     commands.registerCommand(SmartCLIDEDeploymentWidgetCommand, {
-      execute: () => this.openView({ activate: true, reveal: true }),
+      execute: () => {
+        this.openView({ activate: true, reveal: true });
+      },
     });
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
+        //Handle TOKEN_INFO message from parent
+        const handleTokenInfo = (data: any) => {
+          switch (data.type) {
+            case messageTypes.KEYCLOAK_TOKEN:
+              console.log(
+                'service-creation: RECEIVED',
+                JSON.stringify(data, undefined, 4)
+              );
+              state.stateKeycloakToken = data.content;
+              break;
+            case messageTypes.COMM_END:
+              console.log(
+                'service-creation: RECEIVED',
+                JSON.stringify(data, undefined, 4)
+              );
+              break;
+            case messageTypes.COMM_START_REPLY:
+              console.log(
+                'service-creation: RECEIVED',
+                JSON.stringify(data, undefined, 4)
+              );
+              state.stateKeycloakToken = data.content.token;
+              state.stateServiceID = data.content.serviceID;
+              break;
+            default:
+              break;
+          }
+        };
+
+        //Send a message to inform SmartCLIDE IDE
+        const frontCommMsg = buildMessage(messageTypes.COMM_START);
+
+        frontCommMsg && handleTokenInfo(frontCommMsg);
+        if (!frontCommMsg) {
+          this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
+          return;
+        }
+
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl:
-            'https://api.dev.smartclide.eu/deployment-service/deployments/',
           username: '',
           repository_url: '',
           repository_name: '',
@@ -224,12 +274,14 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         const prevDeploy = settings?.lastDeploy;
 
         if (prevDeploy && prevDeploy.length > 0 && prevDeploy !== '') {
-          const lastDEploy: any = await getDeploymentStatus(
-            settings.deployUrl,
+          const lastDeploy: any = await getDeploymentStatus(
+            state.deployUrl,
+            state.stateServiceID,
+            state.stateKeycloakToken,
             prevDeploy,
             settings.repository_url
           );
-          if (lastDEploy && lastDEploy?.status === 'active') {
+          if (lastDeploy && lastDeploy?.status === 'active') {
             const actionsConfirmPrevDeploy = ['Deploy new', 'Cancel'];
             const actionDeploymentResult = await this.messageService
               .warn(
@@ -239,7 +291,9 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               .then(async (action) => {
                 if (action === 'Deploy new') {
                   await deleteDeployment(
-                    settings.deployUrl,
+                    state.deployUrl,
+                    state.stateServiceID,
+                    state.stateKeycloakToken,
                     prevDeploy,
                     settings.k8sToken
                   );
@@ -280,7 +334,9 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   `Start deploy ${settings.repository_name}...`
                 );
                 const res: Record<string, any> = await postDeploy(
-                  settings.deployUrl,
+                  state.deployUrl,
+                  state.stateServiceID,
+                  state.stateKeycloakToken,
                   settings.username,
                   settings.repository_url,
                   settings.repository_name,
@@ -333,8 +389,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       execute: async () => {
         //// ---------- VARIABLES ------------ /////
         let settings: Settings = {
-          deployUrl:
-            'https://api.dev.smartclide.eu/deployment-service/deployments/',
           username: '',
           repository_url: '',
           repository_name: '',
@@ -428,7 +482,9 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   );
                   if (settings.lastDeploy && settings.k8sToken) {
                     const res: any = await getDeploymentStatus(
-                      settings.deployUrl,
+                      state.deployUrl,
+                      state.stateServiceID,
+                      state.stateKeycloakToken,
                       settings.lastDeploy,
                       settings.k8sToken
                     );

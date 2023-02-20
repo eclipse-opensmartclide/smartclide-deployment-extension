@@ -1873,6 +1873,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@unparallel/smartclide-frontend-comm@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@unparallel/smartclide-frontend-comm/-/smartclide-frontend-comm-1.0.1.tgz#10b07f16e2bfe4650d01d0ab56e1cea3a785215a"
+  integrity sha512-HnRksXhc+FJmIBS0ii5BM09+Ug5G8OHJeq80x7s/N5gcFPR9gQOrm6qplhno44Vxth3HVRNeL12h9NkC82zF6g==
+
 "@vscode/codicons@^0.0.21":
   version "0.0.21"
   resolved "https://registry.yarnpkg.com/@vscode/codicons/-/codicons-0.0.21.tgz#20ef724b141fdddba3ad86e85f34aaad29e4d3a0"

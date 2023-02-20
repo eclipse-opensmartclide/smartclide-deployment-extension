@@ -1,10 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteDeployment = exports.getDeploymentList = exports.getDeploymentMetrics = exports.getDeploymentStatus = exports.postDeploy = void 0;
-const postDeploy = async (deployUrl, username, gitRepoUrl, repository_name, k8s_url, branch, replicas, container_port, k8sToken, gitLabToken) => {
-    return await fetch(`${deployUrl}/deployments?repository_name=${repository_name}&username=${username}&repository_url=${gitRepoUrl}&branch=${branch}&container_port=${container_port}&k8s_url=${k8s_url}&replicas=${replicas}`, {
+const postDeploy = async (deployUrl, stateKeycloakToken, stateServiceID, username, gitRepoUrl, repository_name, k8s_url, branch, replicas, container_port, k8sToken, gitLabToken) => {
+    return await fetch(`${deployUrl}/deployments?repository_name=${repository_name}&username=${username}&repository_url=${gitRepoUrl}&branch=${branch}&container_port=${container_port}&k8s_url=${k8s_url}&replicas=${replicas}&service_id=${stateServiceID}`, {
         method: 'POST',
         headers: {
+            Accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: 'Bearer ' + stateKeycloakToken,
             'Content-Type': 'application/json',
             'gitlab-token': gitLabToken,
             'k8s-token': k8sToken,
@@ -14,10 +17,13 @@ const postDeploy = async (deployUrl, username, gitRepoUrl, repository_name, k8s_
         .catch((err) => err);
 };
 exports.postDeploy = postDeploy;
-const getDeploymentStatus = async (deployUrl, id, k8sToken) => {
-    return await fetch(`${deployUrl}/deployments/${id}`, {
+const getDeploymentStatus = async (deployUrl, stateKeycloakToken, stateServiceID, id, k8sToken) => {
+    return await fetch(`${deployUrl}/deployments/${id}&service_id=${stateServiceID}`, {
         method: 'GET',
         headers: {
+            Accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: 'Bearer ' + stateKeycloakToken,
             'Content-Type': 'application/json',
             'k8s-token': k8sToken,
         },
@@ -26,10 +32,13 @@ const getDeploymentStatus = async (deployUrl, id, k8sToken) => {
         .catch((err) => err);
 };
 exports.getDeploymentStatus = getDeploymentStatus;
-const getDeploymentMetrics = async (deployUrl, id, k8sToken) => {
-    return await fetch(`${deployUrl}/metrics/${id}`, {
+const getDeploymentMetrics = async (deployUrl, stateKeycloakToken, stateServiceID, id, k8sToken) => {
+    return await fetch(`${deployUrl}/metrics/${id}&service_id=${stateServiceID}`, {
         method: 'GET',
         headers: {
+            Accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: 'Bearer ' + stateKeycloakToken,
             'Content-Type': 'application/json',
             'k8s-token': k8sToken,
         },
@@ -38,10 +47,13 @@ const getDeploymentMetrics = async (deployUrl, id, k8sToken) => {
         .catch((err) => err);
 };
 exports.getDeploymentMetrics = getDeploymentMetrics;
-const getDeploymentList = async (deployUrl, username, repository_name, limit, skip) => {
-    return await fetch(`${deployUrl}/deployments/?user=${username}&project=${repository_name}&skip=${skip}&limit=${limit}`, {
+const getDeploymentList = async (deployUrl, stateKeycloakToken, stateServiceID, username, repository_name, limit, skip) => {
+    return await fetch(`${deployUrl}/deployments/?user=${username}&project=${repository_name}&skip=${skip}&limit=${limit}&service_id=${stateServiceID}`, {
         method: 'GET',
         headers: {
+            Accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: 'Bearer ' + stateKeycloakToken,
             'Content-Type': 'application/json',
         },
     })
@@ -64,10 +76,13 @@ const getDeploymentList = async (deployUrl, username, repository_name, limit, sk
         .catch((err) => err);
 };
 exports.getDeploymentList = getDeploymentList;
-const deleteDeployment = async (deployUrl, id, k8sToken) => {
-    return await fetch(`${deployUrl}/deployments/${id}`, {
+const deleteDeployment = async (deployUrl, stateKeycloakToken, stateServiceID, id, k8sToken) => {
+    return await fetch(`${deployUrl}/deployments/${id}&service_id=${stateServiceID}`, {
         method: 'DELETE',
         headers: {
+            Accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            Authorization: 'Bearer ' + stateKeycloakToken,
             'Content-Type': 'application/json',
             'k8s-token': k8sToken,
         },
