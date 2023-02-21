@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -37,18 +41,18 @@ const initialPagination = {
     total: 0,
 };
 const Dashboard = () => {
-    const [loading, setLoading] = react_1.useState(true);
-    const [loadingMetrics, setLoadingMetrics] = react_1.useState(false);
-    const [settings, setSettings] = react_1.useState();
-    const [message, setMessage] = react_1.useState('');
-    const [currentDeployment, setCurrentDeployment] = react_1.useState('');
-    const [metrics, setMetrics] = react_1.useState();
-    const [deploymentsSource, setDeploymentsSource] = react_1.useState([]);
-    const [columnsSource, setColumnsSource] = react_1.useState([]);
-    const [pagination, setPagination] = react_1.useState(initialPagination);
-    const { backend } = BackendContext_1.useBackendContext();
+    const [loading, setLoading] = (0, react_1.useState)(true);
+    const [loadingMetrics, setLoadingMetrics] = (0, react_1.useState)(false);
+    const [settings, setSettings] = (0, react_1.useState)();
+    const [message, setMessage] = (0, react_1.useState)('');
+    const [currentDeployment, setCurrentDeployment] = (0, react_1.useState)('');
+    const [metrics, setMetrics] = (0, react_1.useState)();
+    const [deploymentsSource, setDeploymentsSource] = (0, react_1.useState)([]);
+    const [columnsSource, setColumnsSource] = (0, react_1.useState)([]);
+    const [pagination, setPagination] = (0, react_1.useState)(initialPagination);
+    const { backend } = (0, BackendContext_1.useBackendContext)();
     const { workspaceService, backendService } = backend;
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         return () => {
             setLoading(true);
             setLoadingMetrics(false);
@@ -57,7 +61,7 @@ const Dashboard = () => {
             setCurrentDeployment('');
         };
     }, []);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         var _a;
         if (backendService !== undefined && workspaceService !== undefined) {
             const currentPath = ((_a = workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.resource.path.toString()) || '';
@@ -74,23 +78,22 @@ const Dashboard = () => {
             }
         }
     }, [backendService, workspaceService]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         message.length !== 0 && setLoading(false);
     }, [message]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         metrics && setLoadingMetrics(false);
     }, [metrics]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         setLoading(true);
         if (settings !== undefined &&
             (pagination === null || pagination === void 0 ? void 0 : pagination.skip) !== null &&
             (pagination === null || pagination === void 0 ? void 0 : pagination.limit) !== null) {
-            const { gitLabToken, repository_name, username, deployUrl } = settings;
+            const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = settings;
             if (gitLabToken && repository_name && username) {
                 // eslint-disable-next-line @typescript-eslint/no-extra-semi
-                ;
                 (async () => {
-                    const deploymentFetchData = await fetchMethods_1.getDeploymentList(deployUrl, username, repository_name, pagination === null || pagination === void 0 ? void 0 : pagination.limit.toString(), pagination === null || pagination === void 0 ? void 0 : pagination.skip.toString());
+                    const deploymentFetchData = await (0, fetchMethods_1.getDeploymentList)(deployUrl, stateServiceID, stateKeycloakToken, username, repository_name, pagination === null || pagination === void 0 ? void 0 : pagination.limit.toString(), pagination === null || pagination === void 0 ? void 0 : pagination.skip.toString());
                     if (deploymentFetchData) {
                         if (deploymentFetchData.total === 0) {
                             setMessage('No deployments found.');
@@ -100,7 +103,8 @@ const Dashboard = () => {
                             setDeploymentsSource([]);
                             setPagination((prev) => (Object.assign(Object.assign({}, prev), { total: 0 })));
                         }
-                        else if ((deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.data) && (deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.total)) {
+                        else if ((deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.data) &&
+                            (deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.total)) {
                             setMessage('');
                             setDeploymentsSource(deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.data);
                             setPagination((prev) => (Object.assign(Object.assign({}, prev), { total: (deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.total) || 0 })));
@@ -110,7 +114,7 @@ const Dashboard = () => {
             }
         }
     }, [pagination.skip, pagination.limit, settings]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         deploymentsSource &&
             (deploymentsSource === null || deploymentsSource === void 0 ? void 0 : deploymentsSource.length) !== 0 &&
             setColumnsSource([
@@ -122,10 +126,10 @@ const Dashboard = () => {
                 'actions',
             ]);
     }, [deploymentsSource]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         columnsSource && (columnsSource === null || columnsSource === void 0 ? void 0 : columnsSource.length) !== 0 && setLoading(false);
     }, [columnsSource]);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         let interval;
         if (currentDeployment.length !== 0) {
             getGetMetrics(currentDeployment)
@@ -153,11 +157,11 @@ const Dashboard = () => {
             return null;
         }
         else {
-            const { k8sToken, deployUrl } = settings;
-            if (!k8sToken && !deployUrl) {
+            const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = settings;
+            if (!k8sToken && !deployUrl && !stateServiceID && !stateKeycloakToken) {
                 return null;
             }
-            const newMetric = await fetchMethods_1.getDeploymentMetrics(deployUrl, id, k8sToken);
+            const newMetric = await (0, fetchMethods_1.getDeploymentMetrics)(deployUrl, stateServiceID, stateKeycloakToken, id, k8sToken);
             return newMetric;
         }
     };
@@ -180,17 +184,21 @@ const Dashboard = () => {
         const prevSettings = currentPath &&
             backendService &&
             JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
-        const { k8sToken, deployUrl } = prevSettings;
-        const deploymentDeleted = k8sToken && deployUrl && (await fetchMethods_1.deleteDeployment(deployUrl, id, k8sToken));
+        const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = prevSettings;
+        const deploymentDeleted = k8sToken &&
+            deployUrl &&
+            stateServiceID &&
+            stateKeycloakToken &&
+            (await (0, fetchMethods_1.deleteDeployment)(deployUrl, stateServiceID, stateKeycloakToken, id, k8sToken));
         if (deploymentDeleted) {
             const currentPath = ((_b = workspaceService.workspace) === null || _b === void 0 ? void 0 : _b.resource.path.toString()) || '';
             const prevSettings = currentPath &&
                 backendService &&
                 JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
-            const { gitLabToken, repository_name, username, deployUrl } = prevSettings;
+            const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = prevSettings;
             const deploymentFetchData = gitLabToken &&
                 repository_name &&
-                (await fetchMethods_1.getDeploymentList(deployUrl, username, repository_name, pagination.limit.toString(), pagination.skip.toString()));
+                (await (0, fetchMethods_1.getDeploymentList)(deployUrl, stateServiceID, stateKeycloakToken, username, repository_name, pagination.limit.toString(), pagination.skip.toString()));
             if (deploymentFetchData) {
                 if (deploymentFetchData.message) {
                     setDeploymentsSource([]);

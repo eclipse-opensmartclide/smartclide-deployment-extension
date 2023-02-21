@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -29,16 +33,16 @@ const Spinner_1 = __importDefault(require("./componets/Spinner"));
 const BackendContext_1 = require("./contexts/BackendContext");
 const App = (props) => {
     const { workspaceService, backendService, commandRegistry } = props;
-    const [loading, setLoading] = react_1.useState(true);
-    const { backend, setBackend } = BackendContext_1.useBackendContext();
-    react_1.useEffect(() => {
+    const [loading, setLoading] = (0, react_1.useState)(true);
+    const { backend, setBackend } = (0, BackendContext_1.useBackendContext)();
+    (0, react_1.useEffect)(() => {
         setBackend({
             workspaceService,
             commandRegistry,
             backendService,
         });
     }, []);
-    react_1.useEffect(() => {
+    (0, react_1.useEffect)(() => {
         backend && setLoading(false);
     }, [backend]);
     return !loading ? (react_1.default.createElement(react_1.default.Fragment, null,

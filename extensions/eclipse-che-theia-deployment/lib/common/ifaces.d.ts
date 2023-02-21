@@ -1,5 +1,4 @@
 export interface Settings {
-    deployUrl: string;
     username: string;
     repository_url: string;
     repository_name: string;
@@ -10,6 +9,9 @@ export interface Settings {
     k8sToken: string;
     gitLabToken: string;
     lastDeploy?: string;
+    deployUrl: string;
+    stateKeycloakToken: any;
+    stateServiceID: any;
 }
 export interface PaginationState {
     skip: number;

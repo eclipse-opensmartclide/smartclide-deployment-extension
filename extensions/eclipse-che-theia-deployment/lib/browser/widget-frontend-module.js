@@ -7,7 +7,7 @@ const browser_1 = require("@theia/core/lib/browser");
 const browser_2 = require("@theia/core/lib/browser");
 const protocol_1 = require("../common/protocol");
 exports.default = new inversify_1.ContainerModule((bind) => {
-    browser_1.bindViewContribution(bind, widget_contribution_1.SmartCLIDEDeploymentWidgetContribution);
+    (0, browser_1.bindViewContribution)(bind, widget_contribution_1.SmartCLIDEDeploymentWidgetContribution);
     bind(browser_1.FrontendApplicationContribution).toService(widget_contribution_1.SmartCLIDEDeploymentWidgetContribution);
     bind(widget_widget_1.SmartCLIDEDeploymentWidget).toSelf();
     bind(browser_1.WidgetFactory)
