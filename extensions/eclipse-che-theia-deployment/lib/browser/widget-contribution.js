@@ -47,9 +47,9 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
     registerCommands(commands) {
         //// ---------- VARIABLES ------------ /////
         let settings = {
-            deployUrl: 'https://api.dev.smartclide.eu/deployment-service/',
-            stateKeycloakToken: null,
-            stateServiceID: null,
+            deployUrl: 'https://api.dev.smartclide.eu/deployment-service',
+            stateKeycloakToken: '',
+            stateServiceID: '',
             username: '',
             repository_url: '',
             repository_name: '',
