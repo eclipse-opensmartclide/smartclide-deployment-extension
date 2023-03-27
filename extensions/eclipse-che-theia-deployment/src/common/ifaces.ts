@@ -1,17 +1,17 @@
 export interface Settings {
+  deployUrl: string;
+  stateKeycloakToken: string;
+  stateServiceID: string;
   username: string;
   repository_url: string;
   repository_name: string;
   k8s_url: string;
+  container_port: number;
   branch: string;
   replicas: number;
-  container_port: number;
   k8sToken: string;
   gitLabToken: string;
   lastDeploy?: string;
-  deployUrl: string;
-  stateKeycloakToken: any;
-  stateServiceID: any;
 }
 export interface PaginationState {
   skip: number;

@@ -95,6 +95,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         commands.registerCommand(CommandDeploymentDeploy, {
             execute: async () => {
                 var _a, _b, _c;
+                console.log('pass');
                 //Handle TOKEN_INFO message from parent
                 const handleTokenInfo = (data) => {
                     switch (data.type) {
@@ -123,14 +124,18 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 }
                 const channel = this.outputChannelManager.getChannel('SmartCLIDE');
                 channel.clear();
-                const currentProject = ((_b = (_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.split('.')[0]) || '';
+                const currentProject = ((_b = (_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.split('.')[0]) || undefined;
                 if (!currentProject) {
                     this.messageService.error(`It is necessary to have at least one repository open.`);
                     return;
                 }
                 const currentPath = ((_c = this.workspaceService.workspace) === null || _c === void 0 ? void 0 : _c.resource.path.toString()) || '';
+                if (!currentPath || currentPath === '') {
+                    this.messageService.error(`There have been problems getting the route.`);
+                    return;
+                }
                 const prevSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                if (prevSettings.errno) {
+                if (prevSettings.errno || !prevSettings) {
                     this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                     const newSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
                     settings = newSettings && Object.assign({}, JSON.parse(newSettings));
@@ -138,10 +143,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 else {
                     settings = Object.assign({}, JSON.parse(prevSettings));
                 }
-                if (!currentPath || currentPath === '') {
-                    this.messageService.error(`There have been problems getting the route.`);
-                    return;
-                }
+                console.log('settings', settings);
                 const optionsUser = {
                     placeHolder: 'Enter User Name',
                     prompt: 'Enter User Name:',
@@ -314,10 +316,10 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 if (prevSettings.errno) {
                     this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                     const newSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                    settings = newSettings && Object.assign({}, JSON.parse(newSettings));
+                    settings = newSettings && Object.assign({}, JSON.parse(JSON.stringify(newSettings)));
                 }
                 else {
-                    settings = Object.assign({}, JSON.parse(prevSettings));
+                    settings = Object.assign({}, JSON.parse(JSON.stringify(prevSettings)));
                 }
                 settings.repository_name = currentProject;
                 if (!currentPath || currentPath === '') {
