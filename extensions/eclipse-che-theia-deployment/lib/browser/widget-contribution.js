@@ -259,9 +259,9 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                                 this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                             }
                             else {
-                                console.log('Error');
                                 this.messageService.error('Something is worng restart process');
                                 channel.appendLine('Something is worng restart process', output_channel_1.OutputChannelSeverity.Error);
+                                return;
                             }
                             this.messageService.error('Something is worng restart process');
                             channel.appendLine('Something is worng restart process', output_channel_1.OutputChannelSeverity.Error);

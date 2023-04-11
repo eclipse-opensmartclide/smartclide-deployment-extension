@@ -399,7 +399,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     JSON.stringify(settings)
                   );
                 } else {
-                  console.log('Error');
                   this.messageService.error(
                     'Something is worng restart process'
                   );
@@ -407,6 +406,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     'Something is worng restart process',
                     OutputChannelSeverity.Error
                   );
+                  return;
                 }
                 this.messageService.error('Something is worng restart process');
                 channel.appendLine(
