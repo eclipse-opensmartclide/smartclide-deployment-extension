@@ -132,15 +132,14 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               break;
           }
         };
+        window.removeEventListener('message', handleTokenInfo);
+        //Add even listener to get the Keycloak Token
+        window.addEventListener('message', handleTokenInfo);
 
         //Send a message to inform SmartCLIDE IDE
-        const frontCommMsg = buildMessage(messageTypes.COMM_START);
+        let message = buildMessage(messageTypes.COMM_START);
+        window.parent.postMessage(message, '*');
 
-        frontCommMsg && handleTokenInfo(frontCommMsg);
-        if (!frontCommMsg) {
-          this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-          return;
-        }
         this.openView({ activate: true, reveal: true });
       },
     });
@@ -174,15 +173,13 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               break;
           }
         };
+        window.removeEventListener('message', handleTokenInfo);
+        //Add even listener to get the Keycloak Token
+        window.addEventListener('message', handleTokenInfo);
 
         //Send a message to inform SmartCLIDE IDE
-        const frontCommMsg = buildMessage(messageTypes.COMM_START);
-
-        frontCommMsg && handleTokenInfo(frontCommMsg);
-        if (!frontCommMsg) {
-          this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-          return;
-        }
+        let message = buildMessage(messageTypes.COMM_START);
+        window.parent.postMessage(message, '*');
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
         channel.clear();
@@ -343,7 +340,11 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             }
           }
         }
-
+        settings.lastDeploy = '';
+        this.smartCLIDEBackendService.fileWrite(
+          `${currentPath}/.smartclide-settings.json`,
+          JSON.stringify(settings)
+        );
         //// ---------- PREPARE TO BUILD ------------ /////
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         if (
@@ -459,15 +460,13 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
               break;
           }
         };
+        window.removeEventListener('message', handleTokenInfo);
+        //Add even listener to get the Keycloak Token
+        window.addEventListener('message', handleTokenInfo);
 
         //Send a message to inform SmartCLIDE IDE
-        const frontCommMsg = buildMessage(messageTypes.COMM_START);
-
-        frontCommMsg && handleTokenInfo(frontCommMsg);
-        if (!frontCommMsg) {
-          this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-          return;
-        }
+        let message = buildMessage(messageTypes.COMM_START);
+        window.parent.postMessage(message, '*');
 
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
         channel.clear();

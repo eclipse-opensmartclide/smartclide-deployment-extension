@@ -82,13 +82,12 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                             break;
                     }
                 };
+                window.removeEventListener('message', handleTokenInfo);
+                //Add even listener to get the Keycloak Token
+                window.addEventListener('message', handleTokenInfo);
                 //Send a message to inform SmartCLIDE IDE
-                const frontCommMsg = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
-                frontCommMsg && handleTokenInfo(frontCommMsg);
-                if (!frontCommMsg) {
-                    this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-                    return;
-                }
+                let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+                window.parent.postMessage(message, '*');
                 this.openView({ activate: true, reveal: true });
             },
         });
@@ -114,13 +113,12 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                             break;
                     }
                 };
+                window.removeEventListener('message', handleTokenInfo);
+                //Add even listener to get the Keycloak Token
+                window.addEventListener('message', handleTokenInfo);
                 //Send a message to inform SmartCLIDE IDE
-                const frontCommMsg = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
-                frontCommMsg && handleTokenInfo(frontCommMsg);
-                if (!frontCommMsg) {
-                    this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-                    return;
-                }
+                let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+                window.parent.postMessage(message, '*');
                 const channel = this.outputChannelManager.getChannel('SmartCLIDE');
                 channel.clear();
                 const currentProject = ((_b = (_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.split('.')[0]) || undefined;
@@ -230,6 +228,8 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                         }
                     }
                 }
+                settings.lastDeploy = '';
+                this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                 //// ---------- PREPARE TO BUILD ------------ /////
                 const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
                 if (settings.k8s_url &&
@@ -299,13 +299,12 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                             break;
                     }
                 };
+                window.removeEventListener('message', handleTokenInfo);
+                //Add even listener to get the Keycloak Token
+                window.addEventListener('message', handleTokenInfo);
                 //Send a message to inform SmartCLIDE IDE
-                const frontCommMsg = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
-                frontCommMsg && handleTokenInfo(frontCommMsg);
-                if (!frontCommMsg) {
-                    this.messageService.error(`Error retrieve inform SmartCLIDE IDE.`);
-                    return;
-                }
+                let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+                window.parent.postMessage(message, '*');
                 const channel = this.outputChannelManager.getChannel('SmartCLIDE');
                 channel.clear();
                 const currentProject = ((_b = (_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.split('.')[0]) || '';
