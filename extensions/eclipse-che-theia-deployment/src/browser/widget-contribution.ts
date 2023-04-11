@@ -146,7 +146,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
-        console.log('pass');
         //Handle TOKEN_INFO message from parent
         const handleTokenInfo = (data: any) => {
           switch (data.type) {
@@ -226,8 +225,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         } else {
           settings = { ...JSON.parse(prevSettings) };
         }
-
-        console.log('settings', settings);
 
         const optionsUser: InputOptions = {
           placeHolder: 'Enter User Name',
@@ -313,6 +310,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         const prevDeploy = settings?.lastDeploy;
 
         if (prevDeploy && prevDeploy.length > 0 && prevDeploy !== '') {
+          console.log('service-creation: PREV DEPLOY', prevDeploy);
           const lastDeploy: any = await getDeploymentStatus(
             settings.deployUrl,
             settings.stateServiceID,
@@ -368,6 +366,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                   `${currentPath}/.smartclide-settings.json`,
                   JSON.stringify(settings)
                 );
+                console.log('PREPARE TO BUILD');
                 channel.show();
                 channel.appendLine(
                   `Start deploy ${settings.repository_name}...`
@@ -389,17 +388,18 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                 if (res?.message) {
                   this.messageService.warn(res?.message);
                   channel.appendLine(res?.message, OutputChannelSeverity.Info);
-                } else if (res.id) {
+                } else if (res?.id) {
                   channel.show();
                   channel.appendLine(
                     `Deployment ${settings.repository_name} is already...`
                   );
-                  settings.lastDeploy = res.id;
+                  settings.lastDeploy = res?.id;
                   this.smartCLIDEBackendService.fileWrite(
                     `${currentPath}/.smartclide-settings.json`,
                     JSON.stringify(settings)
                   );
                 } else {
+                  console.log('Error');
                   this.messageService.error(
                     'Something is worng restart process'
                   );
@@ -408,9 +408,14 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     OutputChannelSeverity.Error
                   );
                 }
-              } else {
+                this.messageService.error('Something is worng restart process');
+                channel.appendLine(
+                  'Something is worng restart process',
+                  OutputChannelSeverity.Error
+                );
                 return;
               }
+              return;
             })
             .catch((err) => console.log('err', err));
         } else {

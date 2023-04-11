@@ -95,7 +95,6 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         commands.registerCommand(CommandDeploymentDeploy, {
             execute: async () => {
                 var _a, _b, _c;
-                console.log('pass');
                 //Handle TOKEN_INFO message from parent
                 const handleTokenInfo = (data) => {
                     switch (data.type) {
@@ -143,7 +142,6 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 else {
                     settings = Object.assign({}, JSON.parse(prevSettings));
                 }
-                console.log('settings', settings);
                 const optionsUser = {
                     placeHolder: 'Enter User Name',
                     prompt: 'Enter User Name:',
@@ -214,6 +212,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                 //// ---------- CHECK ACTIVES DEPLOYMENTS  ------------ /////
                 const prevDeploy = settings === null || settings === void 0 ? void 0 : settings.lastDeploy;
                 if (prevDeploy && prevDeploy.length > 0 && prevDeploy !== '') {
+                    console.log('service-creation: PREV DEPLOY', prevDeploy);
                     const lastDeploy = await (0, fetchMethods_1.getDeploymentStatus)(settings.deployUrl, settings.stateServiceID, settings.stateKeycloakToken, prevDeploy, settings.repository_url);
                     if (lastDeploy && (lastDeploy === null || lastDeploy === void 0 ? void 0 : lastDeploy.status) === 'active') {
                         const actionsConfirmPrevDeploy = ['Deploy new', 'Cancel'];
@@ -245,6 +244,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                         if (action === 'Deploy now') {
                             settings.lastDeploy = '';
                             this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
+                            console.log('PREPARE TO BUILD');
                             channel.show();
                             channel.appendLine(`Start deploy ${settings.repository_name}...`);
                             const res = await (0, fetchMethods_1.postDeploy)(settings.deployUrl, settings.stateServiceID, settings.stateKeycloakToken, settings.username, settings.repository_url, settings.repository_name, settings.k8s_url, settings.branch, settings.replicas, settings.container_port, settings.k8sToken, settings.gitLabToken);
@@ -252,20 +252,22 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                                 this.messageService.warn(res === null || res === void 0 ? void 0 : res.message);
                                 channel.appendLine(res === null || res === void 0 ? void 0 : res.message, output_channel_1.OutputChannelSeverity.Info);
                             }
-                            else if (res.id) {
+                            else if (res === null || res === void 0 ? void 0 : res.id) {
                                 channel.show();
                                 channel.appendLine(`Deployment ${settings.repository_name} is already...`);
-                                settings.lastDeploy = res.id;
+                                settings.lastDeploy = res === null || res === void 0 ? void 0 : res.id;
                                 this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(settings));
                             }
                             else {
+                                console.log('Error');
                                 this.messageService.error('Something is worng restart process');
                                 channel.appendLine('Something is worng restart process', output_channel_1.OutputChannelSeverity.Error);
                             }
-                        }
-                        else {
+                            this.messageService.error('Something is worng restart process');
+                            channel.appendLine('Something is worng restart process', output_channel_1.OutputChannelSeverity.Error);
                             return;
                         }
+                        return;
                     })
                         .catch((err) => console.log('err', err));
                 }
