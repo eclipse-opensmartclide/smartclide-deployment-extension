@@ -79,7 +79,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   public settings!: Settings;
 
   //Handle TOKEN_INFO message from parent
-  handleTokenInfo = ({ data }: any) => {
+  handleTokenInfo({ data }: any) {
     switch (data.type) {
       case messageTypes.KEYCLOAK_TOKEN:
         console.log(
@@ -106,7 +106,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       default:
         break;
     }
-  };
+  }
 
   constructor() {
     super({
@@ -131,12 +131,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
       gitLabToken: '',
       lastDeploy: '',
     };
-    //Add even listener to get the Keycloak Token
-    window.addEventListener('message', this.handleTokenInfo);
-
-    //Send a message to inform SmartCLIDE IDE
-    let message = buildMessage(messageTypes.COMM_START);
-    window.parent.postMessage(message, '*');
   }
 
   registerCommands(commands: CommandRegistry): void {
@@ -535,6 +529,13 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   }
 
   onStart(): void {
+    //Add even listener to get the Keycloak Token
+    window.addEventListener('message', this.handleTokenInfo);
+
+    //Send a message to inform SmartCLIDE IDE
+    let message = buildMessage(messageTypes.COMM_START);
+    window.parent.postMessage(message, '*');
+
     if (!this.workspaceService.opened) {
       this.stateService.reachedState('initialized_layout').then(() =>
         this.openView({
@@ -545,7 +546,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     }
   }
   initializeLayout(): void {
-    this.openView({ activate: true, reveal: true });
+    this.openView({ activate: true, reveal: false });
   }
 }
 

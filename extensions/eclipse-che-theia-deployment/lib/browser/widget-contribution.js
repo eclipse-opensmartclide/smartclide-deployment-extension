@@ -43,26 +43,6 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
             defaultWidgetOptions: { area: 'main', mode: 'tab-before' },
             toggleCommandId: SmartCLIDEDeploymentWidgetCommand.id,
         });
-        //Handle TOKEN_INFO message from parent
-        this.handleTokenInfo = ({ data }) => {
-            switch (data.type) {
-                case smartclide_frontend_comm_1.messageTypes.KEYCLOAK_TOKEN:
-                    console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
-                    this.settings.stateKeycloakToken = data.content.token;
-                    break;
-                case smartclide_frontend_comm_1.messageTypes.COMM_END:
-                    console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
-                    window.removeEventListener('message', this.handleTokenInfo);
-                    break;
-                case smartclide_frontend_comm_1.messageTypes.COMM_START_REPLY:
-                    console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
-                    this.settings.stateKeycloakToken = data.content.token;
-                    this.settings.stateServiceID = data.content.serviceID;
-                    break;
-                default:
-                    break;
-            }
-        };
         //// ---------- VARIABLES ------------ /////
         this.settings = {
             deployUrl: 'https://api.dev.smartclide.eu/deployment-service',
@@ -79,11 +59,26 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
             gitLabToken: '',
             lastDeploy: '',
         };
-        //Add even listener to get the Keycloak Token
-        window.addEventListener('message', this.handleTokenInfo);
-        //Send a message to inform SmartCLIDE IDE
-        let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
-        window.parent.postMessage(message, '*');
+    }
+    //Handle TOKEN_INFO message from parent
+    handleTokenInfo({ data }) {
+        switch (data.type) {
+            case smartclide_frontend_comm_1.messageTypes.KEYCLOAK_TOKEN:
+                console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
+                this.settings.stateKeycloakToken = data.content.token;
+                break;
+            case smartclide_frontend_comm_1.messageTypes.COMM_END:
+                console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
+                window.removeEventListener('message', this.handleTokenInfo);
+                break;
+            case smartclide_frontend_comm_1.messageTypes.COMM_START_REPLY:
+                console.log('service-creation: RECEIVED', JSON.stringify(data, undefined, 4));
+                this.settings.stateKeycloakToken = data.content.token;
+                this.settings.stateServiceID = data.content.serviceID;
+                break;
+            default:
+                break;
+        }
     }
     registerCommands(commands) {
         commands.registerCommand(SmartCLIDEDeploymentWidgetCommand, {
@@ -345,6 +340,11 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         });
     }
     onStart() {
+        //Add even listener to get the Keycloak Token
+        window.addEventListener('message', this.handleTokenInfo);
+        //Send a message to inform SmartCLIDE IDE
+        let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+        window.parent.postMessage(message, '*');
         if (!this.workspaceService.opened) {
             this.stateService.reachedState('initialized_layout').then(() => this.openView({
                 activate: true,
@@ -353,7 +353,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         }
     }
     initializeLayout() {
-        this.openView({ activate: true, reveal: true });
+        this.openView({ activate: true, reveal: false });
     }
 };
 __decorate([
