@@ -340,10 +340,12 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         });
     }
     onStart() {
+        console.log('OnStar is called');
         //Add even listener to get the Keycloak Token
         window.addEventListener('message', this.handleTokenInfo);
         //Send a message to inform SmartCLIDE IDE
         let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+        console.log('Returns message', message);
         window.parent.postMessage(message, '*');
         if (!this.workspaceService.opened) {
             this.stateService.reachedState('initialized_layout').then(() => this.openView({
