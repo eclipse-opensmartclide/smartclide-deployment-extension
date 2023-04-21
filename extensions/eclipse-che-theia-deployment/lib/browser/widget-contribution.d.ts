@@ -6,6 +6,7 @@ import { MenuNode, SubMenuOptions, CommandRegistry } from '@theia/core/lib/commo
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { SmartCLIDEBackendService } from '../common/protocol';
 import { CommandService } from '@theia/core/lib/common/command';
+import { Settings } from './../common/ifaces';
 export declare class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribution<SmartCLIDEDeploymentWidget> {
     /**
      * `AbstractViewContribution` handles the creation and registering
@@ -22,6 +23,8 @@ export declare class SmartCLIDEDeploymentWidgetContribution extends AbstractView
     private readonly outputChannelManager;
     private readonly monacoQuickInputService;
     protected readonly commandService: CommandService;
+    settings: Settings;
+    handleTokenInfo: ({ data }: any) => void;
     constructor();
     registerCommands(commands: CommandRegistry): void;
     registerMenus(menus: MenuModelRegistry): void;

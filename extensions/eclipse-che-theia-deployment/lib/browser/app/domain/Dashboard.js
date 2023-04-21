@@ -72,7 +72,7 @@ const Dashboard = () => {
                     .fileRead(`${currentPath}/.smartclide-settings.json`)
                     .then((backendRead) => {
                     !(backendRead === null || backendRead === void 0 ? void 0 : backendRead.errno)
-                        ? setSettings(JSON.parse(backendRead))
+                        ? setSettings(JSON.parse(JSON.stringify(backendRead)))
                         : setMessage('It is necessary to have created a new deployment first.');
                 });
             }
@@ -183,7 +183,7 @@ const Dashboard = () => {
         const currentPath = ((_a = workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.resource.path.toString()) || '';
         const prevSettings = currentPath &&
             backendService &&
-            JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
+            JSON.parse(JSON.stringify(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`)));
         const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = prevSettings;
         const deploymentDeleted = k8sToken &&
             deployUrl &&
@@ -194,7 +194,7 @@ const Dashboard = () => {
             const currentPath = ((_b = workspaceService.workspace) === null || _b === void 0 ? void 0 : _b.resource.path.toString()) || '';
             const prevSettings = currentPath &&
                 backendService &&
-                JSON.parse(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`));
+                JSON.parse(JSON.stringify(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`)));
             const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = prevSettings;
             const deploymentFetchData = gitLabToken &&
                 repository_name &&
