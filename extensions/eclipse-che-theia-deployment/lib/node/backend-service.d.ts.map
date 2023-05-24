@@ -1,0 +1,1 @@
+{"version":3,"file":"backend-service.d.ts","sourceRoot":"","sources":["../../src/node/backend-service.ts"],"names":[],"mappings":"AAGA,OAAO,EAAE,wBAAwB,EAAE,MAAM,oBAAoB,CAAA;AAE7D,qBACa,4BAA6B,YAAW,wBAAwB;IAC3E,QAAQ,CAAC,QAAQ,EAAE,MAAM,GAAG,GAAG;IAS/B,SAAS,CAAC,QAAQ,EAAE,MAAM,EAAE,OAAO,EAAE,GAAG,GAAG,GAAG;CAQ/C"}
