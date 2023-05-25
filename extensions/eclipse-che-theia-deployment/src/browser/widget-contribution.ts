@@ -141,17 +141,6 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
-        console.log('OnStar is called');
-
-        //Add even listener to get the Keycloak Token
-        window.addEventListener('message', this.handleTokenInfo);
-
-        //Send a message to inform SmartCLIDE IDE
-        let message = buildMessage(messageTypes.COMM_START);
-        console.log('Returns message', message);
-
-        window.parent.postMessage(message, '*');
-
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
         channel.clear();
 
@@ -540,6 +529,17 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
   }
 
   onStart(): void {
+    console.log('OnStar is called');
+
+    //Add even listener to get the Keycloak Token
+    window.addEventListener('message', this.handleTokenInfo);
+
+    //Send a message to inform SmartCLIDE IDE
+    let message = buildMessage(messageTypes.COMM_START);
+    console.log('Returns message', message);
+
+    window.parent.postMessage(message, '*');
+
     if (!this.workspaceService.opened) {
       this.stateService.reachedState('initialized_layout').then(() =>
         this.openView({
