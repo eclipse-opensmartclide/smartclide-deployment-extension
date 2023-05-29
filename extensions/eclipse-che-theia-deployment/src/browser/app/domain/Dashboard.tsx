@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
           .fileRead(`${currentPath}/.smartclide-settings.json`)
           .then((backendRead: any) => {
             !backendRead?.errno
-              ? setSettings(JSON.parse(backendRead))
+              ? setSettings(JSON.parse(JSON.stringify(backendRead)))
               : setMessage(
                   'It is necessary to have created a new deployment first.'
                 );
@@ -226,8 +226,10 @@ const Dashboard: React.FC = () => {
       currentPath &&
       backendService &&
       JSON.parse(
-        await backendService.fileRead(
-          `${currentPath}/.smartclide-settings.json`
+        JSON.stringify(
+          await backendService.fileRead(
+            `${currentPath}/.smartclide-settings.json`
+          )
         )
       );
     const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } =
@@ -251,8 +253,10 @@ const Dashboard: React.FC = () => {
         currentPath &&
         backendService &&
         JSON.parse(
-          await backendService.fileRead(
-            `${currentPath}/.smartclide-settings.json`
+          JSON.stringify(
+            await backendService.fileRead(
+              `${currentPath}/.smartclide-settings.json`
+            )
           )
         );
       const {

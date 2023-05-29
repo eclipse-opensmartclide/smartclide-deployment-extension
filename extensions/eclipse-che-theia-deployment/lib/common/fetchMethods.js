@@ -13,7 +13,12 @@ const postDeploy = async (deployUrl, stateServiceID, stateKeycloakToken, usernam
             'k8s-token': k8sToken,
         },
     })
-        .then((res) => res.json().then((res) => res))
+        .then((res) => {
+        if (res.status === 200) {
+            return res.json().then((res) => res);
+        }
+        return res;
+    })
         .catch((err) => err);
 };
 exports.postDeploy = postDeploy;
@@ -28,7 +33,12 @@ const getDeploymentStatus = async (deployUrl, stateServiceID, stateKeycloakToken
             'k8s-token': k8sToken,
         },
     })
-        .then((res) => res.json().then((res) => res))
+        .then((res) => {
+        if (res.status === 200) {
+            return res.json().then((res) => res);
+        }
+        return res;
+    })
         .catch((err) => err);
 };
 exports.getDeploymentStatus = getDeploymentStatus;
@@ -43,7 +53,12 @@ const getDeploymentMetrics = async (deployUrl, stateServiceID, stateKeycloakToke
             'k8s-token': k8sToken,
         },
     })
-        .then((res) => res.json().then((res) => res))
+        .then((res) => {
+        if (res.status === 200) {
+            return res.json().then((res) => res);
+        }
+        return res;
+    })
         .catch((err) => err);
 };
 exports.getDeploymentMetrics = getDeploymentMetrics;
@@ -87,7 +102,12 @@ const deleteDeployment = async (deployUrl, stateServiceID, stateKeycloakToken, i
             'k8s-token': k8sToken,
         },
     })
-        .then((res) => res.json().then((res) => res))
+        .then((res) => {
+        if (res.status === 200) {
+            return res.json().then((res) => res);
+        }
+        return res;
+    })
         .catch((err) => err);
 };
 exports.deleteDeployment = deleteDeployment;

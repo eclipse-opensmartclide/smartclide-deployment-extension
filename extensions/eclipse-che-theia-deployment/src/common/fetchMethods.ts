@@ -34,7 +34,12 @@ export const postDeploy = async (
       },
     }
   )
-    .then((res: any): any => res.json().then((res: any): any => res))
+    .then((res: any): any => {
+      if (res.status === 200) {
+        return res.json().then((res: any): any => res);
+      }
+      return res;
+    })
     .catch((err: any): any => err);
 };
 export const getDeploymentStatus = async (
@@ -57,7 +62,12 @@ export const getDeploymentStatus = async (
       },
     }
   )
-    .then((res: any): any => res.json().then((res: any): any => res))
+    .then((res: any): any => {
+      if (res.status === 200) {
+        return res.json().then((res: any): any => res);
+      }
+      return res;
+    })
     .catch((err: any): any => err);
 };
 export const getDeploymentMetrics = async (
@@ -80,7 +90,12 @@ export const getDeploymentMetrics = async (
       },
     }
   )
-    .then((res: any): any => res.json().then((res: any): any => res))
+    .then((res: any): any => {
+      if (res.status === 200) {
+        return res.json().then((res: any): any => res);
+      }
+      return res;
+    })
     .catch((err: any): any => err);
 };
 
@@ -144,6 +159,11 @@ export const deleteDeployment = async (
       },
     }
   )
-    .then((res: any): any => res.json().then((res: any): any => res))
+    .then((res: any): any => {
+      if (res.status === 200) {
+        return res.json().then((res: any): any => res);
+      }
+      return res;
+    })
     .catch((err: any): any => err);
 };
