@@ -24,7 +24,7 @@ export declare class SmartCLIDEDeploymentWidgetContribution extends AbstractView
     private readonly monacoQuickInputService;
     protected readonly commandService: CommandService;
     settings: Settings;
-    handleTokenInfo: ({ data }: any) => void;
+    handleTokenInfo({ data }: any): void;
     constructor();
     registerCommands(commands: CommandRegistry): void;
     registerMenus(menus: MenuModelRegistry): void;
