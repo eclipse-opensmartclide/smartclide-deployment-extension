@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 
-import { useBackendContext } from '../contexts/BackendContext';
 import {
   deleteDeployment,
   getDeploymentList,
@@ -41,10 +40,13 @@ const Dashboard: React.FC = () => {
   const [columnsSource, setColumnsSource] = useState<string[]>([]);
   const [pagination, setPagination] =
     useState<PaginationState>(initialPagination);
-  const { backend } = useBackendContext();
-  const { workspaceService, backendService } = backend;
 
   useEffect(() => {
+    (async () => {
+      const sett: string | null = localStorage.getItem('settings');
+      const settParsed = await JSON.parse(sett || '')
+      settParsed && setSettings(settParsed);
+    })();
     return () => {
       setLoading(true);
       setLoadingMetrics(false);
@@ -55,27 +57,13 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (backendService !== undefined && workspaceService !== undefined) {
-      const currentPath =
-        workspaceService.workspace?.resource.path.toString() || '';
-      !currentPath &&
-        setMessage('It is necessary to have at least one repository open.');
-      if (currentPath) {
-        backendService
-          .fileRead(`${currentPath}/.smartclide-settings.json`)
-          .then((backendRead: any) => {
-            !backendRead?.errno
-              ? setSettings(JSON.parse(JSON.stringify(backendRead)))
-              : setMessage(
-                  'It is necessary to have created a new deployment first.'
-                );
-          });
-      }
-    }
-  }, [backendService, workspaceService]);
+    console.log('settings', settings)
+    settings && setMessage('Welcome to SmartCLIDE Deployment Dashboard');
+  }, [settings]);
 
   useEffect(() => {
-    message.length !== 0 && setLoading(false);
+    console.log('message', message)
+    message?.length !== 0 && setLoading(false);
   }, [message]);
 
   useEffect(() => {
@@ -110,11 +98,12 @@ const Dashboard: React.FC = () => {
             pagination?.skip.toString()
           );
           if (deploymentFetchData) {
-            if (deploymentFetchData.total === 0) {
+            console.log('deploymentFetchData', deploymentFetchData?.message)
+            if (deploymentFetchData?.total === 0) {
               setMessage('No deployments found.');
             }
             if (deploymentFetchData?.message) {
-              setMessage(deploymentFetchData?.message);
+              setMessage('The error getting the deployments.');
               setDeploymentsSource([]);
               setPagination(
                 (prev: PaginationState): PaginationState => ({
@@ -139,7 +128,7 @@ const Dashboard: React.FC = () => {
         })();
       }
     }
-  }, [pagination.skip, pagination.limit, settings]);
+  }, [pagination?.skip, pagination?.limit, settings]);
 
   useEffect(() => {
     deploymentsSource &&
@@ -220,18 +209,9 @@ const Dashboard: React.FC = () => {
   };
 
   const handleStop = async (id: string) => {
-    const currentPath =
-      workspaceService.workspace?.resource.path.toString() || '';
-    const prevSettings: Settings =
-      currentPath &&
-      backendService &&
-      JSON.parse(
-        JSON.stringify(
-          await backendService.fileRead(
-            `${currentPath}/.smartclide-settings.json`
-          )
-        )
-      );
+    const prevSettings: Settings = JSON.parse(
+      localStorage.getItem('settings') || ''
+    );
     const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } =
       prevSettings;
     const deploymentDeleted =
@@ -247,18 +227,10 @@ const Dashboard: React.FC = () => {
         k8sToken
       ));
     if (deploymentDeleted) {
-      const currentPath =
-        workspaceService.workspace?.resource.path.toString() || '';
-      const prevSettings: Settings =
-        currentPath &&
-        backendService &&
-        JSON.parse(
-          JSON.stringify(
-            await backendService.fileRead(
-              `${currentPath}/.smartclide-settings.json`
-            )
-          )
-        );
+      const prevSettings: Settings = JSON.parse(
+        localStorage.getItem('settings') || ''
+      );
+
       const {
         gitLabToken,
         repository_name,
@@ -307,7 +279,7 @@ const Dashboard: React.FC = () => {
         <h3>Last Deployment</h3>
         {message ? (
           <h3 style={{ textAlign: 'center' }}>{message}</h3>
-        ) : deploymentsSource.length !== 0 && !loadingMetrics ? (
+        ) : deploymentsSource?.length !== 0 && !loadingMetrics ? (
           <>
             {!metrics && (
               <Button

@@ -28,7 +28,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const react_1 = __importStar(require("react"));
-const BackendContext_1 = require("../contexts/BackendContext");
 const fetchMethods_1 = require("../../../common/fetchMethods");
 const Spinner_1 = __importDefault(require("../componets/Spinner"));
 const Pagination_1 = __importDefault(require("../componets/Pagination/"));
@@ -50,9 +49,12 @@ const Dashboard = () => {
     const [deploymentsSource, setDeploymentsSource] = (0, react_1.useState)([]);
     const [columnsSource, setColumnsSource] = (0, react_1.useState)([]);
     const [pagination, setPagination] = (0, react_1.useState)(initialPagination);
-    const { backend } = (0, BackendContext_1.useBackendContext)();
-    const { workspaceService, backendService } = backend;
     (0, react_1.useEffect)(() => {
+        (async () => {
+            const sett = localStorage.getItem('settings');
+            const settParsed = await JSON.parse(sett || '');
+            settParsed && setSettings(settParsed);
+        })();
         return () => {
             setLoading(true);
             setLoadingMetrics(false);
@@ -62,24 +64,12 @@ const Dashboard = () => {
         };
     }, []);
     (0, react_1.useEffect)(() => {
-        var _a;
-        if (backendService !== undefined && workspaceService !== undefined) {
-            const currentPath = ((_a = workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.resource.path.toString()) || '';
-            !currentPath &&
-                setMessage('It is necessary to have at least one repository open.');
-            if (currentPath) {
-                backendService
-                    .fileRead(`${currentPath}/.smartclide-settings.json`)
-                    .then((backendRead) => {
-                    !(backendRead === null || backendRead === void 0 ? void 0 : backendRead.errno)
-                        ? setSettings(JSON.parse(JSON.stringify(backendRead)))
-                        : setMessage('It is necessary to have created a new deployment first.');
-                });
-            }
-        }
-    }, [backendService, workspaceService]);
+        console.log('settings', settings);
+        settings && setMessage('Welcome to SmartCLIDE Deployment Dashboard');
+    }, [settings]);
     (0, react_1.useEffect)(() => {
-        message.length !== 0 && setLoading(false);
+        console.log('message', message);
+        (message === null || message === void 0 ? void 0 : message.length) !== 0 && setLoading(false);
     }, [message]);
     (0, react_1.useEffect)(() => {
         metrics && setLoadingMetrics(false);
@@ -95,11 +85,12 @@ const Dashboard = () => {
                 (async () => {
                     const deploymentFetchData = await (0, fetchMethods_1.getDeploymentList)(deployUrl, stateServiceID, stateKeycloakToken, username, repository_name, pagination === null || pagination === void 0 ? void 0 : pagination.limit.toString(), pagination === null || pagination === void 0 ? void 0 : pagination.skip.toString());
                     if (deploymentFetchData) {
-                        if (deploymentFetchData.total === 0) {
+                        console.log('deploymentFetchData', deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.message);
+                        if ((deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.total) === 0) {
                             setMessage('No deployments found.');
                         }
                         if (deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.message) {
-                            setMessage(deploymentFetchData === null || deploymentFetchData === void 0 ? void 0 : deploymentFetchData.message);
+                            setMessage('The error getting the deployments.');
                             setDeploymentsSource([]);
                             setPagination((prev) => (Object.assign(Object.assign({}, prev), { total: 0 })));
                         }
@@ -113,7 +104,7 @@ const Dashboard = () => {
                 })();
             }
         }
-    }, [pagination.skip, pagination.limit, settings]);
+    }, [pagination === null || pagination === void 0 ? void 0 : pagination.skip, pagination === null || pagination === void 0 ? void 0 : pagination.limit, settings]);
     (0, react_1.useEffect)(() => {
         deploymentsSource &&
             (deploymentsSource === null || deploymentsSource === void 0 ? void 0 : deploymentsSource.length) !== 0 &&
@@ -179,11 +170,7 @@ const Dashboard = () => {
             setCurrentDeployment(currentActive[0].id);
     };
     const handleStop = async (id) => {
-        var _a, _b;
-        const currentPath = ((_a = workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.resource.path.toString()) || '';
-        const prevSettings = currentPath &&
-            backendService &&
-            JSON.parse(JSON.stringify(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`)));
+        const prevSettings = JSON.parse(localStorage.getItem('settings') || '');
         const { k8sToken, deployUrl, stateServiceID, stateKeycloakToken } = prevSettings;
         const deploymentDeleted = k8sToken &&
             deployUrl &&
@@ -191,10 +178,7 @@ const Dashboard = () => {
             stateKeycloakToken &&
             (await (0, fetchMethods_1.deleteDeployment)(deployUrl, stateServiceID, stateKeycloakToken, id, k8sToken));
         if (deploymentDeleted) {
-            const currentPath = ((_b = workspaceService.workspace) === null || _b === void 0 ? void 0 : _b.resource.path.toString()) || '';
-            const prevSettings = currentPath &&
-                backendService &&
-                JSON.parse(JSON.stringify(await backendService.fileRead(`${currentPath}/.smartclide-settings.json`)));
+            const prevSettings = JSON.parse(localStorage.getItem('settings') || '');
             const { gitLabToken, repository_name, username, deployUrl, stateServiceID, stateKeycloakToken, } = prevSettings;
             const deploymentFetchData = gitLabToken &&
                 repository_name &&
@@ -214,7 +198,7 @@ const Dashboard = () => {
     return (react_1.default.createElement(react_1.default.Fragment, null,
         react_1.default.createElement("div", { id: "SmartCLIDE-Deployment-Bar" },
             react_1.default.createElement("h3", null, "Last Deployment"),
-            message ? (react_1.default.createElement("h3", { style: { textAlign: 'center' } }, message)) : deploymentsSource.length !== 0 && !loadingMetrics ? (react_1.default.createElement(react_1.default.Fragment, null, !metrics && (react_1.default.createElement(Button_1.default, { className: "btn-primary small mr-xs", disabled: loadingMetrics, onClick: () => handleGetCurrentDeployment() }, "Get metrics")))) : (react_1.default.createElement(Spinner_1.default, { isVisible: loadingMetrics })),
+            message ? (react_1.default.createElement("h3", { style: { textAlign: 'center' } }, message)) : (deploymentsSource === null || deploymentsSource === void 0 ? void 0 : deploymentsSource.length) !== 0 && !loadingMetrics ? (react_1.default.createElement(react_1.default.Fragment, null, !metrics && (react_1.default.createElement(Button_1.default, { className: "btn-primary small mr-xs", disabled: loadingMetrics, onClick: () => handleGetCurrentDeployment() }, "Get metrics")))) : (react_1.default.createElement(Spinner_1.default, { isVisible: loadingMetrics })),
             react_1.default.createElement(react_1.default.Fragment, null, metrics && (react_1.default.createElement(Monitoring_1.default, { containers: metrics === null || metrics === void 0 ? void 0 : metrics.containers, price: metrics === null || metrics === void 0 ? void 0 : metrics.price })))),
         react_1.default.createElement("div", { id: "SmartCLIDE-Deployment-App" },
             react_1.default.createElement("h1", null, "Deployments"),

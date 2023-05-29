@@ -89,27 +89,44 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
         commands.registerCommand(CommandDeploymentDeploy, {
             execute: async () => {
                 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r;
+                console.log('CommandDeploymentDeploy is called');
+                //Add even listener to get the Keycloak Token
+                window.addEventListener('message', this.handleTokenInfo);
+                //Send a message to inform SmartCLIDE IDE
+                let message = (0, smartclide_frontend_comm_1.buildMessage)(smartclide_frontend_comm_1.messageTypes.COMM_START);
+                console.log('Returns message', message);
+                window.parent.postMessage(message, '*');
                 const channel = this.outputChannelManager.getChannel('SmartCLIDE');
                 channel.clear();
-                const currentProject = ((_b = (_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.name) === null || _b === void 0 ? void 0 : _b.split('.')[0]) || undefined;
-                if (!currentProject) {
-                    this.messageService.error(`It is necessary to have at least one repository open.`);
-                    return;
-                }
-                const currentPath = ((_c = this.workspaceService.workspace) === null || _c === void 0 ? void 0 : _c.resource.path.toString()) || '';
+                // const currentProject: string | undefined =
+                //   this.workspaceService.workspace?.name?.split('.')[0] || undefined;
+                // if (!currentProject) {
+                //   this.messageService.error(
+                //     `It is necessary to have at least one repository open.`
+                //   );
+                //   return;
+                // }
+                const currentPath = ((_a = this.workspaceService.workspace) === null || _a === void 0 ? void 0 : _a.resource.path.toString()) || '';
                 if (!currentPath || currentPath === '') {
                     this.messageService.error(`There have been problems getting the route.`);
                     return;
                 }
-                const prevSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                if (prevSettings.errno || !prevSettings) {
-                    this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
-                    const newSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                    this.settings = newSettings && Object.assign({}, JSON.parse(newSettings));
+                else {
+                    this.messageService.info(`Path: ${currentPath}.`);
+                }
+                const prevSettings = localStorage.getItem('settings');
+                if (!prevSettings) {
+                    this.messageService.info(`NO Settings found.`);
+                    localStorage.setItem('settings', JSON.stringify(this.settings));
                 }
                 else {
                     this.settings = Object.assign({}, JSON.parse(prevSettings));
                 }
+                const optionsRepository = {
+                    placeHolder: 'Enter Repository Name',
+                    prompt: 'Enter Repository Name:',
+                    ignoreFocusLost: true,
+                };
                 const optionsUser = {
                     placeHolder: 'Enter User Name',
                     prompt: 'Enter User Name:',
@@ -140,6 +157,11 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                     prompt: 'Enter Kubernetes Token:',
                     ignoreFocusLost: true,
                 };
+                const repository_name = !((_b = this.settings) === null || _b === void 0 ? void 0 : _b.repository_name)
+                    ? await this.monacoQuickInputService
+                        .input(optionsRepository)
+                        .then((value) => value || '')
+                    : (_c = this.settings) === null || _c === void 0 ? void 0 : _c.repository_name;
                 const user = !((_d = this.settings) === null || _d === void 0 ? void 0 : _d.username)
                     ? await this.monacoQuickInputService
                         .input(optionsUser)
@@ -171,7 +193,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                         .then((value) => value || '')
                     : (_q = this.settings) === null || _q === void 0 ? void 0 : _q.gitLabToken;
                 this.settings.username = user;
-                this.settings.repository_name = currentProject;
+                this.settings.repository_name = repository_name;
                 this.settings.branch = branchName;
                 this.settings.k8sToken = k8sToken;
                 this.settings.k8s_url = k8s_url;
@@ -199,7 +221,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                     }
                 }
                 this.settings.lastDeploy = '';
-                this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
+                localStorage.setItem('settings', JSON.stringify(this.settings));
                 //// ---------- PREPARE TO BUILD ------------ /////
                 const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
                 if (this.settings.k8s_url &&
@@ -213,7 +235,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                         .then(async (action) => {
                         if (action === 'Deploy now') {
                             this.settings.lastDeploy = '';
-                            this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
+                            localStorage.setItem('settings', JSON.stringify(this.settings));
                             console.log('PREPARE TO BUILD');
                             channel.show();
                             channel.appendLine(`Start deploy ${this.settings.repository_name}...`);
@@ -226,7 +248,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                                 channel.show();
                                 channel.appendLine(`Deployment ${this.settings.repository_name} is already...`);
                                 this.settings.lastDeploy = res === null || res === void 0 ? void 0 : res.id;
-                                this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
+                                localStorage.setItem('settings', JSON.stringify(this.settings));
                             }
                             else {
                                 this.messageService.error('Something is worng restart process');
@@ -242,7 +264,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                         .catch((err) => console.log('err', err));
                 }
                 else {
-                    this.messageService.error('It is necessary to have at leasts one repository open.');
+                    this.messageService.error('It is necessary to have at least one repository open.');
                     channel.appendLine('It is necessary to have at least one repository open.', output_channel_1.OutputChannelSeverity.Error);
                 }
             },
@@ -258,14 +280,13 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                     return;
                 }
                 const currentPath = ((_c = this.workspaceService.workspace) === null || _c === void 0 ? void 0 : _c.resource.path.toString()) || '';
-                const prevSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                if (prevSettings.errno) {
-                    this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
-                    const newSettings = await this.smartCLIDEBackendService.fileRead(`${currentPath}/.smartclide-settings.json`);
-                    this.settings = newSettings && Object.assign({}, JSON.parse(JSON.stringify(newSettings)));
+                const prevSettings = localStorage.getItem('settings');
+                if (!prevSettings) {
+                    this.messageService.info(`NO Settings found.`);
+                    localStorage.setItem('settings', JSON.stringify(this.settings));
                 }
                 else {
-                    this.settings = Object.assign({}, JSON.parse(JSON.stringify(prevSettings)));
+                    this.settings = Object.assign({}, JSON.parse(prevSettings));
                 }
                 this.settings.repository_name = currentProject;
                 if (!currentPath || currentPath === '') {
@@ -300,7 +321,7 @@ let SmartCLIDEDeploymentWidgetContribution = class SmartCLIDEDeploymentWidgetCon
                             channel.appendLine(`Checking status ${this.settings.repository_name}...`);
                             if (this.settings.lastDeploy && this.settings.k8sToken) {
                                 const res = await (0, fetchMethods_1.getDeploymentStatus)(this.settings.deployUrl, this.settings.stateServiceID, this.settings.stateKeycloakToken, this.settings.lastDeploy, this.settings.k8sToken);
-                                this.smartCLIDEBackendService.fileWrite(`${currentPath}/.smartclide-settings.json`, JSON.stringify(this.settings));
+                                localStorage.setItem('settings', JSON.stringify(this.settings));
                                 if (!res.message) {
                                     channel.appendLine(`Status: Deployment are running...`, output_channel_1.OutputChannelSeverity.Warning);
                                 }
