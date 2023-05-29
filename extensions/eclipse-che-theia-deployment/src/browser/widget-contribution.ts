@@ -141,18 +141,29 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
     });
     commands.registerCommand(CommandDeploymentDeploy, {
       execute: async () => {
+        console.log('CommandDeploymentDeploy is called');
+
+        //Add even listener to get the Keycloak Token
+        window.addEventListener('message', this.handleTokenInfo);
+
+        //Send a message to inform SmartCLIDE IDE
+        let message = buildMessage(messageTypes.COMM_START);
+        console.log('Returns message', message);
+
+        window.parent.postMessage(message, '*');
+
         const channel = this.outputChannelManager.getChannel('SmartCLIDE');
         channel.clear();
 
-        const currentProject: string | undefined =
-          this.workspaceService.workspace?.name?.split('.')[0] || undefined;
+        // const currentProject: string | undefined =
+        //   this.workspaceService.workspace?.name?.split('.')[0] || undefined;
 
-        if (!currentProject) {
-          this.messageService.error(
-            `It is necessary to have at least one repository open.`
-          );
-          return;
-        }
+        // if (!currentProject) {
+        //   this.messageService.error(
+        //     `It is necessary to have at least one repository open.`
+        //   );
+        //   return;
+        // }
 
         const currentPath =
           this.workspaceService.workspace?.resource.path.toString() || '';
@@ -162,6 +173,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             `There have been problems getting the route.`
           );
           return;
+        } else {
+          this.messageService.error(`PAth: ${currentPath}.`);
         }
 
         const prevSettings = await this.smartCLIDEBackendService.fileRead(
@@ -182,6 +195,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
         } else {
           this.settings = { ...JSON.parse(prevSettings) };
         }
+
+        const optionsRepository: InputOptions = {
+          placeHolder: 'Enter Repository Name',
+          prompt: 'Enter Repository Name:',
+          ignoreFocusLost: true,
+        };
 
         const optionsUser: InputOptions = {
           placeHolder: 'Enter User Name',
@@ -218,6 +237,12 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           prompt: 'Enter Kubernetes Token:',
           ignoreFocusLost: true,
         };
+
+        const repository_name = !this.settings?.repository_name
+          ? await this.monacoQuickInputService
+              .input(optionsRepository)
+              .then((value): string => value || '')
+          : this.settings?.repository_name;
 
         const user = !this.settings?.username
           ? await this.monacoQuickInputService
@@ -256,7 +281,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           : this.settings?.gitLabToken;
 
         this.settings.username = user;
-        this.settings.repository_name = currentProject;
+        this.settings.repository_name = repository_name;
         this.settings.branch = branchName;
         this.settings.k8sToken = k8sToken;
         this.settings.k8s_url = k8s_url;
