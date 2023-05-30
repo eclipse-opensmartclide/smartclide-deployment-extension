@@ -174,24 +174,14 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           );
           return;
         } else {
-          this.messageService.error(`PAth: ${currentPath}.`);
+          this.messageService.info(`Path: ${currentPath}.`);
         }
 
-        const prevSettings = await this.smartCLIDEBackendService.fileRead(
-          `${currentPath}/.smartclide-settings.json`
-        );
+        const prevSettings = localStorage.getItem('settings');
 
-        if (prevSettings.errno || !prevSettings) {
-          this.smartCLIDEBackendService.fileWrite(
-            `${currentPath}/.smartclide-settings.json`,
-            JSON.stringify(this.settings)
-          );
-          const newSettings = await this.smartCLIDEBackendService.fileRead(
-            `${currentPath}/.smartclide-settings.json`
-          );
-          this.settings = newSettings && {
-            ...JSON.parse(newSettings),
-          };
+        if (!prevSettings) {
+          this.messageService.info(`NO Settings found.`);
+          localStorage.setItem('settings', JSON.stringify(this.settings));
         } else {
           this.settings = { ...JSON.parse(prevSettings) };
         }
@@ -326,10 +316,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
           }
         }
         this.settings.lastDeploy = '';
-        this.smartCLIDEBackendService.fileWrite(
-          `${currentPath}/.smartclide-settings.json`,
-          JSON.stringify(this.settings)
-        );
+        localStorage.setItem('settings', JSON.stringify(this.settings));
+        
         //// ---------- PREPARE TO BUILD ------------ /////
         const actionsConfirmDeploy = ['Deploy now', 'Cancel'];
         if (
@@ -348,10 +336,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             .then(async (action) => {
               if (action === 'Deploy now') {
                 this.settings.lastDeploy = '';
-                this.smartCLIDEBackendService.fileWrite(
-                  `${currentPath}/.smartclide-settings.json`,
-                  JSON.stringify(this.settings)
-                );
+                localStorage.setItem('settings', JSON.stringify(this.settings));
                 console.log('PREPARE TO BUILD');
                 channel.show();
                 channel.appendLine(
@@ -380,10 +365,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                     `Deployment ${this.settings.repository_name} is already...`
                   );
                   this.settings.lastDeploy = res?.id;
-                  this.smartCLIDEBackendService.fileWrite(
-                    `${currentPath}/.smartclide-settings.json`,
-                    JSON.stringify(this.settings)
-                  );
+                  localStorage.setItem('settings', JSON.stringify(this.settings));
                 } else {
                   this.messageService.error(
                     'Something is worng restart process'
@@ -406,7 +388,7 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
             .catch((err) => console.log('err', err));
         } else {
           this.messageService.error(
-            'It is necessary to have at leasts one repository open.'
+            'It is necessary to have at least one repository open.'
           );
           channel.appendLine(
             'It is necessary to have at least one repository open.',
@@ -432,25 +414,15 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
 
         const currentPath =
           this.workspaceService.workspace?.resource.path.toString() || '';
+        const prevSettings = localStorage.getItem('settings');
 
-        const prevSettings = await this.smartCLIDEBackendService.fileRead(
-          `${currentPath}/.smartclide-settings.json`
-        );
-
-        if (prevSettings.errno) {
-          this.smartCLIDEBackendService.fileWrite(
-            `${currentPath}/.smartclide-settings.json`,
-            JSON.stringify(this.settings)
-          );
-          const newSettings = await this.smartCLIDEBackendService.fileRead(
-            `${currentPath}/.smartclide-settings.json`
-          );
-          this.settings = newSettings && {
-            ...JSON.parse(JSON.stringify(newSettings)),
-          };
+        if (!prevSettings) {
+          this.messageService.info(`NO Settings found.`);
+          localStorage.setItem('settings', JSON.stringify(this.settings));
         } else {
-          this.settings = { ...JSON.parse(JSON.stringify(prevSettings)) };
+          this.settings = { ...JSON.parse(prevSettings) };
         }
+
 
         this.settings.repository_name = currentProject;
 
@@ -506,10 +478,8 @@ export class SmartCLIDEDeploymentWidgetContribution extends AbstractViewContribu
                       this.settings.lastDeploy,
                       this.settings.k8sToken
                     );
-                    this.smartCLIDEBackendService.fileWrite(
-                      `${currentPath}/.smartclide-settings.json`,
-                      JSON.stringify(this.settings)
-                    );
+                    localStorage.setItem('settings', JSON.stringify(this.settings));
+                  
                     if (!res.message) {
                       channel.appendLine(
                         `Status: Deployment are running...`,
